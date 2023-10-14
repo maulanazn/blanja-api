@@ -1,0 +1,10 @@
+go 1.21.3
+
+use ./datahandler
+use ./datahandler/builder
+use ./datahandler/config
+use ./datahandler/entity
+use ./datahandler/repository
+use ./webserver
+use ./webserver/controller
+use ./test
