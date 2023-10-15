@@ -3,10 +3,188 @@ info:
   title: Pay book backend
   version: '1.0'
 servers:
-  - url: http://localhost:3000
+  - url: http://{devurl}/api
+    description: Url list
+    variables:
+      devurl:
+        enum:
+          - localhost:3000
+          - belanjabackend.cyclic.com
+        default: localhost:3000
+components:
+  schemas:
+    logincustomer:
+      type: object
+      properties:
+        user_name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+      required:
+      - user_name
+      - email
+      - password
+    loginseller:
+      type: object
+      properties:
+        user_name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: number
+        store_name:
+          type: string
+        password:
+          type: string
+      required:
+        - user_name
+        - email
+        - phone
+        - store_name
+        - password
+    shippingaddress:
+      type: object
+      properties:
+        address_type:
+          type: object
+          properties:
+            data:
+              type: object
+              properties:
+                home:
+                  type: string
+                office:
+                  type: string
+        recipient_name:
+          type: string
+        recipient_phone:
+          type: number
+        address:
+          type: string
+        postal_code:
+          type: string
+        city:
+          type: string
+      required:
+        - address_type
+        - recipient_name
+        - recipient_phone
+        - address
+        - postal_code
+        - city
 paths:
-  /login:
-    get:
-      responses:
-        '200':
-          description: OK
+  /login/customer:
+    post:
+      responses: 
+        '201':
+          description: Login customer
+          content:
+            application/json:
+              example:
+                {
+                  "status": 201,
+                  "message": "Successfully login as customer, enjoy your shopping",
+                  "data": {
+                    id: string,
+                    user_name: string
+                  },
+                  access_token: string
+                }
+
+      requestBody:
+          content:
+            x-www-form-urlencoded:
+              schema:
+                $ref: '#/components/schemas/logincustomer'
+  /login/seller:
+    post:
+      responses: 
+        '201':
+          description: Login seller
+          content:
+            application/json:
+              example:
+                {
+                  "status": 201,
+                  "message": "Successfully login as seller, enjoy your salary",
+                  "data": {
+                    id: string,
+                    store_name: string
+                  },
+                  access_token: string
+                }
+      requestBody:
+        content:
+          x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/loginseller"
+  /address/?userId=string:
+    post:
+      parameters:
+        - in: query
+          name: user_id
+          schema: 
+            type: string
+          required: true
+          description: User id to create new address instead of current address
+      responses: 
+        '201':
+          description: Shipping Address
+          content:
+            application/json:
+              example:
+                {
+                  "status": 201,
+                  "message": "Successfully post shipping address",
+                  "data": {
+                    id: string,
+                    address_type: string,
+                    recipient_name: string,
+                    recipient_phone: number,
+                    address: string,
+                    postal_code: string,
+                    city: string
+                  }
+                }
+      requestBody:
+        content:
+          x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/shippingaddress"
+  /address/user/?userId=string:
+    put:
+      parameters:
+        - in: query
+          name: userId
+          schema:
+            type: string
+          required: true
+          description: User id to update current address instead of new address
+          
+      responses: 
+        '201':
+          description: Shipping Address
+          content:
+            application/json:
+              example:
+                {
+                  "status": 201,
+                  "message": "Successfully update shipping address",
+                  "data": {
+                    id: string,
+                    address_type: string,
+                    recipient_name: string,
+                    recipient_phone: number,
+                    address: string,
+                    postal_code: string,
+                    city: string
+                  }
+                }
+      requestBody:
+        content:
+          x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/shippingaddress"

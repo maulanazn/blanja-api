@@ -4,9 +4,11 @@ import (
 	"fmt"
 	"net/http"
 	"time"
+
+	"github.com/julienschmidt/httprouter"
 )
 
-func RegisterUser(writer http.ResponseWriter, req *http.Request) {
+func RegisterUser(writer http.ResponseWriter, req *http.Request, params httprouter.Params) {
 	var username, email, password string
 	if req.Method == "POST" {
 		req.ParseForm()
@@ -23,11 +25,11 @@ func RegisterUser(writer http.ResponseWriter, req *http.Request) {
 		}
 
 		writer.WriteHeader(http.StatusCreated)
-		fmt.Fprint(writer, "Success Register")
+		fmt.Fprint(writer, "Success register as "+username+", Now login!")
 	}
 }
 
-func LoginUser(writer http.ResponseWriter, req *http.Request) {
+func LoginUser(writer http.ResponseWriter, req *http.Request, params httprouter.Params) {
 	var email, password string
 	var cookie http.Cookie = http.Cookie{}
 	if req.Method == "POST" {
@@ -63,7 +65,7 @@ func LoginUser(writer http.ResponseWriter, req *http.Request) {
 	}
 }
 
-func LogoutUser(writer http.ResponseWriter, req *http.Request) {
+func LogoutUser(writer http.ResponseWriter, req *http.Request, params httprouter.Params) {
 	namecookie, err := req.Cookie("name")
 	if err != nil {
 		fmt.Fprint(writer, err)

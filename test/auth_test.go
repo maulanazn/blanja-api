@@ -9,6 +9,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/julienschmidt/httprouter"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -18,13 +19,13 @@ func TestRegisterUser(t *testing.T) {
 	request.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	recorder := httptest.NewRecorder()
 
-	controller.RegisterUser(recorder, request)
+	controller.RegisterUser(recorder, request, httprouter.Params{})
 
 	response := recorder.Result()
 
 	body, _ := io.ReadAll(response.Body)
 
-	assert.Equal(t, "Success Register", string(body))
+	assert.Equal(t, "Success register as maulana, Now login!", string(body))
 }
 
 func TestLoginUser(t *testing.T) {
@@ -43,7 +44,7 @@ func TestLoginUser(t *testing.T) {
 
 	request.AddCookie(cookie)
 
-	controller.LoginUser(recorder, request)
+	controller.LoginUser(recorder, request, httprouter.Params{})
 
 	response := recorder.Result()
 
@@ -67,7 +68,7 @@ func TestLogoutUser(t *testing.T) {
 
 	request.AddCookie(cookie)
 
-	controller.LogoutUser(recorder, request)
+	controller.LogoutUser(recorder, request, httprouter.Params{})
 
 	body, _ := io.ReadAll(recorder.Result().Body)
 

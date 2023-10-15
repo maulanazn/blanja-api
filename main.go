@@ -1,7 +1,7 @@
 package main
 
 import (
-	"paybookbackend/webserver"
+	"belanjabackend/webserver"
 )
 
 func main() {

@@ -9,12 +9,16 @@ import (
 	"testing"
 	"time"
 
+	"github.com/julienschmidt/httprouter"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestInsertBook(t *testing.T) {
+	router := httprouter.New()
+	router.POST("/book", controller.InsertBook)
+
 	data := strings.NewReader("user_id=123&title=iniapaya&description=satu&writer=maulana&price=10")
-	request := httptest.NewRequest("POST", "http://localhost:3000/book/", data)
+	request := httptest.NewRequest("POST", "http://localhost:3000/book", data)
 	request.Header.Add("content-type", "application/x-www-form-urlencoded")
 	cookiedata := &http.Cookie{
 		Name:    "name",
@@ -28,7 +32,7 @@ func TestInsertBook(t *testing.T) {
 
 	recorder := httptest.NewRecorder()
 
-	controller.InsertBook(recorder, request)
+	router.ServeHTTP(recorder, request)
 
 	body, err := io.ReadAll(recorder.Result().Body)
 	if err != nil {
@@ -38,4 +42,16 @@ func TestInsertBook(t *testing.T) {
 	assert.Equal(t, "Success Adding book", string(body), "Must be valid message")
 }
 
-//TODO: templating engine
+func TestGetBookById(t *testing.T) {
+	router := httprouter.New()
+	router.GET("/book/:id", controller.GetBookById)
+
+	request := httptest.NewRequest("GET", "http://localhost:3000/book/1", nil)
+	recorder := httptest.NewRecorder()
+
+	router.ServeHTTP(recorder, request)
+
+	body, _ := io.ReadAll(recorder.Result().Body)
+
+	assert.Equal(t, "Book id number : 1", string(body), "Must be valid message")
+}
