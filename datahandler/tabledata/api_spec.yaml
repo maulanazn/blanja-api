@@ -123,6 +123,94 @@ components:
           type: string
         quantity:
           type: integer
+    # COMPONENT product into bag
+    productbag:
+      type: object
+      properties:
+        user_id:  
+          type: integer
+          required:
+            - user_id
+        product_id:
+          type: string
+          required:
+            - product_id
+        product_bag_id:
+          type: integer
+          required:
+            - product_bag_id
+        image:
+          type: string
+          required:
+            - image
+        product_name:
+          type: string
+          required:
+            - product_name
+        brand:
+          type: string
+          required:
+            - brand
+        quantity:
+          type: integer
+          required:
+            - quantity
+        price:
+          type: integer
+          required:
+            - price
+        total_price:
+          type: integer
+          required:
+            - total_price
+    # COMPONENT product into bag
+    productcheckout:
+      type: object
+      properties:
+        user_id:  
+          type: integer
+          required:
+            - user_id
+        product_id:
+          type: string
+          required:
+            - product_id
+        product_bag_id:
+          type: integer
+          required:
+            - product_bag_id
+        product_checkout_id:  
+          type: integer
+          required:
+            - product_checkout_id
+        image:
+          type: string
+          required:
+            - image
+        product_name:
+          type: string
+          required:
+            - product_name
+        brand:
+          type: string
+          required:
+            - brand
+        price:
+          type: integer
+          required:
+            - price
+        total_price:
+          type: integer
+          required:
+            - price
+        total_cost:
+          type: integer
+          required:
+            - price
+        total_order:
+          type: integer
+          required:
+            - total_price
 paths:  
   # LOGIN CUSTOMER
   /login/customer:
@@ -353,12 +441,19 @@ paths:
                   ]
                 }
   # PRODUCT By id (detail)
-  /product/?product_id=string:
+  /product/:store_name/:product_name:
     get:
       parameters:
-        - in: query
-          name: product_id
-          description: product_id query params for product detail
+        - in: path
+          required: true
+          name: store_name
+          description: store_name path params for store seller of the product, formatted with slug format
+          schema:
+            type: string
+        - in: path
+          required: true
+          name: product_name
+          description: product_name path params for product detail, formatted with slug format
           schema:
             type: string
       responses: 
@@ -370,13 +465,18 @@ paths:
                 application/json:
                   schema:
                     type: string
-          description: All products data
+            Set-Cookie:
+              description: Set other data like product id
+              content:
+                schema:
+                  example: PRC_ID=string; Path=/product/:store_name/:product_name
+          description: Product detail data
           content:
             application/json:
               example:
                 {
                   "status": 200,
-                  "message": "Successfully get all products",
+                  "message": "Successfully get product $product_name(slug)",
                   data: {
                     product_id: string,
                     category_name: string,
@@ -390,5 +490,145 @@ paths:
                     quantity: integer,
                     description: string,
                     rating_number: integer
+                  }
+                }
+  # POST Product into bag
+  /product/bag:
+    post:
+      responses: 
+        '201':
+          headers: 
+            Content-Type:
+              description: optional
+              content:
+                application/json:
+                  schema:
+                    type: string
+            Authorization:
+              description: put token to access all route
+              content:
+                access_token:
+                  schema:
+                    type: string
+            Set-Cookie:
+              description: Set other data like product id
+              content:
+                schema:
+                  example: PRC_ID=string; USR_ID=integer; PRC_B_ID=integer Path=/product/bag;
+          description: Products in bag data
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/productbag'
+    get:
+      responses: 
+        '200':
+          headers: 
+            Content-Type:
+              description: optional
+              content:
+                application/json:
+                  schema:
+                    type: string
+            Authorization:
+              description: put token to access all route
+              content:
+                access_token:
+                  schema:
+                    type: string
+            Cookie:
+              description: Set other data like product id
+              content:
+                schema:
+                  example: PRC_ID=string; USR_ID=integer; PRC_B_ID=integer Path=/product/*/bag;
+          description: Products in bag data
+          content:
+            application/json:
+              example:
+                {
+                  "status": 200,
+                  "message": "Successfully get products in bag",
+                  data: {
+                    product_bag_id: integer,
+                    product_id: string,
+                    customer_id: integer,
+                    image: string,
+                    product_name: string,
+                    brand: string,
+                    quantity: integer,
+                    price: integer,
+                  }
+                }
+  # PRODUCT checkout
+  /product/checkout:
+    post:
+      responses: 
+        '200':
+          headers: 
+            Content-Type:
+              description: optional
+              content:
+                application/json:
+                  schema:
+                    type: string
+            Authorization:
+              description: put token to access all route
+              content:
+                access_token:
+                  schema:
+                    type: string
+            Set-Cookie:
+              description: Set other data like product id
+              content:
+                schema:
+                  example: PRC_ID=string; USR_ID=integer; PRC_B_ID=integer; CHE_ID=integer; Path=/product/checkout;
+          description: Products in checkout
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/productcheckout'
+    get:
+      responses: 
+        '200':
+          headers: 
+            Content-Type:
+              description: optional
+              content:
+                application/json:
+                  schema:
+                    type: string
+            Authorization:
+              description: put token to access all route
+              content:
+                access_token:
+                  schema:
+                    type: string
+            Set-Cookie:
+              description: Set other data like product id
+              content:
+                schema:
+                  example: PRC_ID=string; USR_ID=integer; PRC_B_ID=integer; CHE_ID=integer; Path=/product/checkout;
+          description: Products in checkout
+          content:
+            application/json:
+              example:
+                {
+                  "status": 200,
+                  "message": "Successfully get products in checkout",
+                  data: {
+                    product_bag_id: integer,
+                    product_checkout_id: integer,
+                    product_id: string,
+                    customer_id: integer,
+                    image: string,
+                    product_name: string,
+                    brand: string,
+                    quantity: integer,
+                    price: integer,
+                    total_price: integer,
+                    total_cost: integer,
+                    total_order: integer
                   }
                 }
