@@ -11,13 +11,13 @@ servers:
           - localhost:3000
           - belanjabackend.cyclic.com
         default: localhost:3000
+# COMPONENT BODY
 components:
   schemas:
-    logincustomer:
+    # COMPONENT login customer
+    registercustomer:
       type: object
       properties:
-        customer_id:
-          type: integer
         user_name:
           type: string
         email:
@@ -28,11 +28,10 @@ components:
       - user_name
       - email
       - password
-    loginseller:
+    # COMPONENT login seller
+    registerseller:
       type: object
       properties:
-        seller_id:
-          type: integer
         user_name:
           type: string
         email:
@@ -49,11 +48,10 @@ components:
         - phone
         - store_name
         - password
+    # COMPONENT address
     shippingaddress:
       type: object
       properties:
-        address_id:
-          type: integer
         address_type:
           type: object
           properties:
@@ -81,12 +79,11 @@ components:
         - address
         - postal_code
         - city
+    # COMPONENT product
     product:
       type: object
       properties:
-        product_id:
-          type: string
-        category:
+        category_name:
           type: object
           properties:
             shoes:
@@ -140,7 +137,7 @@ paths:
                   "status": 201,
                   "message": "Successfully login as customer, enjoy your shopping",
                   "data": {
-                    id: string,
+                    customer_id: string,
                     user_name: string
                   },
                   access_token: string
@@ -150,7 +147,7 @@ paths:
           content:
             x-www-form-urlencoded:
               schema:
-                $ref: '#/components/schemas/logincustomer'
+                $ref: '#/components/schemas/registercustomer'
   # CUSTOMER PROFILE
   /customer/profile:
     get:
@@ -174,10 +171,10 @@ paths:
             application/json:
               example:
                 {
-                  "status": 201,
+                  "status": 200,
                   "message": "Successfully get profile customer",
                   "data": {
-                    id: string,
+                    customer_id: string,
                     user_name: string,
                     email: string,
                     password: string
@@ -206,9 +203,10 @@ paths:
             application/json:
               example:
                 {
-                  "status": 201,
+                  "status": 200,
                   "message": "Successfully get cart by user",
                   "data": {
+                    customer_id: string,
                     address: {
                       user_name: string,
                       recipient_name: string,
@@ -240,7 +238,7 @@ paths:
                   "status": 201,
                   "message": "Successfully login as seller, enjoy your salary",
                   "data": {
-                    id: string,
+                    seller_id: string,
                     store_name: string
                   },
                   access_token: string
@@ -249,7 +247,7 @@ paths:
         content:
           x-www-form-urlencoded:
             schema:
-              $ref: "#/components/schemas/loginseller"
+              $ref: "#/components/schemas/registerseller"
   # NEW CUSTOMER ADDRESS
   /address/?userId=string:
     post:
@@ -270,7 +268,7 @@ paths:
                   "status": 201,
                   "message": "Successfully post shipping address",
                   "data": {
-                    id: string,
+                    customer_id: string,
                     address_type: string,
                     recipient_name: string,
                     recipient_phone: number,
@@ -301,10 +299,10 @@ paths:
             application/json:
               example:
                 {
-                  "status": 201,
+                  "status": 202,
                   "message": "Successfully update shipping address",
                   "data": {
-                    id: string,
+                    customer_id: string,
                     address_type: string,
                     recipient_name: string,
                     recipient_phone: number,
@@ -318,3 +316,79 @@ paths:
           x-www-form-urlencoded:
             schema:
               $ref: "#/components/schemas/shippingaddress"
+  # ALL PRODUCT (home)
+  /home:
+    get:
+      responses: 
+        '200':
+          headers: 
+            Content-Type:
+              description: optional
+              content:
+                application/json:
+                  schema:
+                    type: string
+          description: All products data
+          content:
+            application/json:
+              example:
+                {
+                  "status": 200,
+                  "message": "Successfully get all products",
+                  category: [
+                    {
+                        category_image: string,
+                        category_name: string,
+                    },
+                  ],
+                  products: [
+                    {
+                      product_id: string,
+                      image: string,
+                      product_name: string,
+                      price: integer,
+                      brand: string,
+                      rating: integer
+                    }
+                  ]
+                }
+  # PRODUCT By id (detail)
+  /product/?product_id=string:
+    get:
+      parameters:
+        - in: query
+          name: product_id
+          description: product_id query params for product detail
+          schema:
+            type: string
+      responses: 
+        '200':
+          headers: 
+            Content-Type:
+              description: optional
+              content:
+                application/json:
+                  schema:
+                    type: string
+          description: All products data
+          content:
+            application/json:
+              example:
+                {
+                  "status": 200,
+                  "message": "Successfully get all products",
+                  data: {
+                    product_id: string,
+                    category_name: string,
+                    image: string,
+                    product_name: string,
+                    brand: string,
+                    rating: integer,
+                    price: integer,
+                    color: string,
+                    size: string,
+                    quantity: integer,
+                    description: string,
+                    rating_number: integer
+                  }
+                }
