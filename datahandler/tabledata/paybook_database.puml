@@ -1,0 +1,11 @@
+@startuml WhiteSmoke
+
+entity UserSeller {}
+
+entity UserCustomer {}
+
+entity Address {}
+
+entity Product {}
+
+@enduml

@@ -16,6 +16,8 @@ components:
     logincustomer:
       type: object
       properties:
+        customer_id:
+          type: integer
         user_name:
           type: string
         email:
@@ -29,6 +31,8 @@ components:
     loginseller:
       type: object
       properties:
+        seller_id:
+          type: integer
         user_name:
           type: string
         email:
@@ -48,6 +52,8 @@ components:
     shippingaddress:
       type: object
       properties:
+        address_id:
+          type: integer
         address_type:
           type: object
           properties:
@@ -75,7 +81,53 @@ components:
         - address
         - postal_code
         - city
-paths:
+    product:
+      type: object
+      properties:
+        product_id:
+          type: string
+        category:
+          type: object
+          properties:
+            shoes:
+              type: string
+            shirt:
+              type: string
+            hoodie:
+              type: string
+            sweater:
+              type: string
+            any:
+              type: string
+        image:
+          type: string
+        product_name:
+          type: string
+        brand:
+          type: string
+        rating:
+          type: integer
+        price:
+          type: integer
+        color:
+          type: object
+          properties:
+            yellow:
+              type: string
+            black:
+              type: string
+            red:
+              type: string
+            green:
+              type: string
+            any:
+              type: string
+        size:
+          type: string
+        quantity:
+          type: integer
+paths:  
+  # LOGIN CUSTOMER
   /login/customer:
     post:
       responses: 
@@ -99,6 +151,83 @@ paths:
             x-www-form-urlencoded:
               schema:
                 $ref: '#/components/schemas/logincustomer'
+  # CUSTOMER PROFILE
+  /customer/profile:
+    get:
+      responses: 
+        '200':
+          headers: 
+            Content-Type:
+              description: optional
+              content:
+                application/json:
+                  schema:
+                    type: string
+            Authorization:
+              description: put token to access all route
+              content:
+                access_token:
+                  schema:
+                    type: string
+          description: Data customer by id / profile
+          content:
+            application/json:
+              example:
+                {
+                  "status": 201,
+                  "message": "Successfully get profile customer",
+                  "data": {
+                    id: string,
+                    user_name: string,
+                    email: string,
+                    password: string
+                  },
+                }
+ # CUSTOMER CART
+  /customer/cart:
+    get:
+      responses: 
+        '200':
+          headers: 
+            Content-Type:
+              description: optional
+              content:
+                application/json:
+                  schema:
+                    type: string
+            Authorization:
+              description: put token to access all route
+              content:
+                access_token:
+                  schema:
+                    type: string
+          description: Cart data by user_id
+          content:
+            application/json:
+              example:
+                {
+                  "status": 201,
+                  "message": "Successfully get cart by user",
+                  "data": {
+                    address: {
+                      user_name: string,
+                      recipient_name: string,
+                      address_type: string,
+                      address: string,
+                      city: string,
+                      postal_code: string
+                    },
+                    product_id: string,
+                    image: string,
+                    product_name: string,
+                    brand: string,
+                    price: integer,
+                    total_order: integer,
+                    delivery_cost: integer,
+                    total_cost: integer
+                  },
+                }
+  # LOGIN SELLER
   /login/seller:
     post:
       responses: 
@@ -121,6 +250,7 @@ paths:
           x-www-form-urlencoded:
             schema:
               $ref: "#/components/schemas/loginseller"
+  # NEW CUSTOMER ADDRESS
   /address/?userId=string:
     post:
       parameters:
@@ -154,6 +284,7 @@ paths:
           x-www-form-urlencoded:
             schema:
               $ref: "#/components/schemas/shippingaddress"
+  # UPDATE CUSTOMER ADDRESS
   /address/user/?userId=string:
     put:
       parameters:
@@ -163,9 +294,8 @@ paths:
             type: string
           required: true
           description: User id to update current address instead of new address
-          
       responses: 
-        '201':
+        '202':
           description: Shipping Address
           content:
             application/json:
