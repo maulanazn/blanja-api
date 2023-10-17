@@ -37,7 +37,7 @@ get:
               schema:
                 type: string
         Cookie:
-          description: Set other data like product id
+          description: Set other data like user id
           content:
             schema:
               example: USR_ID=integer; Path=/customer/profile;

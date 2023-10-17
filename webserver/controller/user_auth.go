@@ -10,23 +10,22 @@ import (
 
 func RegisterUser(writer http.ResponseWriter, req *http.Request, params httprouter.Params) {
 	var username, email, password string
-	if req.Method == "POST" {
-		req.ParseForm()
-		req.Header.Add("content-type", "application/x-www-form-urlencoded")
+	req.ParseForm()
+	req.Header.Add("content-type", "application/x-www-form-urlencoded")
 
-		username += req.PostForm.Get("username")
-		email += req.PostForm.Get("email")
-		password += req.PostForm.Get("password")
+	username += req.PostForm.Get("username")
+	email += req.PostForm.Get("email")
+	password += req.PostForm.Get("password")
 
-		if username == "" || email == "" || password == "" {
-			writer.WriteHeader(http.StatusBadRequest)
-			fmt.Fprint(writer, "Request is not valid")
-			return
-		}
-
-		writer.WriteHeader(http.StatusCreated)
-		fmt.Fprint(writer, "Success register as "+username+", Now login!")
+	if username == "" || email == "" || password == "" {
+		writer.WriteHeader(http.StatusBadRequest)
+		fmt.Fprint(writer, "Request is not valid")
+		return
 	}
+
+	writer.WriteHeader(http.StatusCreated)
+	fmt.Fprint(writer, "Success register as "+username+", Now login!")
+
 }
 
 func LoginUser(writer http.ResponseWriter, req *http.Request, params httprouter.Params) {

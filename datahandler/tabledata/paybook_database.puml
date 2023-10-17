@@ -4,6 +4,8 @@ entity UserSeller {
     customer_id integer <<PK>>
     user_name string
     email string
+    phone number
+    store_name string
     password string
     created_at timestamp
     updated_at timestamp
@@ -11,11 +13,13 @@ entity UserSeller {
 }
 
 entity UserCustomer {
-    seller_id integer <<PK>>
+    customer_id integer <<PK>>
+    user_image string
     user_name string
     email string
-    phone number
-    store_name string
+    phone integer
+    gender enum
+    date_of_birth timestamp
     password string
     created_at timestamp
     updated_at timestamp
