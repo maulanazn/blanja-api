@@ -1,0 +1,22 @@
+type: object
+properties:
+  address_type:
+    type: object
+    properties:
+      data:
+        type: object
+        properties:
+          home:
+            type: string
+          office:
+            type: string
+  recipient_name:
+    type: string
+  recipient_phone:
+    type: number
+  address:
+    type: string
+  postal_code:
+    type: string
+  city:
+    type: string

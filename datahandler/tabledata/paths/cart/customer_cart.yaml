@@ -1,0 +1,48 @@
+get:
+  responses: 
+    '200':
+      headers: 
+        Content-Type:
+          description: optional
+          content:
+            application/json:
+              schema:
+                type: string
+        Authorization:
+          description: put token to access all route
+          content:
+            access_token:
+              schema:
+                type: string
+        Cookie:
+          description: Set other data like product id
+          content:
+            schema:
+              example: PRC_ID=string; USR_ID=integer; PRC_B_ID=integer; Path=/customer/cart;
+      description: Cart data by user_id
+      content:
+        application/json:
+          example:
+            {
+              "status": 200,
+              "message": "Successfully get cart by user",
+              "data": {
+                customer_id: string,
+                address: {
+                  user_name: string,
+                  recipient_name: string,
+                  address_type: string,
+                  address: string,
+                  city: string,
+                  postal_code: string
+                },
+                product_id: string,
+                image: string,
+                product_name: string,
+                brand: string,
+                price: integer,
+                total_order: integer,
+                delivery_cost: integer,
+                total_cost: integer
+              },
+            }
