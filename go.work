@@ -1,10 +1,20 @@
 go 1.21.3
 
-use ./datahandler
-use ./datahandler/config
-use ./datahandler/builder
-use ./datahandler/entity
+use ./webserver/helper
+
 use ./webserver
+
 use ./webserver/controller
-use ./test
-use ./webserver/middleware
+
+use ./webserver/service
+
+use ./webserver/response
+use ./webserver/request
+
+use ./config
+use ./entity
+
+use (
+	.
+	./test
+)

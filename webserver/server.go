@@ -4,8 +4,6 @@ import (
 	"belanjabackend/webserver/controller"
 	"fmt"
 	"net/http"
-
-	"github.com/julienschmidt/httprouter"
 )
 
 type LogMiddleware struct {
@@ -18,26 +16,11 @@ func (logMiddleware *LogMiddleware) ServeHTTP(w http.ResponseWriter, req *http.R
 }
 
 func RunWeb() {
-	router := httprouter.New()
 
-	router.PanicHandler = func(w http.ResponseWriter, req *http.Request, i interface{}) {
-		fmt.Fprint(w, "Wala")
-	}
+	router := http.NewServeMux()
 
-	router.NotFound = http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-		fmt.Fprint(w, "Tidak ditemukan, silahkan cari yang lain")
-	})
-
-	router.MethodNotAllowed = http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-		fmt.Fprint(w, "Pakai http method yang lain, ini bukan untuk GET, coba pakai POST, PUT, atau DELETE, atau yang lain deh")
-	})
-
-	router.GET("/", controller.RootHandler)
-	router.POST("/register", controller.RegisterUser)
-	router.POST("/login", controller.LoginUser)
-	router.GET("/logout", controller.LogoutUser)
-	router.POST("/book", controller.InsertBook)
-	router.GET("/book/:id", controller.GetBookById)
+	router.HandleFunc("/", controller.RootHandler)
+	router.HandleFunc("/register", controller.RegisterCustomer)
 
 	logMiddleware := LogMiddleware{router}
 
