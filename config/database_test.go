@@ -2,35 +2,24 @@ package config
 
 import (
 	"belanjabackend/entity"
+	_ "embed"
 	"fmt"
+	"os"
 	"testing"
-
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
 )
 
 func TestGetConnection(t *testing.T) {
-	_, err := gorm.Open(postgres.New(postgres.Config{
-		DSN:                  "user=maulanazn password=t00r123 dbname=paybook port=5432 sslmode=disable TimeZone=Asia/Jakarta",
-		PreferSimpleProtocol: true,
-	}), &gorm.Config{})
-
-	if err != nil {
-		panic(err)
-	}
+	GetConnection()
 
 	fmt.Println("connected")
 }
 
 func TestCreateCustomerTable(t *testing.T) {
-	db, err := gorm.Open(postgres.New(postgres.Config{
-		DSN:                  "user=maulanazn password=t00r123 dbname=paybook port=5432 sslmode=disable TimeZone=Asia/Jakarta",
-		PreferSimpleProtocol: true,
-	}), &gorm.Config{})
+	GetConnection().AutoMigrate(entity.Customer{})
+}
 
-	if err != nil {
-		panic(err)
-	}
+func TestEmbedEnv(t *testing.T) {
+	file, _ := os.ReadFile("../.env")
 
-	db.Create(entity.Customer{})
+	fmt.Println(string(file[8:]))
 }

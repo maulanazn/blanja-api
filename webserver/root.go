@@ -16,11 +16,11 @@ func (logMiddleware *LogMiddleware) ServeHTTP(w http.ResponseWriter, req *http.R
 }
 
 func RunWeb() {
-
 	router := http.NewServeMux()
 
 	router.HandleFunc("/", controller.RootHandler)
 	router.HandleFunc("/register", controller.RegisterCustomer)
+	router.HandleFunc("/login", controller.LoginCustomer)
 
 	logMiddleware := LogMiddleware{router}
 
