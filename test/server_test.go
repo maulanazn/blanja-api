@@ -33,12 +33,12 @@ func TestGetPassword(t *testing.T) {
 	result, resultErr := repository.SelectEmailCustomers(context.Background(), "test11@mail.com")
 	helper.PanicIfError(resultErr)
 
-	fmt.Println(result["password"])
+	fmt.Println(result["password"].(string))
 }
 
 func TestGetPasswordPlain(t *testing.T) {
 	var data map[string]interface{}
 	config.GetConnection().Table("customers").Take(&data).Select("*").Where("email = @email", sql.Named("email", "test11@mail.com"))
 
-	fmt.Println(data)
+	fmt.Println(data["user_name"])
 }

@@ -1,6 +1,7 @@
-package config
+package test
 
 import (
+	"belanjabackend/config"
 	"belanjabackend/entity"
 	_ "embed"
 	"fmt"
@@ -9,13 +10,13 @@ import (
 )
 
 func TestGetConnection(t *testing.T) {
-	GetConnection()
+	config.GetConnection()
 
 	fmt.Println("connected")
 }
 
 func TestCreateCustomerTable(t *testing.T) {
-	GetConnection().AutoMigrate(entity.Customer{})
+	config.GetConnection().AutoMigrate(entity.Customer{})
 }
 
 func TestEmbedEnv(t *testing.T) {

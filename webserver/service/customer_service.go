@@ -21,7 +21,7 @@ func CreateCustomer(ctx context.Context, req request.RegisterRequest, writer htt
 	helper.PanicIfError(err)
 
 	customer := entity.Customer{
-		UserName: req.UserName,
+		Username: req.Username,
 		Email:    req.Email,
 		Password: string(hashedPassword),
 	}
@@ -35,7 +35,7 @@ func CreateCustomer(ctx context.Context, req request.RegisterRequest, writer htt
 	}
 
 	response := response.Data{
-		UserName: customer.UserName,
+		Username: customer.Username,
 		Email:    customer.Email,
 	}
 
@@ -64,7 +64,7 @@ func VerifyCustomer(ctx context.Context, req request.LoginRequest, writer http.R
 
 	var key []byte = []byte(email + string(file))
 	generateToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"username": customer.UserName,
+		"username": customer.Username,
 		"email":    customer.Email,
 		"exp":      time.Now().Add(time.Duration(time.Now().UTC().Day())),
 	})

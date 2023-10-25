@@ -1,7 +1,7 @@
 package request
 
 type RegisterRequest struct {
-	UserName string
+	Username string
 	Email    string
 	Password string
 }

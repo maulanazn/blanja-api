@@ -1,7 +1,7 @@
 package response
 
 type Data struct {
-	UserName string
+	Username string
 	Email    string
 }
 
