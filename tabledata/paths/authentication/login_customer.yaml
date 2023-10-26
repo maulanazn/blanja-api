@@ -14,6 +14,17 @@ components:
       - email
       - password
 post:
+  Authorization:
+    description: put token to access all route
+    content:
+      access_token:
+        schema:
+          type: string
+  Set-Cookie:
+    description: Set other data like user id
+    content:
+      schema:
+        example: USR_ID=integer; Path=/;
   responses: 
     '201':
       description: Login customer

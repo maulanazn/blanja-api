@@ -1,22 +1,28 @@
 package service
 
 import (
+	"belanjabackend/config"
 	"belanjabackend/entity"
 	"belanjabackend/repository"
 	"belanjabackend/webserver/helper"
 	"belanjabackend/webserver/request"
 	"belanjabackend/webserver/response"
 	"context"
+	"database/sql"
 	"fmt"
 	"net/http"
-	"os"
-	"time"
 
-	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )
 
 func CreateCustomer(ctx context.Context, req request.RegisterRequest, writer http.ResponseWriter) {
+	if err := req.Validate(); err != nil {
+		writer.WriteHeader(400)
+		fmt.Fprint(writer, err)
+
+		return
+	}
+
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), 10)
 	helper.PanicIfError(err)
 
@@ -44,38 +50,66 @@ func CreateCustomer(ctx context.Context, req request.RegisterRequest, writer htt
 	fmt.Fprint(writer, registerResponse)
 }
 
-func VerifyCustomer(ctx context.Context, req request.LoginRequest, writer http.ResponseWriter) {
+func VerifyCustomer(ctx context.Context, req request.LoginRequest, writer http.ResponseWriter, request *http.Request) {
+	var datamap map[string]interface{}
+	if err := req.Validate(); err != nil {
+		writer.WriteHeader(400)
+		fmt.Fprint(writer, err)
+
+		return
+	}
+
 	customer := entity.Customer{
 		Email:    req.Email,
 		Password: req.Password,
 	}
 
-	result, resultErr := repository.SelectEmailCustomers(ctx, &req.Email)
+	result, resultErr := repository.SelectEmailCustomers(ctx, string(req.Email))
 	helper.PanicIfError(resultErr)
 
-	password := result["password"].(string)
-	email := result["email"].(string)
-	file, _ := os.ReadFile("../../.env")
-
-	if err := bcrypt.CompareHashAndPassword([]byte(password), []byte(req.Password)); err != nil {
-		helper.BadStatusIfError(err, writer)
+	config.GetConnection().WithContext(context.Background()).Table("customers").Take(&datamap).Where("email = @email", sql.Named("email", req.Email)).Scan(&result)
+	if req.Email != result["email"].(string) {
+		writer.WriteHeader(http.StatusBadRequest)
+		fmt.Fprint(writer, "Wrong Email")
 		return
 	}
 
-	var key []byte = []byte(email + string(file))
-	generateToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"username": customer.Username,
-		"email":    customer.Email,
-		"exp":      time.Now().Add(time.Duration(time.Now().UTC().Day())),
-	})
-	token, err := generateToken.SignedString(key)
-	helper.PanicIfError(err)
-
-	response := response.Token{
-		Value: token,
+	if err := helper.ComparePasswords([]byte(result["password"].(string)), []byte(req.Password)); err != nil {
+		writer.WriteHeader(http.StatusUnauthorized)
+		fmt.Fprint(writer, "Wrong Password")
+		return
 	}
 
-	writer.WriteHeader(200)
-	loginResponse := helper.ToResponseToken(200, "Successfully Login", response)
+	var key []byte = []byte(result["email"].(string) + helper.ReadEnv("../../.env"))
+	token := helper.GenerateToken(customer, key)
+
+	response := response.Token{
+		Token: token,
+	}
+
+	username := http.Cookie{
+		Name:     "USR_ID",
+		Value:    result["username"].(string),
+		Path:     "/",
+		Secure:   true,
+		SameSite: http.SameSiteStrictMode,
+	}
+
+	usertoken := http.Cookie{
+		Name:     "TKN_ID",
+		Value:    response.Token,
+		Path:     "/",
+		Secure:   true,
+		SameSite: http.SameSiteStrictMode,
+	}
+
+	http.SetCookie(writer, &username)
+	http.SetCookie(writer, &usertoken)
+
+	loginResponse := helper.ToWebResponse(200, "Successfully Login")
 	fmt.Fprint(writer, loginResponse)
+}
+
+func EditCustomer(ctx context.Context, req request.EditCustomerRequest, writer http.ResponseWriter) {
+	fmt.Fprint(writer, "Edit Customer")
 }

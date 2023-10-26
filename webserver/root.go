@@ -2,6 +2,7 @@ package webserver
 
 import (
 	"belanjabackend/webserver/controller"
+	"belanjabackend/webserver/middleware"
 	"fmt"
 	"net/http"
 )
@@ -21,10 +22,9 @@ func RunWeb() {
 	router.HandleFunc("/", controller.RootHandler)
 	router.HandleFunc("/register", controller.RegisterCustomer)
 	router.HandleFunc("/login", controller.LoginCustomer)
+	router.Handle("/customer", middleware.NewEntranceToken(controller.EditCustomer))
 
-	logMiddleware := LogMiddleware{router}
-
-	err := http.ListenAndServe("localhost:3000", &logMiddleware)
+	err := http.ListenAndServe("localhost:3000", router)
 	if err != nil {
 		panic(err)
 	}

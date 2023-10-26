@@ -1,7 +1,7 @@
 package response
 
 type Token struct {
-	Value string
+	Token string
 }
 
 type LoginResponse struct {

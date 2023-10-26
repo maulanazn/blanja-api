@@ -2,7 +2,24 @@ POST http://localhost:3000/register HTTP/2.0
 Content-Type: application/json
 
 {
-    "username": "MaulanaZN",
-    "email": "maulana@mail.com",
+    "username": "test123",
+    "email": "maulanazn19@mail.com",
+    "password": "maulanazn123@"
+}
+
+###
+
+POST http://localhost:3000/login HTTP/2.0
+Content-Type: application/json
+
+{
+    "email": "maulanazn19@mail.com",
     "password": "maulanazn123"
 }
+
+###
+
+GET http://localhost:3000/customer HTTP/2.0
+Content-Type: application/json
+Cookie: USR_ID=test; Path=/; Secure; SameSite=Strict
+Cookie: TKN_ID=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1hdWxhbmF6bjE5QG1haWwuY29tIiwiZXhwIjoiMjAyMy0xMC0yNlQxODoyNDozMS42NjY4MzkzMTErMDc6MDAiLCJ1c2VybmFtZSI6IiJ9.lFTTHQIjg_AOPChkq0W8O7kmScPSXzeM9WJv2oRhLls; Path=/; Secure; SameSite=Strict

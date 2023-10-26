@@ -56,13 +56,16 @@ components:
           type: string
         quantity:
           type: integer
-paths:  
+paths:
   /home:
     description: Home page / all products
     $ref: "paths/homepage.yaml"
   /register/customer:
-    description: Login as customers
+    description: Register as customers
     $ref: "paths/authentication/register_customer.yaml"
+  /login/customer:
+    description: Login as customers
+    $ref: "paths/authentication/login_customer.yaml"
   /register/seller:
     description: Login as seller
     $ref: "paths/authentication/register_seller.yaml"

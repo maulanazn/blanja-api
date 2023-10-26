@@ -12,6 +12,7 @@ use ./webserver/response
 use ./webserver/request
 
 use ./config
+use ./webserver/middleware
 use ./entity
 
 use (

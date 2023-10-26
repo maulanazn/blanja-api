@@ -3,22 +3,20 @@ components:
     profilecustomer:
       type: object
       properties:
-        user_image:
+        userimage:
           type: string
-        user_name:
-          type: string
-        email:
+        username:
           type: string
         phone:
           type: string
         gender:
           type: object
           properties:
-            laki-laki:  
+            male:  
               type: string
-            perempuan:
+            female:
               type: string
-        date_of_birth:
+        dateofbirth:
           type: date
 get:
   responses: 
@@ -50,12 +48,12 @@ get:
               "message": "Successfully get profile customer",
               "data": {
                 customer_id: string,    
-                user_image: string,
-                user_name: string,
+                userimage: string,
+                username: string,
                 email: string,
                 phone: integer,
-                gender: ['laki-laki', 'perempuan'],
-                date_of_birth: date
+                gender: ['male', 'female'],
+                dateofbirth: date
               },
             }
 post:
@@ -84,44 +82,10 @@ post:
           description: Set other data like product id
           content:
             schema:
-              example: USR_ID=integer; Path=/customer/profile;
+              example: USR_ID=integer; Path=/;
       content:
         application/json:
           response:
-            {
-              "status": 200,
-              "message": "Successfully post profile customer"
-            }
-put:
-  requestBody:
-    description: Put data that is exist
-    content:
-      x-www-form-urlencoded:
-        schema:
-          $ref: "#/components/schemas/profilecustomer"
-  responses: 
-    '201':
-      headers: 
-        Content-Type:
-          description: optional
-          content:
-            application/json:
-              schema:
-                type: string
-        Authorization:
-          description: put token to access all route
-          content:
-            access_token:
-              schema:
-                type: string
-        Cookie:
-          description: Set other data like user id
-          content:
-            schema:
-              example: USR_ID=integer; Path=/customer/profile;
-      content:
-        application/json:
-          example:
             {
               "status": 200,
               "message": "Successfully update profile customer"

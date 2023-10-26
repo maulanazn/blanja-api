@@ -3,9 +3,9 @@ package test
 import (
 	"belanjabackend/config"
 	"belanjabackend/entity"
+	"belanjabackend/webserver/helper"
 	_ "embed"
 	"fmt"
-	"os"
 	"testing"
 )
 
@@ -20,7 +20,5 @@ func TestCreateCustomerTable(t *testing.T) {
 }
 
 func TestEmbedEnv(t *testing.T) {
-	file, _ := os.ReadFile("../.env")
-
-	fmt.Println(string(file[8:]))
+	fmt.Println(helper.ReadEnv("../.env"))
 }

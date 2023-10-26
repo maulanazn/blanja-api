@@ -30,9 +30,23 @@ func LoginCustomer(writer http.ResponseWriter, req *http.Request) {
 		err := decoder.Decode(&loginRequest)
 		helper.PanicIfError(err)
 
-		service.VerifyCustomer(req.Context(), loginRequest, writer)
+		service.VerifyCustomer(req.Context(), loginRequest, writer, req)
 		return
 	}
 
 	fmt.Fprint(writer, "Get is not available")
+}
+
+func EditCustomer(writer http.ResponseWriter, req *http.Request) {
+	if req.Method == http.MethodPost {
+		decoder := json.NewDecoder(req.Body)
+		editCustomerRequest := request.EditCustomerRequest{}
+		err := decoder.Decode(&editCustomerRequest)
+		helper.PanicIfError(err)
+
+		service.EditCustomer(req.Context(), editCustomerRequest, writer)
+		return
+	}
+
+	fmt.Fprint(writer, "Data customer by id soon")
 }

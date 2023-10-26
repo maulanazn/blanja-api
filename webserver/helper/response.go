@@ -5,12 +5,12 @@ import (
 	"encoding/json"
 )
 
-func ToWebResponse(status int, message string) string {
+func ToWebResponse(status int, message interface{}) interface{} {
 	value, err := json.MarshalIndent(&response.WebResponse{
 		Status:  status,
-		Message: string(message),
+		Message: message.(string),
 	}, "", "")
-	PanicIfError(err)
+	FatalIfError(err)
 	return string(value)
 }
 

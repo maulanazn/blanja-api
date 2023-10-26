@@ -22,7 +22,7 @@ func SelectEmailCustomers(ctx context.Context, data interface{}) (map[string]int
 	var result map[string]interface{}
 
 	config.GetConnection().WithContext(ctx).Begin()
-	if err := config.GetConnection().WithContext(ctx).Table("customers").Take(&result).Where("email = @email", sql.Named("email", data.(*string))).Error; err != nil {
+	if err := config.GetConnection().WithContext(ctx).Table("customers").Take(&result).Where("email = @email", sql.Named("email", data.(string))).Error; err != nil {
 		config.GetConnection().WithContext(ctx).Rollback()
 		return nil, errors.New("Duplicate")
 	}
