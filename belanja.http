@@ -21,5 +21,5 @@ Content-Type: application/json
 
 GET http://localhost:3000/customer HTTP/2.0
 Content-Type: application/json
-Cookie: USR_ID=test; Path=/; Secure; SameSite=Strict
-Cookie: TKN_ID=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1hdWxhbmF6bjE5QG1haWwuY29tIiwiZXhwIjoiMjAyMy0xMC0yNlQxODoyNDozMS42NjY4MzkzMTErMDc6MDAiLCJ1c2VybmFtZSI6IiJ9.lFTTHQIjg_AOPChkq0W8O7kmScPSXzeM9WJv2oRhLls; Path=/; Secure; SameSite=Strict
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1hdWxhbmF6bjE5QG1haWwuY29tIiwiZXhwIjoiMjAyMy0xMC0yNlQyMTo0ODo1MC45ODc2MjEzNzMrMDc6MDAiLCJ1c2VybmFtZSI6IiJ9.pYwNsO9IJuoM2b2g2q4Z7O-QDzZ5P9zJvnPQzgDUsGI
+Cookie: USR_ID=1; Path=/; Secure; SameSite=Strict

@@ -14,16 +14,15 @@ type MakesureToken struct {
 
 func (authenticate *MakesureToken) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	_, err := r.Cookie("USR_ID")
-	_, tokenerr := r.Cookie("TKN_ID")
+	authorization := r.Header.Get("Authorization")
 	if err != nil {
 		log.Println(err)
-		fmt.Fprint(w, "Need Cookie")
+		fmt.Fprint(w, "Please login correctly")
 		return
 	}
-
-	if tokenerr != nil {
+	if authorization == "" {
 		log.Println(err)
-		fmt.Fprint(w, "Need Cookie")
+		fmt.Fprint(w, "Need Authorization")
 		return
 	}
 

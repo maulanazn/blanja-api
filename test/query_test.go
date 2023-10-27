@@ -2,35 +2,18 @@ package test
 
 import (
 	"belanjabackend/config"
+	"belanjabackend/entity"
 	"belanjabackend/repository"
-	"belanjabackend/webserver/controller"
 	"belanjabackend/webserver/helper"
 	"belanjabackend/webserver/request"
 	"context"
 	"database/sql"
 	"errors"
 	"fmt"
-	"io"
 	"log"
-	"net/http/httptest"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
+	"time"
 )
-
-func TestRootFailed(t *testing.T) {
-	request := httptest.NewRequest("GET", "http://localhost:3000/", nil)
-	recorder := httptest.NewRecorder()
-
-	controller.RootHandler(recorder, request)
-
-	response := recorder.Result()
-	body, _ := io.ReadAll(response.Body)
-
-	formatted := string(body)
-
-	assert.NotEqual(t, formatted, "Hello world")
-}
 
 func TestGetPassword(t *testing.T) {
 	customerRequest := request.LoginRequest{
@@ -82,4 +65,51 @@ func TestGetPasswordPlain(t *testing.T) {
 	config.GetConnection().Table("customers").Take(&data).Select("*").Where("email = @email", sql.Named("email", "test11@mail.com"))
 
 	fmt.Println(data["user_name"])
+}
+
+func TestUpdateAndGetCustomer(t *testing.T) {
+	config.GetConnection().WithContext(context.Background()).Table("customers").Where("id = @id", sql.Named("id", "1")).Updates(map[string]interface{}{
+		"userimage":  "https://instagram/akun123/image.png",
+		"updated_at": time.Now(),
+	})
+
+	var data map[string]interface{}
+	config.GetConnection().Table("customers").Take(&data).Where("email = @email", sql.Named("email", "maulanazn19@mail.com")).Scan(&data)
+
+	fmt.Println(data["username"])
+}
+
+func TestUpdateCustomer(t *testing.T) {
+	result, resultErr := repository.SelectCustomerById(context.Background(), 13)
+	helper.PanicIfError(resultErr)
+
+	if result != nil {
+		customer := &entity.Customer{
+			Userimage:   result["userimage"].(string),
+			Username:    result["username"].(string),
+			Phone:       result["phone"].(int64),
+			Gender:      result["gender"].(string),
+			Dateofbirth: result["dateofbirth"].(string),
+		}
+		repository.UpdateCustomer(context.Background(), *customer, 11)
+
+		log.Println(result["userimage"])
+
+		return
+	}
+
+	customer := &entity.Customer{
+		Userimage:   "https://image.com",
+		Username:    "fatih",
+		Phone:       2932992,
+		Gender:      "male",
+		Dateofbirth: "19-10-2004",
+	}
+
+	repository.UpdateCustomer(context.Background(), *customer, 11)
+
+	var data map[string]interface{}
+	config.GetConnection().Table("customers").Take(&data).Where("email = @email", sql.Named("email", "maulanazn19@mail.com")).Scan(&data)
+
+	log.Println(result["userimage"])
 }

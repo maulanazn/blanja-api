@@ -38,13 +38,8 @@ func LoginCustomer(writer http.ResponseWriter, req *http.Request) {
 }
 
 func EditCustomer(writer http.ResponseWriter, req *http.Request) {
-	if req.Method == http.MethodPost {
-		decoder := json.NewDecoder(req.Body)
-		editCustomerRequest := request.EditCustomerRequest{}
-		err := decoder.Decode(&editCustomerRequest)
-		helper.PanicIfError(err)
-
-		service.EditCustomer(req.Context(), editCustomerRequest, writer)
+	if req.Method == http.MethodPut {
+		service.EditCustomer(req.Context(), writer, req)
 		return
 	}
 

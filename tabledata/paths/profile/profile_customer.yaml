@@ -78,7 +78,7 @@ post:
             access_token:
               schema:
                 type: string
-        Set-Cookie:
+        Cookie:
           description: Set other data like product id
           content:
             schema:
