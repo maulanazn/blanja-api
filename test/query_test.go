@@ -8,12 +8,23 @@ import (
 	"belanjabackend/webserver/request"
 	"context"
 	"database/sql"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
 	"testing"
 	"time"
 )
+
+func TestCreateTableCustomer(t *testing.T) {
+	err := config.GetConnection().AutoMigrate(entity.Customer{})
+	helper.PanicIfError(err)
+}
+
+func TestCreateTableAddress(t *testing.T) {
+	err := config.GetConnection().AutoMigrate(entity.Address{})
+	helper.PanicIfError(err)
+}
 
 func TestGetPassword(t *testing.T) {
 	customerRequest := request.LoginRequest{
@@ -80,7 +91,7 @@ func TestUpdateAndGetCustomer(t *testing.T) {
 }
 
 func TestUpdateCustomer(t *testing.T) {
-	result, resultErr := repository.SelectCustomerById(context.Background(), 13)
+	result, resultErr := repository.SelectCustomerById(context.Background(), "0151cf30fbd5456aa30a3e5af3ccba18")
 	helper.PanicIfError(resultErr)
 
 	if result != nil {
@@ -91,7 +102,7 @@ func TestUpdateCustomer(t *testing.T) {
 			Gender:      result["gender"].(string),
 			Dateofbirth: result["dateofbirth"].(string),
 		}
-		repository.UpdateCustomer(context.Background(), *customer, 11)
+		repository.UpdateCustomer(context.Background(), *customer, "0151cf30fbd5456aa30a3e5af3ccba18")
 
 		log.Println(result["userimage"])
 
@@ -106,10 +117,42 @@ func TestUpdateCustomer(t *testing.T) {
 		Dateofbirth: "19-10-2004",
 	}
 
-	repository.UpdateCustomer(context.Background(), *customer, 11)
+	repository.UpdateCustomer(context.Background(), *customer, "0151cf30fbd5456aa30a3e5af3ccba18")
 
 	var data map[string]interface{}
 	config.GetConnection().Table("customers").Take(&data).Where("email = @email", sql.Named("email", "maulanazn19@mail.com")).Scan(&data)
 
 	log.Println(result["userimage"])
+}
+
+func TestGetAddressByUser(t *testing.T) {
+	var result []entity.Address
+
+	result, err := repository.AddressByUser(context.Background(), "0151cf30fbd5456aa30a3e5af3ccba18")
+	helper.PanicIfError(err)
+
+	for _, data := range result {
+		jsonresult, err := json.MarshalIndent(&data, "", "")
+		helper.PanicIfError(err)
+		fmt.Println(string(jsonresult))
+	}
+}
+
+func TestGetAddressById(t *testing.T) {
+	var result entity.Address
+
+	result, resulterr := repository.AddressById(context.Background(), "51ac602e02534e6a813b96c509b9b429")
+	helper.PanicIfError(resulterr)
+
+	jsonresult, err := json.MarshalIndent(&result, "", "")
+	helper.PanicIfError(err)
+	fmt.Println(string(jsonresult))
+}
+
+func TestUpdateAddress(t *testing.T) {
+	var result entity.Address
+
+	repository.UpdateAddress(context.Background(), result, "51ac602e02534e6a813b96c509b9b429")
+
+	fmt.Println(result)
 }

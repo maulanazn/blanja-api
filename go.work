@@ -1,21 +1,17 @@
-go 1.21.3
-
-use ./webserver/helper
-
-use ./webserver
-
-use ./webserver/controller
-use ./webserver/service
-
-use ./repository
-use ./webserver/response
-use ./webserver/request
-
-use ./config
-use ./webserver/middleware
-use ./entity
-
 use (
-	.
-	./test
+./config
+./entity
+./repository
+./test
+
+.
+./webserver
+./webserver/controller
+./webserver/helper
+./webserver/middleware
+./webserver/request
+./webserver/response
+./webserver/service
 )
+
+go 1.21.3

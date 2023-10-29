@@ -13,10 +13,9 @@ import (
 	"net/http"
 	"os"
 	"regexp"
-	"strconv"
 	"time"
 
-	"github.com/neox5/go-formdata"
+	formdata "github.com/neox5/go-formdata"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -32,6 +31,7 @@ func CreateCustomer(ctx context.Context, req request.RegisterRequest, writer htt
 	helper.PanicIfError(err)
 
 	customer := entity.Customer{
+		Id:       helper.GenUUID(),
 		Username: req.Username,
 		Email:    req.Email,
 		Password: string(hashedPassword),
@@ -94,7 +94,7 @@ func VerifyCustomer(ctx context.Context, req request.LoginRequest, writer http.R
 
 	username := http.Cookie{
 		Name:     "USR_ID",
-		Value:    strconv.FormatInt(result["id"].(int64), 8),
+		Value:    string(result["id"].([]uint8)),
 		Path:     "/",
 		Secure:   true,
 		SameSite: http.SameSiteStrictMode,
@@ -113,11 +113,6 @@ func EditCustomer(ctx context.Context, writer http.ResponseWriter, request *http
 	helper.PanicIfError(formerr)
 	id, cookieerr := request.Cookie("USR_ID")
 	helper.PanicIfError(cookieerr)
-	formatid, formatIdErr := helper.ConvertStrInt64(id.Value, 10, 64)
-	if formatIdErr != nil {
-		writer.WriteHeader(500)
-		return
-	}
 
 	userdata.ValidateFile("userimage")
 	userdata.Validate("username")
@@ -131,24 +126,32 @@ func EditCustomer(ctx context.Context, writer http.ResponseWriter, request *http
 		return
 	}
 
+	result, resulterr := repository.SelectCustomerById(ctx, id.Value)
+	helper.PanicIfError(resulterr)
+
 	if userdata.GetFile("userimage") == nil {
-		customer := &entity.Customer{
+		customer := entity.Customer{
+			Userimage:   result["userimage"].(string),
 			Username:    userdata.Get("username").First(),
 			Phone:       formatPhone,
 			Gender:      userdata.Get("gender").First(),
 			Dateofbirth: userdata.Get("dateofbirth").First(),
 		}
 
-		_, err := customer.ValidateUpdate(formatid)
-		helper.PanicIfError(err)
+		customer.ValidateUpdate(id.Value)
 
-		if err := repository.UpdateCustomer(ctx, *customer, formatid); err != nil {
+		if err := repository.UpdateCustomer(ctx, customer, id.Value); err != nil {
 			writer.WriteHeader(403)
 			failedResponse := helper.ToWebResponse(403, "Duplicate or something, please repeat process")
 			fmt.Fprint(writer, failedResponse)
 
 			return
 		}
+
+		customerupdate := helper.ToWebResponse(200, "Successfully updated profile")
+		fmt.Fprint(writer, customerupdate)
+
+		return
 	} else {
 		customer := &entity.Customer{
 			Userimage:   userimage.First().Filename,
@@ -158,21 +161,44 @@ func EditCustomer(ctx context.Context, writer http.ResponseWriter, request *http
 			Dateofbirth: userdata.Get("dateofbirth").First(),
 		}
 
-		_, err := customer.ValidateUpdate(formatid)
-		helper.PanicIfError(err)
+		customer.ValidateUpdate(id.Value)
 
 		if folder := os.Mkdir("./uploads", 0755); folder != nil {
 			fbyteserr := os.WriteFile("uploads/bljn-"+time.Now().String()+".webp", []byte(userimage.First().Filename), 0755)
 			helper.PanicIfError(fbyteserr)
 		}
 
-		if err := repository.UpdateCustomer(ctx, *customer, formatid); err != nil {
+		if err := repository.UpdateCustomer(ctx, *customer, id.Value); err != nil {
 			writer.WriteHeader(403)
 			failedResponse := helper.ToWebResponse(403, "Duplicate or something, please repeat process")
 			fmt.Fprint(writer, failedResponse)
 
 			return
 		}
-	}
 
+		customerupdate := helper.ToWebResponse(200, "Successfully updated profile")
+		fmt.Fprint(writer, customerupdate)
+	}
+}
+
+func ProfileCustomer(ctx context.Context, writer http.ResponseWriter, request *http.Request) {
+	id, cookieerr := request.Cookie("USR_ID")
+	helper.PanicIfError(cookieerr)
+
+	result, resulterr := repository.SelectCustomerById(ctx, id.Value)
+	helper.PanicIfError(resulterr)
+
+	writer.WriteHeader(200)
+	profileresp := helper.ToProfileCustomer(200, "Successfully get customer profile", response.ProfileCustomer{
+		Status:  200,
+		Message: "Successfully get customer profile",
+		Data: response.ProfileCustomerData{
+			Userimage:   result["userimage"].(string),
+			Username:    result["username"].(string),
+			Phone:       result["phone"].(int64),
+			Gender:      result["gender"].(string),
+			Dateofbirth: result["dateofbirth"].(string),
+		},
+	})
+	fmt.Fprint(writer, profileresp)
 }

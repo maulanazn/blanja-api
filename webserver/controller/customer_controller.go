@@ -38,10 +38,12 @@ func LoginCustomer(writer http.ResponseWriter, req *http.Request) {
 }
 
 func EditCustomer(writer http.ResponseWriter, req *http.Request) {
-	if req.Method == http.MethodPut {
+	switch req.Method {
+	case http.MethodPut:
 		service.EditCustomer(req.Context(), writer, req)
 		return
+	case http.MethodGet:
+		service.ProfileCustomer(req.Context(), writer, req)
+		return
 	}
-
-	fmt.Fprint(writer, "Data customer by id soon")
 }

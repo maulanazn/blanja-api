@@ -23,6 +23,7 @@ func RunWeb() {
 	router.HandleFunc("/register", controller.RegisterCustomer)
 	router.HandleFunc("/login", controller.LoginCustomer)
 	router.Handle("/customer", middleware.NewEntranceToken(controller.EditCustomer))
+	router.Handle("/address", middleware.NewEntranceToken(controller.AddOrEditAddress))
 
 	err := http.ListenAndServe("localhost:3000", router)
 	if err != nil {

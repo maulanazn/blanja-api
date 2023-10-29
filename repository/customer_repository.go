@@ -2,7 +2,7 @@ package repository
 
 import (
 	"belanjabackend/config"
-	"belanjabackend/entity"
+	entity "belanjabackend/entity"
 	"context"
 	"database/sql"
 	"errors"
@@ -20,7 +20,7 @@ func CreateCustomer(ctx context.Context, data interface{}) error {
 	return nil
 }
 
-func UpdateCustomer(ctx context.Context, data entity.Customer, id int64) error {
+func UpdateCustomer(ctx context.Context, data entity.Customer, id string) error {
 	config.GetConnection().WithContext(ctx).Begin()
 	if err := config.GetConnection().WithContext(context.Background()).Table("customers").Where("id = @id", sql.Named("id", id)).Updates(map[string]interface{}{
 		"userimage":   data.Userimage,
@@ -51,11 +51,11 @@ func SelectEmailCustomers(ctx context.Context, data interface{}) (map[string]int
 	return result, nil
 }
 
-func SelectCustomerById(ctx context.Context, id int64) (map[string]interface{}, error) {
+func SelectCustomerById(ctx context.Context, id string) (map[string]interface{}, error) {
 	var result map[string]interface{}
 
 	config.GetConnection().WithContext(ctx).Begin()
-	if err := config.GetConnection().WithContext(ctx).Table("customers").Take(&result).Where("id = @id", sql.Named("id", 13)).Error; err != nil {
+	if err := config.GetConnection().WithContext(ctx).Table("customers").Take(&result).Where("id = @id", sql.Named("id", id)).Error; err != nil {
 		config.GetConnection().WithContext(ctx).Rollback()
 		return nil, errors.New("Duplicate")
 	}

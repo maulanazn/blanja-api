@@ -7,7 +7,7 @@ import (
 
 func GetConnection() *gorm.DB {
 	db, err := gorm.Open(postgres.New(postgres.Config{
-		DSN:                  "user=maulanazn password=t00r123 dbname=paybook port=5432 sslmode=disable TimeZone=Asia/Jakarta",
+		DSN:                  "host=localhost user=maulanazn password=maulanazn123 dbname=paybook port=5432 sslmode=disable TimeZone=Asia/Jakarta",
 		PreferSimpleProtocol: true,
 	}), &gorm.Config{})
 
