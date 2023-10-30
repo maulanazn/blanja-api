@@ -2,27 +2,28 @@ POST http://localhost:3000/register HTTP/2.0
 Content-Type: application/json
 
 {
-    "username": "maulanazn",
-    "email": "maulanazn19@mail.com",
-    "password": "maulanazn123"
+    "username": "fatihk",
+    "email": "fatih553@mail.com",
+    "password": "fatih553"
 }
 
 ###
+
 
 POST http://localhost:3000/login HTTP/2.0
 Content-Type: application/json
 
 {
-    "email": "maulanazn19@mail.com",
-    "password": "maulanazn123"
+    "email": "fatih553@mail.com",
+    "password": "fatih553"
 }
 
 ###
 
 GET http://localhost:3000/customer HTTP/2.0
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1hdWxhbmF6bjE5QG1haWwuY29tIiwiZXhwIjoiMjAyMy0xMC0yNlQyMTo0ODo1MC45ODc2MjEzNzMrMDc6MDAiLCJ1c2VybmFtZSI6IiJ9.pYwNsO9IJuoM2b2g2q4Z7O-QDzZ5P9zJvnPQzgDUsGI
-Cookie: USR_ID=0151cf30fbd5456aa30a3e5af3ccba18; Path=/; Secure; SameSite=Strict
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImZhdGloNTUzQG1haWwuY29tIiwiZXhwIjoiMjAyMy0xMC0zMFQxNzoxMDoyOS4zMTEzMjgyODIrMDc6MDAiLCJ1c2VybmFtZSI6IiJ9.znlS1NSiYqEjAWaxqPOhCVmT2sWCaBkNe5Hv8z6ZVo8
+Cookie: USR_ID=3fa38705ba084a93b299f387eccf89ab; Path=/; Secure; SameSite=Strict
 
 ###
 
@@ -33,7 +34,7 @@ Cookie: USR_ID=0151cf30fbd5456aa30a3e5af3ccba18; Path=/; Secure; SameSite=Strict
 
 ###
 
-GET http://localhost:3000/address?id=51ac602e02534e6a813b96c509b9b429 HTTP/2.0
+GET http://localhost:3000/address?id=8d154de159194b3a803d5a4fc172ca93 HTTP/2.0
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1hdWxhbmF6bjE5QG1haWwuY29tIiwiZXhwIjoiMjAyMy0xMC0yNlQyMTo0ODo1MC45ODc2MjEzNzMrMDc6MDAiLCJ1c2VybmFtZSI6IiJ9.pYwNsO9IJuoM2b2g2q4Z7O-QDzZ5P9zJvnPQzgDUsGI
 Cookie: USR_ID=0151cf30fbd5456aa30a3e5af3ccba18; Path=/; Secure; SameSite=Strict
@@ -55,16 +56,16 @@ Cookie: USR_ID=0151cf30fbd5456aa30a3e5af3ccba18; Path=/; Secure; SameSite=Strict
 }
 
 ###
-PUT http://localhost:3000/address?id=51ac602e02534e6a813b96c509b9b429 HTTP/2.0
+PUT http://localhost:3000/address?id=8d154de159194b3a803d5a4fc172ca93 HTTP/2.0
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1hdWxhbmF6bjE5QG1haWwuY29tIiwiZXhwIjoiMjAyMy0xMC0yNlQyMTo0ODo1MC45ODc2MjEzNzMrMDc6MDAiLCJ1c2VybmFtZSI6IiJ9.pYwNsO9IJuoM2b2g2q4Z7O-QDzZ5P9zJvnPQzgDUsGI
-Cookie: USR_ID=0151cf30fbd5456aa30a3e5af3ccba18; Path=/; Secure; SameSite=Strict
+Cookie: USR_ID=0151cf30fbd5456aa30a3e5af3ccba18; Path=/; Secure=true; SameSite=Strict
 
 {
-    "address_type":    "office",
-    "recipient_name":  "maulanazn",
-    "recipient_phone":  1229832,
-    "address_name":    "tes",
-    "postal_code":     "91283A",
-    "city":           "KualaLumpur"
+    "addresstype":    "office",
+    "recipientname":  "fatihk",
+    "recipientphone": "1892382",
+    "addressname":    "pekalongan",
+    "postalcode":     "101283A",
+    "city":           "pekalongan"
 }

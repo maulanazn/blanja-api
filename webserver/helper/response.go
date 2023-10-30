@@ -44,6 +44,16 @@ func ToDetailAddress(status int, message string, data response.DetailAddress) st
 	value, err := json.MarshalIndent(&response.DetailAddress{
 		Status:  status,
 		Message: string(message),
+		Data:    data.Data,
+	}, "", "\t")
+	PanicIfError(err)
+	return string(value)
+}
+
+func ToDetailAddressById(status int, message string, data response.DetailAddressById) string {
+	value, err := json.MarshalIndent(&response.DetailAddressById{
+		Status:  status,
+		Message: string(message),
 		Data: response.DetailAddressData{
 			CustomerId:     data.Data.CustomerId,
 			AddressType:    data.Data.AddressType,

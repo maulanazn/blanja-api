@@ -51,13 +51,12 @@ func SelectEmailCustomers(ctx context.Context, data interface{}) (map[string]int
 	return result, nil
 }
 
-func SelectCustomerById(ctx context.Context, id string) (map[string]interface{}, error) {
-	var result map[string]interface{}
+func SelectCustomerById(ctx context.Context, id string) (entity.Customer, error) {
+	var result entity.Customer
 
 	config.GetConnection().WithContext(ctx).Begin()
-	if err := config.GetConnection().WithContext(ctx).Table("customers").Take(&result).Where("id = @id", sql.Named("id", id)).Error; err != nil {
+	if err := config.GetConnection().WithContext(ctx).First(&result, "id = @id", sql.Named("id", id)).Error; err != nil {
 		config.GetConnection().WithContext(ctx).Rollback()
-		return nil, errors.New("Duplicate")
 	}
 	config.GetConnection().WithContext(ctx).Commit()
 

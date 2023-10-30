@@ -9,7 +9,7 @@ type AddressCustomerRequest struct {
 	CustomerId     string
 	AddressType    string
 	RecipientName  string
-	RecipientPhone int
+	RecipientPhone string
 	AddressName    string
 	PostalCode     string
 	City           string

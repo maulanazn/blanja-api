@@ -1,10 +1,8 @@
 components:
   schemas:
-    registercustomer:
+    logincustomer:
       type: object
       properties:
-        username:
-          type: string
         email:
           type: string
         password:
@@ -15,22 +13,23 @@ components:
       - password
 post:
   responses: 
-    '201':
-      description: Register customer
+    '200':
+      description: Login customer
       content:
         application/json:
           example:
             {
-              "status": 201,
-              "message": "Successfully register as customer, enjoy your shopping",
+              "status": 200,
+              "message": "Successfully login as customer, enjoy your shopping",
               "data": {
-                user_name: string,
-                email: string,
-              }
+                customer_id: string,
+                user_name: string
+              },
+              access_token: string
             }
 
   requestBody:
       content:
         x-www-form-urlencoded:
           schema:
-            $ref: '#/components/schemas/registercustomer'
+            $ref: '#/components/schemas/logincustomer'

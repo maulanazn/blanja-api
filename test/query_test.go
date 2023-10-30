@@ -90,41 +90,6 @@ func TestUpdateAndGetCustomer(t *testing.T) {
 	fmt.Println(data["username"])
 }
 
-func TestUpdateCustomer(t *testing.T) {
-	result, resultErr := repository.SelectCustomerById(context.Background(), "0151cf30fbd5456aa30a3e5af3ccba18")
-	helper.PanicIfError(resultErr)
-
-	if result != nil {
-		customer := &entity.Customer{
-			Userimage:   result["userimage"].(string),
-			Username:    result["username"].(string),
-			Phone:       result["phone"].(string),
-			Gender:      result["gender"].(string),
-			Dateofbirth: result["dateofbirth"].(string),
-		}
-		repository.UpdateCustomer(context.Background(), *customer, "0151cf30fbd5456aa30a3e5af3ccba18")
-
-		log.Println(result["userimage"])
-
-		return
-	}
-
-	customer := &entity.Customer{
-		Userimage:   "https://image.com",
-		Username:    "fatih",
-		Phone:       "2932992",
-		Gender:      "male",
-		Dateofbirth: "19-10-2004",
-	}
-
-	repository.UpdateCustomer(context.Background(), *customer, "0151cf30fbd5456aa30a3e5af3ccba18")
-
-	var data map[string]interface{}
-	config.GetConnection().Table("customers").Take(&data).Where("email = @email", sql.Named("email", "maulanazn19@mail.com")).Scan(&data)
-
-	log.Println(result["userimage"])
-}
-
 func TestGetAddressByUser(t *testing.T) {
 	var result []entity.Address
 

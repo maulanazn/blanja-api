@@ -11,6 +11,7 @@ import (
 
 func RegisterCustomer(writer http.ResponseWriter, req *http.Request) {
 	if req.Method == http.MethodPost {
+		req.Header.Add("Content-Type", "application/json")
 		decoder := json.NewDecoder(req.Body)
 		registerRequest := request.RegisterRequest{}
 		err := decoder.Decode(&registerRequest)
@@ -25,6 +26,7 @@ func RegisterCustomer(writer http.ResponseWriter, req *http.Request) {
 
 func LoginCustomer(writer http.ResponseWriter, req *http.Request) {
 	if req.Method == http.MethodPost {
+		req.Header.Add("Content-Type", "application/json")
 		decoder := json.NewDecoder(req.Body)
 		loginRequest := request.LoginRequest{}
 		err := decoder.Decode(&loginRequest)
@@ -40,6 +42,7 @@ func LoginCustomer(writer http.ResponseWriter, req *http.Request) {
 func EditCustomer(writer http.ResponseWriter, req *http.Request) {
 	switch req.Method {
 	case http.MethodPut:
+		req.Header.Add("Content-Type", "multipart/form-data")
 		service.EditCustomer(req.Context(), writer, req)
 		return
 	case http.MethodGet:

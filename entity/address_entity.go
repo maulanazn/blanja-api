@@ -9,7 +9,7 @@ type Address struct {
 	CustomerId     string
 	AddressType    string
 	RecipientName  string
-	RecipientPhone int64
+	RecipientPhone string
 	AddressName    string
 	PostalCode     string
 	City           string

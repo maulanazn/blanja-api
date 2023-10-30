@@ -11,10 +11,9 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
-	"os"
 	"regexp"
-	"time"
 
+	"github.com/cloudinary/cloudinary-go/v2/api/uploader"
 	formdata "github.com/neox5/go-formdata"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -124,17 +123,15 @@ func EditCustomer(ctx context.Context, writer http.ResponseWriter, request *http
 	formatphone, formatphoneerr := helper.ConvertStrInt64(userdata.Get("phone").First(), 10, 64)
 	helper.PanicIfError(formatphoneerr)
 
+	responseimage, err := config.GetCloudinaryConfig().Upload.Upload(ctx, userimage.First().Filename, uploader.UploadParams{})
+	helper.PanicIfError(err)
+
 	customer := &entity.Customer{
-		Userimage:   userimage.First().Filename,
+		Userimage:   responseimage.SecureURL,
 		Username:    userdata.Get("username").First(),
 		Phone:       formatphone,
 		Gender:      userdata.Get("gender").First(),
 		Dateofbirth: userdata.Get("dateofbirth").First(),
-	}
-
-	if folder := os.Mkdir("./uploads", 0755); folder != nil {
-		fbyteserr := os.WriteFile("uploads/bljn-"+time.Now().String()+".webp", []byte(userimage.First().Filename), 0755)
-		helper.PanicIfError(fbyteserr)
 	}
 
 	if err := repository.UpdateCustomer(ctx, *customer, id.Value); err != nil {
@@ -161,11 +158,11 @@ func ProfileCustomer(ctx context.Context, writer http.ResponseWriter, request *h
 		Status:  200,
 		Message: "Successfully get customer profile",
 		Data: response.ProfileCustomerData{
-			Userimage:   result["userimage"].(string),
-			Username:    result["username"].(string),
-			Phone:       result["phone"].(int64),
-			Gender:      result["gender"].(string),
-			Dateofbirth: result["dateofbirth"].(string),
+			Userimage:   result.Userimage,
+			Username:    result.Username,
+			Phone:       result.Phone,
+			Gender:      result.Gender,
+			Dateofbirth: result.Dateofbirth,
 		},
 	})
 	fmt.Fprint(writer, profileresp)
