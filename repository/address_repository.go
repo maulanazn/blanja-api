@@ -2,7 +2,7 @@ package repository
 
 import (
 	"belanjabackend/config"
-	entity "belanjabackend/entity"
+	"belanjabackend/entity"
 	"context"
 	"database/sql"
 	"time"

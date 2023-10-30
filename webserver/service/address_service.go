@@ -20,12 +20,15 @@ func AddAddress(ctx context.Context, req request.AddressCustomerRequest, writer 
 	}
 	resultUserCookie, err := request.Cookie("USR_ID")
 	helper.PanicIfError(err)
+	formatRecipientPhone, formatRecipientPhoneErr := helper.ConvertStrInt64(req.RecipientPhone, 10, 64)
+	helper.PanicIfError(formatRecipientPhoneErr)
+
 	address := entity.Address{
 		Id:             helper.GenUUID(),
 		CustomerId:     resultUserCookie.Value,
 		AddressType:    req.AddressType,
 		RecipientName:  req.RecipientName,
-		RecipientPhone: req.RecipientPhone,
+		RecipientPhone: formatRecipientPhone,
 		AddressName:    req.AddressName,
 		PostalCode:     req.PostalCode,
 		City:           req.City,
@@ -55,62 +58,30 @@ func EditAddress(ctx context.Context, req request.AddressCustomerRequest, writer
 	id := request.URL.Query()
 	resultUserCookie, err := request.Cookie("USR_ID")
 	helper.PanicIfError(err)
-	resultaddressid, err := repository.AddressById(ctx, id.Get("id"))
-	helper.PanicIfError(err)
+	formatRecipientPhone, formatRecipientPhoneErr := helper.ConvertStrInt64(req.RecipientPhone, 10, 64)
+	helper.PanicIfError(formatRecipientPhoneErr)
 
-	if req.AddressType == "" || req.RecipientName == "" || req.RecipientPhone == 0 || req.AddressName == "" || req.PostalCode == "" || req.City == "" {
-		address := entity.Address{
-			Id:             resultaddressid.Id,
-			CustomerId:     resultaddressid.CustomerId,
-			AddressType:    resultaddressid.AddressType,
-			RecipientName:  resultaddressid.RecipientName,
-			RecipientPhone: resultaddressid.RecipientPhone,
-			AddressName:    resultaddressid.AddressName,
-			PostalCode:     resultaddressid.PostalCode,
-			City:           resultaddressid.City,
-		}
-
-		address.ValidateUpdate(id.Get("id"))
-
-		if err := repository.UpdateAddress(ctx, address, id.Get("id")); err != nil {
-			writer.WriteHeader(403)
-			failedResponse := helper.ToWebResponse(403, "Duplicate or something, please repeat process")
-			fmt.Fprint(writer, failedResponse)
-
-			return
-		}
-		writer.WriteHeader(200)
-		registerResponse := helper.ToWebResponse(200, "Successfully updating addresss")
-		fmt.Fprint(writer, registerResponse)
-
-		return
-	} else {
-		address := &entity.Address{
-			Id:             helper.GenUUID(),
-			CustomerId:     resultUserCookie.Value,
-			AddressType:    req.AddressType,
-			RecipientName:  req.RecipientName,
-			RecipientPhone: req.RecipientPhone,
-			AddressName:    req.AddressName,
-			PostalCode:     req.PostalCode,
-			City:           req.City,
-		}
-
-		address.ValidateUpdate(resultUserCookie.Value)
-
-		if err := repository.UpdateAddress(ctx, *address, id.Get("id")); err != nil {
-			writer.WriteHeader(403)
-			failedResponse := helper.ToWebResponse(403, "Duplicate or something, please repeat process")
-			fmt.Fprint(writer, failedResponse)
-
-			return
-		}
-
-		writer.WriteHeader(200)
-		registerResponse := helper.ToWebResponse(200, "Successfully updating addresss")
-		fmt.Fprint(writer, registerResponse)
+	address := &entity.Address{
+		CustomerId:     resultUserCookie.Value,
+		AddressType:    req.AddressType,
+		RecipientName:  req.RecipientName,
+		RecipientPhone: formatRecipientPhone,
+		AddressName:    req.AddressName,
+		PostalCode:     req.PostalCode,
+		City:           req.City,
 	}
 
+	if err := repository.UpdateAddress(ctx, *address, id.Get("id")); err != nil {
+		writer.WriteHeader(403)
+		failedResponse := helper.ToWebResponse(403, "Duplicate or something, please repeat process")
+		fmt.Fprint(writer, failedResponse)
+
+		return
+	}
+
+	writer.WriteHeader(200)
+	registerResponse := helper.ToWebResponse(200, "Successfully updating addresss")
+	fmt.Fprint(writer, registerResponse)
 }
 
 func AddressDetail(ctx context.Context, writer http.ResponseWriter, request *http.Request) {
@@ -133,7 +104,7 @@ func AddressDetail(ctx context.Context, writer http.ResponseWriter, request *htt
 				CustomerId:     result.CustomerId,
 				AddressType:    result.AddressType,
 				RecipientName:  result.RecipientName,
-				RecipientPhone: int64(result.RecipientPhone),
+				RecipientPhone: result.RecipientPhone,
 				AddressName:    result.AddressName,
 				PostalCode:     result.PostalCode,
 				City:           result.City,
@@ -154,7 +125,7 @@ func AddressDetail(ctx context.Context, writer http.ResponseWriter, request *htt
 				CustomerId:     data.CustomerId,
 				AddressType:    data.AddressType,
 				RecipientName:  data.RecipientName,
-				RecipientPhone: int64(data.RecipientPhone),
+				RecipientPhone: data.RecipientPhone,
 				AddressName:    data.AddressName,
 				PostalCode:     data.PostalCode,
 				City:           data.City,

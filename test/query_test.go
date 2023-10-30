@@ -98,7 +98,7 @@ func TestUpdateCustomer(t *testing.T) {
 		customer := &entity.Customer{
 			Userimage:   result["userimage"].(string),
 			Username:    result["username"].(string),
-			Phone:       result["phone"].(int64),
+			Phone:       result["phone"].(string),
 			Gender:      result["gender"].(string),
 			Dateofbirth: result["dateofbirth"].(string),
 		}
@@ -112,7 +112,7 @@ func TestUpdateCustomer(t *testing.T) {
 	customer := &entity.Customer{
 		Userimage:   "https://image.com",
 		Username:    "fatih",
-		Phone:       2932992,
+		Phone:       "2932992",
 		Gender:      "male",
 		Dateofbirth: "19-10-2004",
 	}

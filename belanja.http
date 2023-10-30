@@ -48,7 +48,7 @@ Cookie: USR_ID=0151cf30fbd5456aa30a3e5af3ccba18; Path=/; Secure; SameSite=Strict
 {
     "addresstype":    "home",
     "recipientname":  "maulanazn",
-    "recipientphone": 222930,
+    "recipientphone": 22293232,
     "addressname":    "lkajdslkfj",
     "postalcode":     "91283A",
     "city":           "surakarta"
@@ -61,9 +61,10 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1hdWxhb
 Cookie: USR_ID=0151cf30fbd5456aa30a3e5af3ccba18; Path=/; Secure; SameSite=Strict
 
 {
-    "addresstype":    "office",
-    "recipientname":  "ceo maulanazn",
-    "addressname":    "tes",
-    "postalcode":     "91283A",
+    "address_type":    "office",
+    "recipient_name":  "maulanazn",
+    "recipient_phone":  1229832,
+    "address_name":    "tes",
+    "postal_code":     "91283A",
     "city":           "KualaLumpur"
 }

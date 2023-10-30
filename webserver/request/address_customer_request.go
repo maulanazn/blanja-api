@@ -17,7 +17,6 @@ type AddressCustomerRequest struct {
 
 func (ecq AddressCustomerRequest) Validate() error {
 	return validation.ValidateStruct(&ecq,
-		validation.Field(&ecq.CustomerId, is.Alphanumeric),
 		validation.Field(&ecq.AddressType, validation.In("home", "office")),
 		validation.Field(&ecq.RecipientName, is.Alpha),
 		validation.Field(&ecq.RecipientPhone, is.Digit),

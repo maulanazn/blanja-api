@@ -7,7 +7,7 @@ import (
 )
 
 func GenUUID() string {
-	uuidWithHyphen := uuid.New()
-	uuid := strings.Replace(uuidWithHyphen.String(), "-", "", -1)
+	uuidWithHyphen := uuid.NewString()
+	uuid := strings.Replace(uuidWithHyphen, "-", "", -1)
 	return uuid
 }

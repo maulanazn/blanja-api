@@ -21,7 +21,7 @@ func AddOrEditAddress(writer http.ResponseWriter, req *http.Request) {
 		return
 	case http.MethodPut:
 		decoder := json.NewDecoder(req.Body)
-		addressRequest := request.AddressCustomerRequest{}
+		var addressRequest request.AddressCustomerRequest
 		err := decoder.Decode(&addressRequest)
 		helper.PanicIfError(err)
 
