@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-type Customer struct {
+type Users struct {
 	Id          string `gorm:"primaryKey"`
 	Address     []Address
 	Userimage   string    `json:"userimage"`

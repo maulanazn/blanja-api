@@ -28,7 +28,7 @@ func CreateCustomer(ctx context.Context, req request.RegisterRequest, writer htt
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), 10)
 	helper.PanicIfError(err)
 
-	customer := entity.Customer{
+	users := entity.Users{
 		Id:       helper.GenUUID(),
 		Username: req.Username,
 		Email:    req.Email,
@@ -36,7 +36,7 @@ func CreateCustomer(ctx context.Context, req request.RegisterRequest, writer htt
 		Roles:    req.Roles,
 	}
 
-	if err := repository.CreateCustomer(ctx, &customer); err != nil {
+	if err := repository.CreateCustomer(ctx, &users); err != nil {
 		writer.WriteHeader(403)
 		failedResponse := helper.ToWebResponse(403, "Duplicate or something, please repeat process")
 		fmt.Fprint(writer, failedResponse)
@@ -45,9 +45,9 @@ func CreateCustomer(ctx context.Context, req request.RegisterRequest, writer htt
 	}
 
 	response := response.Data{
-		Username: customer.Username,
-		Email:    customer.Email,
-		Roles:    customer.Roles,
+		Username: users.Username,
+		Email:    users.Email,
+		Roles:    users.Roles,
 	}
 
 	writer.WriteHeader(201)
@@ -64,7 +64,7 @@ func VerifyCustomer(ctx context.Context, req request.LoginRequest, writer http.R
 		return
 	}
 
-	customer := entity.Customer{
+	users := entity.Users{
 		Email:    req.Email,
 		Password: req.Password,
 	}
@@ -72,7 +72,7 @@ func VerifyCustomer(ctx context.Context, req request.LoginRequest, writer http.R
 	result, resultErr := repository.SelectEmailCustomers(ctx, string(req.Email))
 	helper.PanicIfError(resultErr)
 
-	config.GetConnection().WithContext(context.Background()).Table("customers").Take(&datamap).Where("email = @email", sql.Named("email", req.Email)).Scan(&result)
+	config.GetConnection().WithContext(context.Background()).Table("users").Take(&datamap).Where("email = @email", sql.Named("email", req.Email)).Scan(&result)
 	if req.Email != result["email"].(string) {
 		writer.WriteHeader(http.StatusBadRequest)
 		fmt.Fprint(writer, "Wrong Email")
@@ -86,7 +86,7 @@ func VerifyCustomer(ctx context.Context, req request.LoginRequest, writer http.R
 	}
 
 	var key []byte = []byte(result["email"].(string) + result["roles"].(string) + helper.ReadEnv("../../.env"))
-	token := helper.GenerateToken(customer, key)
+	token := helper.GenerateToken(users, key)
 
 	response := response.Token{
 		Token: token,
@@ -128,7 +128,7 @@ func EditCustomer(ctx context.Context, writer http.ResponseWriter, request *http
 	responseimage, err := helper.UploadCloudinary(userimage)
 	helper.PanicIfError(err)
 
-	customer := &entity.Customer{
+	users := &entity.Users{
 		Userimage:   responseimage.SecureURL,
 		Username:    userdata.Get("username"),
 		Roles:       userdata.Get("roles"),
@@ -137,7 +137,7 @@ func EditCustomer(ctx context.Context, writer http.ResponseWriter, request *http
 		Dateofbirth: userdata.Get("dateofbirth"),
 	}
 
-	if err := repository.UpdateCustomer(ctx, *customer, id.Value); err != nil {
+	if err := repository.UpdateCustomer(ctx, *users, id.Value); err != nil {
 		writer.WriteHeader(403)
 		failedResponse := helper.ToWebResponse(403, "Duplicate or something, please repeat process")
 		fmt.Fprint(writer, failedResponse)
@@ -165,8 +165,6 @@ func ProfileCustomer(ctx context.Context, writer http.ResponseWriter, request *h
 
 	writer.WriteHeader(200)
 	profileresp := helper.ToProfileCustomer(200, "Successfully get "+roles+" profile", response.ProfileCustomer{
-		Status:  200,
-		Message: "Successfully get " + roles + " profile",
 		Data: response.ProfileCustomerData{
 			Userimage:   result.Userimage,
 			Username:    result.Username,

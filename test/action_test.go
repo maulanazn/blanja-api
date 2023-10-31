@@ -70,14 +70,40 @@ func TestEditCustomer(t *testing.T) {
 	fmt.Println(string(body))
 }
 
+func TestGetUserById(t *testing.T) {
+	req := httptest.NewRequest("GET", "http://localhost:3000/customer", nil)
+	recorder := httptest.NewRecorder()
+
+	req.Header.Add("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1hdWxhbmF6bjE5QG1haWwuY29tIiwiZXhwIjoiMjAyMy0xMC0zMVQxNzoyMDoyNC41MTI0NDQwMTYrMDc6MDAiLCJ1c2VybmFtZSI6IiJ9.HYZsxmvGZZ0xioKbPh2xobomcPCoAR_v2yobs3cUR84")
+	cookie := http.Cookie{
+		Name:     "USR_ID",
+		Value:    "e2bde58d21a743e597e1ab520abf8fd5",
+		Path:     "/",
+		Secure:   true,
+		SameSite: http.SameSiteStrictMode,
+	}
+	req.AddCookie(&cookie)
+
+	req.Cookie("USR_ID")
+
+	controller.EditCustomer(recorder, req)
+
+	req.Header.Add("Content-Type", "application/json")
+
+	response := recorder.Result()
+	body, _ := io.ReadAll(response.Body)
+
+	fmt.Println(string(body))
+}
+
 func TestGetAddressUser(t *testing.T) {
 	req := httptest.NewRequest("GET", "http://localhost:3000/address", nil)
 	recorder := httptest.NewRecorder()
 
-	req.Header.Add("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1hdWxhbmF6bjE5QG1haWwuY29tIiwiZXhwIjoiMjAyMy0xMC0yNlQyMTo0ODo1MC45ODc2MjEzNzMrMDc6MDAiLCJ1c2VybmFtZSI6IiJ9.pYwNsO9IJuoM2b2g2q4Z7O-QDzZ5P9zJvnPQzgDUsGI")
+	req.Header.Add("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1hdWxhbmF6bjE5QG1haWwuY29tIiwiZXhwIjoiMjAyMy0xMC0zMVQxNzoyMDoyNC41MTI0NDQwMTYrMDc6MDAiLCJ1c2VybmFtZSI6IiJ9.HYZsxmvGZZ0xioKbPh2xobomcPCoAR_v2yobs3cUR84")
 	cookie := http.Cookie{
 		Name:     "USR_ID",
-		Value:    "0151cf30fbd5456aa30a3e5af3ccba18",
+		Value:    "e2bde58d21a743e597e1ab520abf8fd5",
 		Path:     "/",
 		Secure:   true,
 		SameSite: http.SameSiteStrictMode,

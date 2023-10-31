@@ -17,7 +17,7 @@ import (
 )
 
 func TestCreateTableCustomer(t *testing.T) {
-	err := config.GetConnection().AutoMigrate(entity.Customer{})
+	err := config.GetConnection().AutoMigrate(entity.Users{})
 	helper.PanicIfError(err)
 }
 
@@ -37,7 +37,7 @@ func TestGetPassword(t *testing.T) {
 	fmt.Println(result["password"].(string))
 }
 
-func TestGetUserById(t *testing.T) {
+func TestSelectUserById(t *testing.T) {
 	id := "3fa38705ba084a93b299f387eccf89ab"
 
 	result, err := repository.SelectCustomerById(context.Background(), id)
