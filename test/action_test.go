@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"strings"
 	"testing"
 )
@@ -133,7 +134,8 @@ func TestEditAddress(t *testing.T) {
 }
 
 func TestUploadCloudinary(t *testing.T) {
-	resultimage, err := helper.UploadCloudinary("/home/maulanazn/Pictures/Notification.png")
+	file, err := os.Open("/home/maulanazn/Pictures/Notification.png")
+	resultimage, err := helper.UploadCloudinary(file)
 	if err != nil {
 		panic(err)
 	}
