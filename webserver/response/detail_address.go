@@ -3,7 +3,6 @@ package response
 import "belanjabackend/entity"
 
 type DetailAddressData struct {
-	Id             string
 	CustomerId     string
 	AddressType    string
 	RecipientName  string
@@ -13,14 +12,14 @@ type DetailAddressData struct {
 	City           string
 }
 
-type DetailAddress struct {
-	Status  int
-	Message string
-	Data    []entity.Address
-}
-
 type DetailAddressById struct {
 	Status  int
 	Message string
 	Data    DetailAddressData
+}
+
+type DetailAddress struct {
+	Status  int
+	Message string
+	Data    []entity.Address
 }

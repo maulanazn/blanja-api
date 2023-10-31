@@ -85,7 +85,7 @@ func VerifyCustomer(ctx context.Context, req request.LoginRequest, writer http.R
 		return
 	}
 
-	var key []byte = []byte(result["email"].(string) + helper.ReadEnv("../../.env"))
+	var key []byte = []byte(result["email"].(string) + result["roles"].(string) + helper.ReadEnv("../../.env"))
 	token := helper.GenerateToken(customer, key)
 
 	response := response.Token{
@@ -150,20 +150,26 @@ func EditCustomer(ctx context.Context, writer http.ResponseWriter, request *http
 }
 
 func ProfileCustomer(ctx context.Context, writer http.ResponseWriter, request *http.Request) {
+	var roles string
 	id, cookieerr := request.Cookie("USR_ID")
 	helper.PanicIfError(cookieerr)
 
 	result, resulterr := repository.SelectCustomerById(ctx, id.Value)
 	helper.PanicIfError(resulterr)
 
+	if result.Roles == "superuser" {
+		roles = "superuser"
+	} else {
+		roles = "notsuper"
+	}
+
 	writer.WriteHeader(200)
-	profileresp := helper.ToProfileCustomer(200, "Successfully get customer profile", response.ProfileCustomer{
+	profileresp := helper.ToProfileCustomer(200, "Successfully get "+roles+" profile", response.ProfileCustomer{
 		Status:  200,
-		Message: "Successfully get customer profile",
+		Message: "Successfully get " + roles + " profile",
 		Data: response.ProfileCustomerData{
 			Userimage:   result.Userimage,
 			Username:    result.Username,
-			Roles:       result.Roles,
 			Phone:       result.Phone,
 			Gender:      result.Gender,
 			Dateofbirth: result.Dateofbirth,
