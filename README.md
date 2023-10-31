@@ -1,6 +1,6 @@
 <div align="center">
     <h1>User Boilerplate API</h1>
-    <image src="https://github.com/maulanazn/hirejob-be/blob/main/public/peworld.png" width="230">
+    <image src="public/userboilerplate.png" width="230">
     <p>User boilerplate API, is an API that used to make authentication more easier. You can connect this API with other API or you application</p>
 </div>
 
