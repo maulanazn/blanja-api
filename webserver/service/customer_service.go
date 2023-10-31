@@ -13,8 +13,7 @@ import (
 	"net/http"
 	"regexp"
 
-	"github.com/cloudinary/cloudinary-go/v2/api/uploader"
-	formdata "github.com/neox5/go-formdata"
+	"github.com/albrow/forms"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -108,30 +107,29 @@ func VerifyCustomer(ctx context.Context, req request.LoginRequest, writer http.R
 }
 
 func EditCustomer(ctx context.Context, writer http.ResponseWriter, request *http.Request) {
-	userdata, formerr := formdata.Parse(request)
+	userdata, formerr := forms.Parse(request)
 	helper.PanicIfError(formerr)
 	id, cookieerr := request.Cookie("USR_ID")
 	helper.PanicIfError(cookieerr)
 
-	userdata.ValidateFile("userimage")
-	userdata.Validate("username")
-	userdata.Validate("gender")
-	userdata.Validate("dateofbirth")
+	userdata.Validator().Require("username")
+	userdata.Validator().Require("gender")
+	userdata.Validator().Require("dateofbirth")
+	userdata.Validator().Match("phone", regexp.MustCompile("^[0-9]{3,40}$"))
+	userdata.Validator().AcceptFileExts("userimage", "jpg", "jpeg", "png", "gif")
 	userimage := userdata.GetFile("userimage")
-	userdata.Validate("phone").Match(regexp.MustCompile("^[0-9]{3,40}$"))
-
-	formatphone, formatphoneerr := helper.ConvertStrInt64(userdata.Get("phone").First(), 10, 64)
+	formatphone, formatphoneerr := helper.ConvertStrInt64(userdata.Get("phone"), 10, 64)
 	helper.PanicIfError(formatphoneerr)
 
-	responseimage, err := config.GetCloudinaryConfig().Upload.Upload(ctx, userimage.First().Filename, uploader.UploadParams{})
+	responseimage, err := helper.UploadCloudinary(userimage.Filename)
 	helper.PanicIfError(err)
 
 	customer := &entity.Customer{
 		Userimage:   responseimage.SecureURL,
-		Username:    userdata.Get("username").First(),
+		Username:    userdata.Get("username"),
 		Phone:       formatphone,
-		Gender:      userdata.Get("gender").First(),
-		Dateofbirth: userdata.Get("dateofbirth").First(),
+		Gender:      userdata.Get("gender"),
+		Dateofbirth: userdata.Get("dateofbirth"),
 	}
 
 	if err := repository.UpdateCustomer(ctx, *customer, id.Value); err != nil {

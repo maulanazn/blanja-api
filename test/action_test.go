@@ -1,13 +1,20 @@
 package test
 
 import (
+	"belanjabackend/config"
 	"belanjabackend/webserver/controller"
+	"belanjabackend/webserver/helper"
+	"bytes"
+	"context"
 	"fmt"
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"strings"
 	"testing"
+
+	"github.com/cloudinary/cloudinary-go/v2/api/uploader"
 )
 
 func TestRegister(t *testing.T) {
@@ -129,4 +136,18 @@ func TestEditAddress(t *testing.T) {
 	body, _ := io.ReadAll(response.Body)
 
 	fmt.Println(string(body))
+}
+
+func TestUploadCloudinary(t *testing.T) {
+	file := "tes.json"
+	osfile, osfileerr := os.Open(file)
+	helper.PanicIfError(osfileerr)
+
+	bytesNew := bytes.NewBuffer(nil)
+	io.Copy(bytesNew, osfile)
+
+	responseimage, err := config.GetCloudinaryConfig().Upload.Upload(context.Background(), bytesNew, uploader.UploadParams{Folder: "belanja"})
+	helper.PanicIfError(err)
+
+	fmt.Println(responseimage)
 }
