@@ -43,3 +43,6 @@
 
 ## Related Project
 * [`User Boilerplate API Documentation`](https://documenter.getpostman.com/view/28539346/2s9YXb9R9b)
+
+## notes
+- For the roles, choose between "notsuper" or "superuser"

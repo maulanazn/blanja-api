@@ -11,6 +11,7 @@ type RegisterRequest struct {
 	Username string
 	Email    string
 	Password string
+	Roles    string
 }
 
 func (rrq RegisterRequest) Validate() error {
@@ -18,5 +19,6 @@ func (rrq RegisterRequest) Validate() error {
 		validation.Field(&rrq.Username, validation.Required, validation.Match(regexp.MustCompile("^[a-z0-9]{5,50}$"))),
 		validation.Field(&rrq.Email, validation.Required, is.Email),
 		validation.Field(&rrq.Password, validation.Required, validation.Match(regexp.MustCompile("^[a-z0-9@,.!]{5,50}$"))),
+		validation.Field(&rrq.Roles, validation.Required, validation.In("notsuper", "superuser")),
 	)
 }

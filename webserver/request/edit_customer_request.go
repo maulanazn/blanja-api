@@ -11,6 +11,7 @@ import (
 type EditCustomerRequest struct {
 	Userimage   interface{}
 	Username    string
+	Roles       string
 	Phone       int
 	Gender      string
 	Dateofbirth string
@@ -20,6 +21,7 @@ func (ecq EditCustomerRequest) Validate() error {
 	return validation.ValidateStruct(&ecq,
 		validation.Field(&ecq.Userimage, is.Alphanumeric),
 		validation.Field(&ecq.Username, validation.Match(regexp.MustCompile("^[a-zA-Z0-9@,.!]{5,50}$"))),
+		validation.Field(&ecq.Roles, validation.In("notsuper", "superuser")),
 		validation.Field(&ecq.Phone, is.Digit),
 		validation.Field(&ecq.Gender, validation.In("male", "female")),
 		validation.Field(&ecq.Dateofbirth, validation.Date(time.DateOnly)),

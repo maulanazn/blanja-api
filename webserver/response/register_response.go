@@ -3,6 +3,7 @@ package response
 type Data struct {
 	Username string
 	Email    string
+	Roles    string
 }
 
 type RegisterResponse struct {

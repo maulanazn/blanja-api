@@ -37,6 +37,17 @@ func TestGetPassword(t *testing.T) {
 	fmt.Println(result["password"].(string))
 }
 
+func TestGetUserById(t *testing.T) {
+	id := "3fa38705ba084a93b299f387eccf89ab"
+
+	result, err := repository.SelectCustomerById(context.Background(), id)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(result)
+}
+
 func TestGetAndVerifyPassword(t *testing.T) {
 	customerRequest := request.LoginRequest{
 		Email:    "test11@mail.com",

@@ -33,6 +33,7 @@ func CreateCustomer(ctx context.Context, req request.RegisterRequest, writer htt
 		Username: req.Username,
 		Email:    req.Email,
 		Password: string(hashedPassword),
+		Roles:    req.Roles,
 	}
 
 	if err := repository.CreateCustomer(ctx, &customer); err != nil {
@@ -46,6 +47,7 @@ func CreateCustomer(ctx context.Context, req request.RegisterRequest, writer htt
 	response := response.Data{
 		Username: customer.Username,
 		Email:    customer.Email,
+		Roles:    customer.Roles,
 	}
 
 	writer.WriteHeader(201)
@@ -113,6 +115,7 @@ func EditCustomer(ctx context.Context, writer http.ResponseWriter, request *http
 	helper.PanicIfError(cookieerr)
 
 	userdata.Validator().Require("username")
+	userdata.Validator().Require("roles")
 	userdata.Validator().Require("gender")
 	userdata.Validator().Require("dateofbirth")
 	userdata.Validator().Match("phone", regexp.MustCompile("^[0-9]{3,40}$"))
@@ -128,6 +131,7 @@ func EditCustomer(ctx context.Context, writer http.ResponseWriter, request *http
 	customer := &entity.Customer{
 		Userimage:   responseimage.SecureURL,
 		Username:    userdata.Get("username"),
+		Roles:       userdata.Get("roles"),
 		Phone:       formatphone,
 		Gender:      userdata.Get("gender"),
 		Dateofbirth: userdata.Get("dateofbirth"),
@@ -159,6 +163,7 @@ func ProfileCustomer(ctx context.Context, writer http.ResponseWriter, request *h
 		Data: response.ProfileCustomerData{
 			Userimage:   result.Userimage,
 			Username:    result.Username,
+			Roles:       result.Roles,
 			Phone:       result.Phone,
 			Gender:      result.Gender,
 			Dateofbirth: result.Dateofbirth,

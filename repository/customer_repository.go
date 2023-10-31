@@ -25,6 +25,7 @@ func UpdateCustomer(ctx context.Context, data entity.Customer, id string) error 
 	if err := config.GetConnection().WithContext(context.Background()).Table("customers").Where("id = @id", sql.Named("id", id)).Updates(map[string]interface{}{
 		"userimage":   data.Userimage,
 		"username":    data.Username,
+		"roles":       data.Roles,
 		"phone":       data.Phone,
 		"gender":      data.Gender,
 		"dateofbirth": data.Dateofbirth,

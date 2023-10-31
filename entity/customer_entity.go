@@ -14,6 +14,7 @@ type Customer struct {
 	Gender      string    `json:"gender"`
 	Dateofbirth string    `json:"dateofbirth"`
 	Password    string    `json:"password"`
+	Roles       string    `json:"roles"`
 	CreatedAt   time.Time `gorm:"autoCreateTime"`
 	UpdatedAt   time.Time
 	DeletedAt   time.Time
