@@ -6,8 +6,9 @@ import (
 )
 
 func GetConnection() *gorm.DB {
+	dsn := "host=" + GetDBHost() + "user=" + GetDBUser() + "password=" + GetDBPassword() + "dbname=" + GetDBName() + "port=" + GetDBPort() + "sslmode=" + GetDBSSLMode() + "TimeZone=" + GetDBTimezone()
 	db, err := gorm.Open(postgres.New(postgres.Config{
-		DSN:                  "host=localhost user=maulanazn password=maulanazn123 dbname=paybook port=5432 sslmode=disable TimeZone=Asia/Jakarta",
+		DSN:                  dsn,
 		PreferSimpleProtocol: true,
 	}), &gorm.Config{})
 

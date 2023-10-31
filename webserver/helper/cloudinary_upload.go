@@ -17,7 +17,7 @@ func UploadCloudinary(file string) (*uploader.UploadResult, error) {
 	bytesNew := bytes.NewBuffer(nil)
 	io.Copy(bytesNew, osfile)
 
-	responseimage, err := config.GetCloudinaryConfig().Upload.Upload(context.Background(), bytesNew, uploader.UploadParams{Folder: "belanja"})
+	responseimage, err := config.GetCloudinaryConfig().Upload.Upload(context.Background(), bytesNew, uploader.UploadParams{Folder: config.GetCLDFolder()})
 	PanicIfError(err)
 
 	return responseimage, nil

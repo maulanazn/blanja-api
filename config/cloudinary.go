@@ -5,7 +5,10 @@ import (
 )
 
 func GetCloudinaryConfig() *cloudinary.Cloudinary {
-	cld, _ := cloudinary.NewFromParams("dra9sesmi", "318565578158456", "FKmFXz621H8AlXqgfaf9p55b-aQ")
+	cld, err := cloudinary.NewFromURL(GetCLDURL())
+	if err != nil {
+		panic(err)
+	}
 
 	return cld
 }
