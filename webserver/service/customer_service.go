@@ -117,11 +117,12 @@ func EditCustomer(ctx context.Context, writer http.ResponseWriter, request *http
 	userdata.Validator().Require("dateofbirth")
 	userdata.Validator().Match("phone", regexp.MustCompile("^[0-9]{3,40}$"))
 	userdata.Validator().AcceptFileExts("userimage", "jpg", "jpeg", "png", "gif")
-	userimage := userdata.GetFile("userimage")
+	userimage, _, err := request.FormFile("userimage")
+	helper.PanicIfError(err)
 	formatphone, formatphoneerr := helper.ConvertStrInt64(userdata.Get("phone"), 10, 64)
 	helper.PanicIfError(formatphoneerr)
 
-	responseimage, err := helper.UploadCloudinary(userimage.Filename)
+	responseimage, err := helper.UploadCloudinary(userimage)
 	helper.PanicIfError(err)
 
 	customer := &entity.Customer{

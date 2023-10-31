@@ -5,7 +5,8 @@ import (
 )
 
 func GetCloudinaryConfig() *cloudinary.Cloudinary {
-	cld, err := cloudinary.NewFromURL(GetCLDURL())
+	config := GetConfig()
+	cld, err := cloudinary.NewFromURL(config.GetString("CLOUDINARY_URL"))
 	if err != nil {
 		panic(err)
 	}

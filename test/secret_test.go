@@ -1,11 +1,13 @@
 package test
 
 import (
+	"belanjabackend/config"
 	"fmt"
 	"os"
 	"testing"
 
 	"github.com/joho/godotenv"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestDotenv(t *testing.T) {
@@ -17,4 +19,9 @@ func TestDotenv(t *testing.T) {
 	env := os.Getenv("CLD_URL")
 
 	fmt.Println(env)
+}
+
+func TestGetCLDURL(t *testing.T) {
+	config := config.GetConfig()
+	assert.Equal(t, "localhost", config.GetString("DB_HOST"))
 }
