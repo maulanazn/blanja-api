@@ -1,8 +1,8 @@
 package helper
 
 import (
-	"belanjabackend/entity"
 	"time"
+	"userboilerplate-api/entity"
 
 	"github.com/golang-jwt/jwt"
 )

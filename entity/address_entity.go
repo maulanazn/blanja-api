@@ -6,7 +6,7 @@ import (
 
 type Address struct {
 	Id             string `gorm:"primaryKey"`
-	CustomerId     string
+	UserId         string
 	AddressType    string
 	RecipientName  string
 	RecipientPhone string

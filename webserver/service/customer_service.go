@@ -1,17 +1,17 @@
 package service
 
 import (
-	"belanjabackend/config"
-	"belanjabackend/entity"
-	"belanjabackend/repository"
-	"belanjabackend/webserver/helper"
-	"belanjabackend/webserver/request"
-	"belanjabackend/webserver/response"
 	"context"
 	"database/sql"
 	"fmt"
 	"net/http"
 	"regexp"
+	"userboilerplate-api/config"
+	"userboilerplate-api/entity"
+	"userboilerplate-api/repository"
+	"userboilerplate-api/webserver/helper"
+	"userboilerplate-api/webserver/request"
+	"userboilerplate-api/webserver/response"
 
 	"github.com/albrow/forms"
 	"golang.org/x/crypto/bcrypt"

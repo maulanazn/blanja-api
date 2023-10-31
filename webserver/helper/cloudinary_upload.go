@@ -1,11 +1,11 @@
 package helper
 
 import (
-	"belanjabackend/config"
 	"context"
 	"fmt"
 	"mime/multipart"
 	"time"
+	"userboilerplate-api/config"
 
 	"github.com/cloudinary/cloudinary-go/v2/api/uploader"
 )

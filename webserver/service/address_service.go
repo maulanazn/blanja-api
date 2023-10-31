@@ -1,15 +1,15 @@
 package service
 
 import (
-	"belanjabackend/entity"
-	"belanjabackend/repository"
-	"belanjabackend/webserver/helper"
-	"belanjabackend/webserver/request"
-	"belanjabackend/webserver/response"
 	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"userboilerplate-api/entity"
+	"userboilerplate-api/repository"
+	"userboilerplate-api/webserver/helper"
+	"userboilerplate-api/webserver/request"
+	"userboilerplate-api/webserver/response"
 )
 
 func AddAddress(ctx context.Context, req request.AddressCustomerRequest, writer http.ResponseWriter, request *http.Request) {
@@ -24,7 +24,7 @@ func AddAddress(ctx context.Context, req request.AddressCustomerRequest, writer 
 
 	address := entity.Address{
 		Id:             helper.GenUUID(),
-		CustomerId:     resultUserCookie.Value,
+		UserId:         resultUserCookie.Value,
 		AddressType:    req.AddressType,
 		RecipientName:  req.RecipientName,
 		RecipientPhone: req.RecipientPhone,
@@ -59,7 +59,7 @@ func EditAddress(ctx context.Context, req request.AddressCustomerRequest, writer
 	helper.PanicIfError(err)
 
 	address := &entity.Address{
-		CustomerId:     resultUserCookie.Value,
+		UserId:         resultUserCookie.Value,
 		AddressType:    req.AddressType,
 		RecipientName:  req.RecipientName,
 		RecipientPhone: req.RecipientPhone,
@@ -99,7 +99,7 @@ func AddressDetail(ctx context.Context, writer http.ResponseWriter, request *htt
 			Status:  200,
 			Message: "Successfully get detail address",
 			Data: response.DetailAddressData{
-				CustomerId:     result.CustomerId,
+				CustomerId:     result.UserId,
 				AddressType:    result.AddressType,
 				RecipientName:  result.RecipientName,
 				RecipientPhone: result.RecipientPhone,

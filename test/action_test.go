@@ -1,8 +1,6 @@
 package test
 
 import (
-	"belanjabackend/webserver/controller"
-	"belanjabackend/webserver/helper"
 	"fmt"
 	"io"
 	"net/http"
@@ -10,6 +8,8 @@ import (
 	"os"
 	"strings"
 	"testing"
+	"userboilerplate-api/webserver/controller"
+	"userboilerplate-api/webserver/helper"
 )
 
 func TestRegister(t *testing.T) {

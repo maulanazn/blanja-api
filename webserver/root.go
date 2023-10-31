@@ -1,10 +1,10 @@
 package webserver
 
 import (
-	"belanjabackend/webserver/controller"
-	"belanjabackend/webserver/middleware"
 	"fmt"
 	"net/http"
+	"userboilerplate-api/webserver/controller"
+	"userboilerplate-api/webserver/middleware"
 )
 
 type LogMiddleware struct {

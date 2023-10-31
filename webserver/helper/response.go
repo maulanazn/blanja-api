@@ -1,8 +1,8 @@
 package helper
 
 import (
-	"belanjabackend/webserver/response"
 	"encoding/json"
+	"userboilerplate-api/webserver/response"
 )
 
 func ToWebResponse(status int, message interface{}) interface{} {

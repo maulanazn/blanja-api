@@ -1,10 +1,10 @@
 package test
 
 import (
-	"belanjabackend/webserver/helper"
 	"fmt"
 	"regexp"
 	"testing"
+	"userboilerplate-api/webserver/helper"
 )
 
 type RegisterRequest struct {

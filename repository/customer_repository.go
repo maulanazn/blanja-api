@@ -1,12 +1,12 @@
 package repository
 
 import (
-	"belanjabackend/config"
-	entity "belanjabackend/entity"
 	"context"
 	"database/sql"
 	"errors"
 	"time"
+	"userboilerplate-api/config"
+	entity "userboilerplate-api/entity"
 )
 
 func CreateCustomer(ctx context.Context, data interface{}) error {

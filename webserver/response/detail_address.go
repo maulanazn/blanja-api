@@ -1,6 +1,6 @@
 package response
 
-import "belanjabackend/entity"
+import "userboilerplate-api/entity"
 
 type DetailAddressData struct {
 	CustomerId     string

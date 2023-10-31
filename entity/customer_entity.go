@@ -5,8 +5,8 @@ import (
 )
 
 type Users struct {
-	Id          string `gorm:"primaryKey"`
-	Address     []Address
+	Id          string    `gorm:"primaryKey"`
+	Address     []Address `gorm:"foreignKey:user_id;references:id"`
 	Userimage   string    `json:"userimage"`
 	Username    string    `json:"username"`
 	Email       string    `gorm:"unique"`

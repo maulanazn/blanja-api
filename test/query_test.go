@@ -1,11 +1,6 @@
 package test
 
 import (
-	"belanjabackend/config"
-	"belanjabackend/entity"
-	"belanjabackend/repository"
-	"belanjabackend/webserver/helper"
-	"belanjabackend/webserver/request"
 	"context"
 	"database/sql"
 	"encoding/json"
@@ -14,6 +9,11 @@ import (
 	"log"
 	"testing"
 	"time"
+	"userboilerplate-api/config"
+	"userboilerplate-api/entity"
+	"userboilerplate-api/repository"
+	"userboilerplate-api/webserver/helper"
+	"userboilerplate-api/webserver/request"
 )
 
 func TestCreateTableCustomer(t *testing.T) {

@@ -1,11 +1,11 @@
 package repository
 
 import (
-	"belanjabackend/config"
-	"belanjabackend/entity"
 	"context"
 	"database/sql"
 	"time"
+	"userboilerplate-api/config"
+	"userboilerplate-api/entity"
 )
 
 func AddressById(ctx context.Context, id string) (entity.Address, error) {
@@ -44,7 +44,7 @@ func CreateAddress(ctx context.Context, data interface{}) error {
 
 func UpdateAddress(ctx context.Context, data entity.Address, id string) error {
 	config.GetConnection().WithContext(ctx).Begin()
-	if err := config.GetConnection().WithContext(ctx).Save(&entity.Address{Id: id, CustomerId: data.CustomerId, AddressType: data.AddressType, RecipientName: data.RecipientName, RecipientPhone: data.RecipientPhone, AddressName: data.AddressName, PostalCode: data.PostalCode, City: data.City, UpdatedAt: time.Now()}).Error; err != nil {
+	if err := config.GetConnection().WithContext(ctx).Save(&entity.Address{Id: id, UserId: data.UserId, AddressType: data.AddressType, RecipientName: data.RecipientName, RecipientPhone: data.RecipientPhone, AddressName: data.AddressName, PostalCode: data.PostalCode, City: data.City, UpdatedAt: time.Now()}).Error; err != nil {
 		config.GetConnection().Rollback()
 	}
 	config.GetConnection().WithContext(ctx).Commit()

@@ -1,12 +1,12 @@
 package controller
 
 import (
-	"belanjabackend/webserver/helper"
-	"belanjabackend/webserver/request"
-	"belanjabackend/webserver/service"
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"userboilerplate-api/webserver/helper"
+	"userboilerplate-api/webserver/request"
+	"userboilerplate-api/webserver/service"
 )
 
 func RegisterCustomer(writer http.ResponseWriter, req *http.Request) {

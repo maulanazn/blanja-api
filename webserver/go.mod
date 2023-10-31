@@ -1,3 +1,3 @@
-module belanjabackend/webserver
+module userboilerplate-api/webserver
 
 go 1.21.3

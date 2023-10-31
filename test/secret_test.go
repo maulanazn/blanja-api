@@ -1,10 +1,10 @@
 package test
 
 import (
-	"belanjabackend/config"
 	"fmt"
 	"os"
 	"testing"
+	"userboilerplate-api/config"
 
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"

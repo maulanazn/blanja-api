@@ -1,3 +1,3 @@
-module belanjabackend/repository
+module userboilerplate-api/repository
 
 go 1.21.3

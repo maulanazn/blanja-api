@@ -3,8 +3,6 @@ use (
 ./entity
 ./repository
 ./test
-
-.
 ./webserver
 ./webserver/controller
 ./webserver/helper

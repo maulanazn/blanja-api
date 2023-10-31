@@ -1,8 +1,6 @@
 package main
 
-import (
-	"belanjabackend/webserver"
-)
+import "userboilerplate-api/webserver"
 
 func main() {
 	webserver.RunWeb()
