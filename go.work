@@ -3,13 +3,12 @@ use (
 ./entity
 ./repository
 ./test
-./webserver
-./webserver/controller
-./webserver/helper
-./webserver/middleware
-./webserver/request
-./webserver/response
-./webserver/service
+./controller
+./helper
+./middleware
+./request
+./response
+./service
 )
 
 go 1.21.3

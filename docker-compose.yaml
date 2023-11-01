@@ -2,4 +2,52 @@ version: "3.9"
 
 services:
   webservice:
-  
+    restart: on-failure
+    container_name: userboilerplate
+    build: 
+      dockerfile: Dockerfile
+    image: userboilerplate
+    ports:
+      - "3000:3000"
+    networks:
+      - userboilerplate-server
+    env_file:
+      - .env
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_SSLMODE=${DB_SSLMODE}
+      - DB_TIMEZONE=${DB_TIMEZONE}
+      - CLOUDINARY_URL=${CLOUDINARY_URL}
+      - CLOUDINARY_FOLDER=${CLOUDINARY_FOLDER}
+      - JWT_KEY=${JWT_KEY}
+    depends_on:
+      - webservice_db
+  webservice_db:
+    deploy:
+      resources:
+        reservations:
+          memory: 750m
+          cpus: "1.5"
+    container_name: userboilerplate-server
+    image: postgres:16-alpine
+    ports:
+      - "5432:5432"
+    networks:
+      - userboilerplate-server
+    volumes:
+      - userboilerplate-volumes:/var/lib/postgresql
+      - ./tabledata/initdb.sql:/docker-entrypoint-initdb.d/initdb.sql
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+
+networks:
+  userboilerplate-server:
+    driver: bridge
+    name: userboilerplate-server
+
+volumes:
+  userboilerplate-volumes:
+    name: userboilerplate-volumes

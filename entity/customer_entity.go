@@ -6,7 +6,7 @@ import (
 
 type Users struct {
 	Id          string    `gorm:"primaryKey"`
-	Address     []Address `gorm:"foreignKey:user_id;references:id"`
+	Address     []Address `gorm:"foreignKey:user_id;references:id;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	Userimage   string    `json:"userimage"`
 	Username    string    `json:"username"`
 	Email       string    `gorm:"unique"`

@@ -1,12 +1,15 @@
 package config
 
 import (
+	"fmt"
+	"os"
+
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
 func GetConnection() *gorm.DB {
-	dsn := "host=" + GetConfig().GetString("DB_HOST") + " " + "user=" + GetConfig().GetString("DB_USER") + " " + "password=" + GetConfig().GetString("DB_PASSWORD") + " " + "dbname=" + GetConfig().GetString("DB_NAME") + " " + "port=" + GetConfig().GetString("DB_PORT") + " " + "sslmode=" + GetConfig().GetString("DB_SSLMODE") + " " + "TimeZone=" + GetConfig().GetString("DB_TIMEZONE")
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s TimeZone=%s", os.Getenv("DB_HOST"), os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_NAME"), os.Getenv("DB_PORT"), os.Getenv("DB_SSLMODE"), os.Getenv("DB_TIMEZONE"))
 
 	db, err := gorm.Open(postgres.New(postgres.Config{
 		DSN:                  dsn,

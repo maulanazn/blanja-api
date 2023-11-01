@@ -1,12 +1,13 @@
 package config
 
 import (
+	"os"
+
 	cloudinary "github.com/cloudinary/cloudinary-go/v2"
 )
 
 func GetCloudinaryConfig() *cloudinary.Cloudinary {
-	config := GetConfig()
-	cld, err := cloudinary.NewFromURL(config.GetString("CLOUDINARY_URL"))
+	cld, err := cloudinary.NewFromURL(os.Getenv("CLOUDINARY_URL"))
 	if err != nil {
 		panic(err)
 	}

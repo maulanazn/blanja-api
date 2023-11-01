@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"mime/multipart"
+	"os"
 	"time"
 	"userboilerplate-api/config"
 
@@ -12,7 +13,7 @@ import (
 
 func UploadCloudinary(file multipart.File) (*uploader.UploadResult, error) {
 	timeout, cancel := context.WithTimeout(context.Background(), 8*time.Second)
-	responseimage, err := config.GetCloudinaryConfig().Upload.Upload(timeout, file, uploader.UploadParams{Folder: config.GetConfig().GetString("CLOUDINARY_FOLDER")})
+	responseimage, err := config.GetCloudinaryConfig().Upload.Upload(timeout, file, uploader.UploadParams{Folder: os.Getenv("CLOUDINARY_FOLDER")})
 	defer cancel()
 	defer file.Close()
 	if err != nil {
