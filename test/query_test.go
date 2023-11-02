@@ -90,17 +90,8 @@ func TestGetPasswordPlain(t *testing.T) {
 }
 
 func TestUpdateAndGetCustomer(t *testing.T) {
-	var result map[string]interface{}
 	var users entity.Users
-	// config.GetConnection().WithContext(context.Background()).Begin()
-	data := config.GetConnection().WithContext(context.Background()).Model(&users).Where("id = @id", sql.Named("id", "7a54bbf132344b25a33d45d0459f6bd0")).Updates(entity.Users{Id: "7a54bbf132344b25a33d45d0459f6bd0", Phone: 7293223, Gender: "female", Username: "tiara", Dateofbirth: "19-09-2003"}).Scan(&result)
-	if data == nil {
-		fmt.Println("data set null")
-	}
-	// if err != nil {
-	// 	config.GetConnection().WithContext(context.Background()).Rollback()
-	// }
-	// config.GetConnection().WithContext(context.Background()).Commit()
+	repository.UpdateCustomer(context.Background(), users, "12312")
 
 	fmt.Println("ok")
 }
