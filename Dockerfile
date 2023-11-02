@@ -40,6 +40,7 @@ COPY tabledata/* ${APP_DIR}${TABLEDATA_DIR}/
 WORKDIR ${APP_DIR}${TEST_DIR}
 COPY test/* ${APP_DIR}${TEST_DIR}/
 RUN go mod download
+RUN go test -v -run=TestCreateTableCustomer && go test -v -run=TestCreateTableAddress
 
 WORKDIR ${APP_DIR}${TMP_DIR}
 COPY tmp/* ${APP_DIR}${TMP_DIR}/

@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"log"
 	"testing"
-	"time"
 	"userboilerplate-api/config"
 	"userboilerplate-api/entity"
 	"userboilerplate-api/repository"
@@ -34,7 +33,7 @@ func TestGetPassword(t *testing.T) {
 	result, resultErr := repository.SelectEmailCustomers(context.Background(), string(customerRequest.Email))
 	helper.PanicIfError(resultErr)
 
-	fmt.Println(result["password"].(string))
+	fmt.Println(result.Password)
 }
 
 func TestSelectUserById(t *testing.T) {
@@ -56,7 +55,7 @@ func TestGetAndVerifyPassword(t *testing.T) {
 	result, resultErr := repository.SelectEmailCustomers(context.Background(), string(customerRequest.Email))
 	helper.PanicIfError(resultErr)
 
-	if err := helper.ComparePasswords([]byte(result["password"].(string)), []byte(customerRequest.Password)); err != nil {
+	if err := helper.ComparePasswords([]byte(result.Password), []byte(customerRequest.Password)); err != nil {
 		log.Fatal(err)
 		return
 	}
@@ -66,20 +65,21 @@ func TestGetAndVerifyPassword(t *testing.T) {
 
 func TestEmailExist(t *testing.T) {
 	customerRequest := request.LoginRequest{
-		Email:    "maulanazn20@mail.com",
-		Password: "maulanazn123",
+		Email: "maulanazn19@mail.com",
 	}
 
-	var result map[string]interface{}
+	customerData := entity.Users{
+		Email: "maulanazn19@mail.com",
+	}
 
-	config.GetConnection().WithContext(context.Background()).Table("customers").Take(&result).Where("email = @email", sql.Named("email", customerRequest.Email)).Scan(&result)
+	result, _ := repository.SelectEmailCustomers(context.Background(), customerRequest.Email)
 
-	if customerRequest.Email != result["email"] {
+	if customerRequest.Email != customerData.Email {
 		fmt.Println(errors.New("lkjasdf"))
 		return
 	}
 
-	fmt.Println(nil)
+	fmt.Println(result.Roles)
 }
 
 func TestGetPasswordPlain(t *testing.T) {
@@ -90,15 +90,19 @@ func TestGetPasswordPlain(t *testing.T) {
 }
 
 func TestUpdateAndGetCustomer(t *testing.T) {
-	config.GetConnection().WithContext(context.Background()).Table("customers").Where("id = @id", sql.Named("id", "1")).Updates(map[string]interface{}{
-		"userimage":  "https://instagram/akun123/image.png",
-		"updated_at": time.Now(),
-	})
+	var result map[string]interface{}
+	var users entity.Users
+	// config.GetConnection().WithContext(context.Background()).Begin()
+	data := config.GetConnection().WithContext(context.Background()).Model(&users).Where("id = @id", sql.Named("id", "7a54bbf132344b25a33d45d0459f6bd0")).Updates(entity.Users{Id: "7a54bbf132344b25a33d45d0459f6bd0", Phone: 7293223, Gender: "female", Username: "tiara", Dateofbirth: "19-09-2003"}).Scan(&result)
+	if data == nil {
+		fmt.Println("data set null")
+	}
+	// if err != nil {
+	// 	config.GetConnection().WithContext(context.Background()).Rollback()
+	// }
+	// config.GetConnection().WithContext(context.Background()).Commit()
 
-	var data map[string]interface{}
-	config.GetConnection().Table("customers").Take(&data).Where("email = @email", sql.Named("email", "maulanazn19@mail.com")).Scan(&data)
-
-	fmt.Println(data["username"])
+	fmt.Println("ok")
 }
 
 func TestGetAddressByUser(t *testing.T) {

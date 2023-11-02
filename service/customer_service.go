@@ -2,11 +2,9 @@ package service
 
 import (
 	"context"
-	"database/sql"
 	"fmt"
 	"net/http"
 	"regexp"
-	"userboilerplate-api/config"
 	"userboilerplate-api/entity"
 	"userboilerplate-api/repository"
 	"userboilerplate-api/webserver/helper"
@@ -56,7 +54,6 @@ func CreateCustomer(ctx context.Context, req request.RegisterRequest, writer htt
 }
 
 func VerifyCustomer(ctx context.Context, req request.LoginRequest, writer http.ResponseWriter, request *http.Request) {
-	var datamap map[string]interface{}
 	if err := req.Validate(); err != nil {
 		writer.WriteHeader(400)
 		fmt.Fprint(writer, err)
@@ -69,23 +66,21 @@ func VerifyCustomer(ctx context.Context, req request.LoginRequest, writer http.R
 		Password: req.Password,
 	}
 
-	result, resultErr := repository.SelectEmailCustomers(ctx, string(req.Email))
+	result, resultErr := repository.SelectEmailCustomers(ctx, req.Email)
 	helper.PanicIfError(resultErr)
-
-	config.GetConnection().WithContext(context.Background()).Table("users").Take(&datamap).Where("email = @email", sql.Named("email", req.Email)).Scan(&result)
-	if req.Email != result["email"].(string) {
+	if req.Email != result.Email {
 		writer.WriteHeader(http.StatusBadRequest)
 		fmt.Fprint(writer, "Wrong Email")
 		return
 	}
 
-	if err := helper.ComparePasswords([]byte(result["password"].(string)), []byte(req.Password)); err != nil {
+	if err := helper.ComparePasswords([]byte(result.Password), []byte(req.Password)); err != nil {
 		writer.WriteHeader(http.StatusUnauthorized)
 		fmt.Fprint(writer, "Wrong Password")
 		return
 	}
 
-	var key []byte = []byte(result["email"].(string) + result["roles"].(string) + helper.ReadEnv("../../.env"))
+	var key []byte = []byte(result.Email + result.Roles + helper.ReadEnv("../../.env"))
 	token := helper.GenerateToken(users, key)
 
 	response := response.Token{
@@ -94,7 +89,7 @@ func VerifyCustomer(ctx context.Context, req request.LoginRequest, writer http.R
 
 	username := http.Cookie{
 		Name:     "USR_ID",
-		Value:    string(result["id"].([]uint8)),
+		Value:    result.Id,
 		Path:     "/",
 		Secure:   true,
 		SameSite: http.SameSiteStrictMode,

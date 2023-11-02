@@ -16,6 +16,9 @@ services:
     environment:
       - DB_HOST=${DB_HOST}
       - DB_PORT=${DB_PORT}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
       - DB_SSLMODE=${DB_SSLMODE}
       - DB_TIMEZONE=${DB_TIMEZONE}
       - CLOUDINARY_URL=${CLOUDINARY_URL}
@@ -37,7 +40,6 @@ services:
       - userboilerplate-server
     volumes:
       - userboilerplate-volumes:/var/lib/postgresql
-      - ./tabledata/initdb.sql:/docker-entrypoint-initdb.d/initdb.sql
     environment:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
