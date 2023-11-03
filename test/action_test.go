@@ -1,15 +1,15 @@
 package test
 
 import (
+	"controller"
 	"fmt"
+	"helper"
 	"io"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"strings"
 	"testing"
-	"userboilerplate-api/webserver/controller"
-	"userboilerplate-api/webserver/helper"
 )
 
 func TestRegister(t *testing.T) {

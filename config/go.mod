@@ -1,4 +1,4 @@
-module userboilerplate-api/config
+module config
 
 go 1.21.3
 

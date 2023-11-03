@@ -1,18 +1,18 @@
 package test
 
 import (
+	"config"
 	"context"
 	"database/sql"
 	"encoding/json"
+	"entity"
 	"errors"
 	"fmt"
+	"helper"
 	"log"
+	"repository"
+	"request"
 	"testing"
-	"userboilerplate-api/config"
-	"userboilerplate-api/entity"
-	"userboilerplate-api/repository"
-	"userboilerplate-api/webserver/helper"
-	"userboilerplate-api/webserver/request"
 )
 
 func TestCreateTableCustomer(t *testing.T) {

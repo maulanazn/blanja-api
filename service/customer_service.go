@@ -2,14 +2,14 @@ package service
 
 import (
 	"context"
+	"entity"
 	"fmt"
+	"helper"
 	"net/http"
 	"regexp"
-	"userboilerplate-api/entity"
-	"userboilerplate-api/repository"
-	"userboilerplate-api/webserver/helper"
-	"userboilerplate-api/webserver/request"
-	"userboilerplate-api/webserver/response"
+	"repository"
+	"request"
+	"response"
 
 	"github.com/albrow/forms"
 	"golang.org/x/crypto/bcrypt"

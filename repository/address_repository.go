@@ -1,11 +1,11 @@
 package repository
 
 import (
+	"config"
 	"context"
 	"database/sql"
+	"entity"
 	"time"
-	"userboilerplate-api/config"
-	"userboilerplate-api/entity"
 )
 
 func AddressById(ctx context.Context, id string) (entity.Address, error) {

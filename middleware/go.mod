@@ -1,3 +1,3 @@
-module userboilerplate-api/webserver/middleware
+module middleware
 
 go 1.21.3

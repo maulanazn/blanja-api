@@ -1,7 +1,7 @@
 <div align="center">
-    <h1>User Boilerplate API</h1>
-    <image src="public/userboilerplate.png" width="230">
-    <p>User boilerplate API, is an API that used to make authentication more easier. You can connect this API with other API or you application</p>
+    <h1>User Auth API</h1>
+    <image src="public/userauth.png" width="230">
+    <p>User Auth API, is an API that used to make authentication more easier. You can connect this API with other API or you application</p>
 </div>
 
 ---
@@ -13,7 +13,7 @@
         <li><a href="https://www.postgresql.org/"><img src="https://github.com/devicons/devicon/blob/master/icons/postgresql/postgresql-original.svg" alt="postgresql" width="230"></a></li>
         <li><a href="https://www.docker.com/"><img src="https://github.com/devicons/devicon/blob/master/icons/docker/docker-original.svg" alt="Docker" width="230"></a></li>
     </ul>
-    And other library, such as Cloudinary, and Gorm, also any other library check the go.sum file. You can view it in my package.json file, don't be lazy to read
+    And other library, such as Cloudinary, and Gorm, also any other library check the go.sum file.
 </div>
 
 ## Prerequisite:

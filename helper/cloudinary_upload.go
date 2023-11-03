@@ -1,12 +1,12 @@
 package helper
 
 import (
+	"config"
 	"context"
 	"fmt"
 	"mime/multipart"
 	"os"
 	"time"
-	"userboilerplate-api/config"
 
 	"github.com/cloudinary/cloudinary-go/v2/api/uploader"
 )

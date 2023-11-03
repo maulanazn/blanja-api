@@ -1,4 +1,4 @@
-module userboilerplate-api/webserver/service
+module service
 
 go 1.21.3
 

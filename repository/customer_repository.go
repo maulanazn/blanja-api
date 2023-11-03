@@ -1,11 +1,11 @@
 package repository
 
 import (
+	"config"
 	"context"
 	"database/sql"
+	entity "entity"
 	"time"
-	"userboilerplate-api/config"
-	entity "userboilerplate-api/entity"
 )
 
 func CreateCustomer(ctx context.Context, data interface{}) error {

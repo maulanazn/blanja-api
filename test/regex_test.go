@@ -2,9 +2,9 @@ package test
 
 import (
 	"fmt"
+	"helper"
 	"regexp"
 	"testing"
-	"userboilerplate-api/webserver/helper"
 )
 
 type RegisterRequest struct {

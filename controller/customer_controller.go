@@ -3,10 +3,10 @@ package controller
 import (
 	"encoding/json"
 	"fmt"
+	"helper"
 	"net/http"
-	"userboilerplate-api/webserver/helper"
-	"userboilerplate-api/webserver/request"
-	"userboilerplate-api/webserver/service"
+	"request"
+	"service"
 )
 
 func RegisterCustomer(writer http.ResponseWriter, req *http.Request) {

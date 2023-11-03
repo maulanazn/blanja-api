@@ -3,13 +3,13 @@ package service
 import (
 	"context"
 	"encoding/json"
+	"entity"
 	"fmt"
+	"helper"
 	"net/http"
-	"userboilerplate-api/entity"
-	"userboilerplate-api/repository"
-	"userboilerplate-api/webserver/helper"
-	"userboilerplate-api/webserver/request"
-	"userboilerplate-api/webserver/response"
+	"repository"
+	"request"
+	"response"
 )
 
 func AddAddress(ctx context.Context, req request.AddressCustomerRequest, writer http.ResponseWriter, request *http.Request) {

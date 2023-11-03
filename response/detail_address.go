@@ -1,6 +1,6 @@
 package response
 
-import "userboilerplate-api/entity"
+import "entity"
 
 type DetailAddressData struct {
 	CustomerId     string

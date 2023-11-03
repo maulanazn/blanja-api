@@ -2,7 +2,7 @@ package helper
 
 import (
 	"encoding/json"
-	"userboilerplate-api/webserver/response"
+	"response"
 )
 
 func ToWebResponse(status int, message interface{}) interface{} {

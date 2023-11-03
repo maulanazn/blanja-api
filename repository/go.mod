@@ -1,3 +1,3 @@
-module userboilerplate-api/repository
+module repository
 
 go 1.21.3
