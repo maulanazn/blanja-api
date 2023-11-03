@@ -66,7 +66,7 @@ COPY service/* ${APP_DIR}${SERVICE_DIR}/
 RUN go mod download
 
 WORKDIR ${APP_DIR}
-COPY main.go go.work go.work.sum LICENSE Makefile README.md ./
+COPY main.go go.work go.work.sum .env LICENSE Makefile README.md ./
 RUN go build -o ${APP_DIR}/main main.go
 
 FROM alpine:latest
