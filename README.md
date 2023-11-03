@@ -30,15 +30,35 @@
 ```
 3. Copy .env.example and paste it as config.env file, then Configurate it as Linux and MacOS like:
 ```sh
-    cd <Project>/ && cp .env.example config.env
+    cd <Project>/ && cp .env.example .env
 ```
-5. Run hot with:
+
+## Running without docker:
+1. Execute this in wsl terminal or your terminal (linux or macos)
+```sh
+    export DB_HOST=<your_host> export DB_USER=<your_user> export DB_PASSWORD=<your_pass> export DB_NAME=<your_db> export DB_PORT=<your_port> export DB_SSLMODE=<ssl_or_not> export DB_TIMEZONE=<your_timezone> export CLOUDINARY_URL=<your_url> export CLOUDINARY_FOLDER=<your_folder> export JWT_KEY=<your_key>
+``` 
+2. Run hot with:
 ```sh
     make dev
 ```
-6. Run start with:
+3. Run start with:
 ```sh
    make start
+```
+
+## Running without docker:
+1. Execute this in wsl terminal or your terminal (linux or macos)
+```sh
+    docker-compose create 
+``` 
+2. Run with:
+```sh
+    docker-compose up
+```
+3. To develope database:
+```sh
+   docker container exec -it <db_container_name> /bin/bash
 ```
 
 ## Related Project
