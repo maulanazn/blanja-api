@@ -47,7 +47,7 @@
    make start
 ```
 
-## Running without docker:
+## Running with docker:
 1. Execute this in wsl terminal or your terminal (linux or macos)
 ```sh
     docker-compose create 

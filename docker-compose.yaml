@@ -1,17 +1,17 @@
 version: "3.9"
 
 services:
-  userboilerplate:
+  userauth:
     restart: on-failure
-    container_name: userboilerplate
-    image: userboilerplate-api:1.0
+    container_name: userauth
+    image: userauth-api:1.0
     build: 
       context: .
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
     networks:
-      - userboilerplate-network
+      - userauth-network
     env_file:
       - .env
     environment:
@@ -26,31 +26,31 @@ services:
       - CLOUDINARY_FOLDER=${CLOUDINARY_FOLDER}
       - JWT_KEY=${JWT_KEY}
     depends_on:
-      - userboilerplateserver
-  userboilerplateserver:
+      - userauthserver
+  userauthserver:
     deploy:
       resources:
         reservations:
           memory: 750m
           cpus: "1.5"
-    container_name: userboilerplateserver
+    container_name: userauthserver
     image: postgres:16-alpine
     ports:
       - "5432:5432"
     networks:
-      - userboilerplate-network
+      - userauth-network
     volumes:
-      - userboilerplate-volumes:/var/lib/postgresql
+      - userauth-volumes:/var/lib/postgresql
     environment:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_DB=${DB_NAME}
 
 networks:
-  userboilerplate-network:
+  userauth-network:
     driver: bridge
-    name: userboilerplate-network
+    name: userauth-network
 
 volumes:
-  userboilerplate-volumes:
-    name: userboilerplate-volumes
+  userauth-volumes:
+    name: userauth-volumes

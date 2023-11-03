@@ -3,7 +3,7 @@ FROM golang:1.21.3-alpine3.18 as builder
 LABEL author="Maulana Zulkifli N"
 LABEL email="maulanarpl08@gmail.com"
 
-ARG APP_DIR=/userboilerplate-api
+ARG APP_DIR=/userauth-api
 
 ARG CONFIG_DIR=/config
 ARG ENTITY_DIR=/entity
@@ -71,9 +71,9 @@ RUN go build -o ${APP_DIR}/main main.go
 
 FROM alpine:latest
 
-WORKDIR /userboilerplate-api/
+WORKDIR /userauth-api/
 
-COPY --from=builder /userboilerplate-api/main ./
+COPY --from=builder /userauth-api/main ./
 
-CMD /userboilerplate-api/main
+CMD /userauth-api/main
 

@@ -1,11 +1,11 @@
 package main
 
 import (
+	"config"
+	"controller"
+	"entity"
+	"middleware"
 	"net/http"
-	"userboilerplate-api/config"
-	"userboilerplate-api/entity"
-	"userboilerplate-api/webserver/controller"
-	"userboilerplate-api/webserver/middleware"
 )
 
 func main() {
