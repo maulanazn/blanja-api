@@ -23,7 +23,6 @@ func AddAddress(ctx context.Context, req request.AddressCustomerRequest, writer 
 	helper.PanicIfError(err)
 
 	address := entity.Address{
-		Id:             helper.GenUUID(),
 		UserId:         resultUserCookie.Value,
 		AddressType:    req.AddressType,
 		RecipientName:  req.RecipientName,
@@ -35,14 +34,14 @@ func AddAddress(ctx context.Context, req request.AddressCustomerRequest, writer 
 
 	if err := repository.CreateAddress(ctx, &address); err != nil {
 		writer.WriteHeader(403)
-		failedResponse := helper.ToWebResponse(403, "Duplicate or something, please repeat process")
+		failedResponse := response.ToWebResponse(403, "Duplicate or something, please repeat process", writer)
 		fmt.Fprint(writer, failedResponse)
 
 		return
 	}
 
 	writer.WriteHeader(201)
-	registerResponse := helper.ToWebResponse(201, "Successfully create addresss")
+	registerResponse := response.ToWebResponse(201, "Successfully create addresss", writer)
 	fmt.Fprint(writer, registerResponse)
 }
 
@@ -70,14 +69,14 @@ func EditAddress(ctx context.Context, req request.AddressCustomerRequest, writer
 
 	if err := repository.UpdateAddress(ctx, *address, id.Get("id")); err != nil {
 		writer.WriteHeader(403)
-		failedResponse := helper.ToWebResponse(403, "Duplicate or something, please repeat process")
+		failedResponse := response.ToWebResponse(403, "Duplicate or something, please repeat process", writer)
 		fmt.Fprint(writer, failedResponse)
 
 		return
 	}
 
 	writer.WriteHeader(200)
-	registerResponse := helper.ToWebResponse(200, "Successfully updating addresss")
+	registerResponse := response.ToWebResponse(200, "Successfully updating addresss", writer)
 	fmt.Fprint(writer, registerResponse)
 }
 
@@ -95,7 +94,7 @@ func AddressDetail(ctx context.Context, writer http.ResponseWriter, request *htt
 
 	if id.Has("id") {
 		writer.WriteHeader(200)
-		profileresp := helper.ToDetailAddressById(200, "Successfully get customer address detail", response.DetailAddressById{
+		profileresp := response.ToDetailAddressById(200, "Successfully get customer address detail", response.DetailAddressById{
 			Status:  200,
 			Message: "Successfully get detail address",
 			Data: response.DetailAddressData{
@@ -119,7 +118,7 @@ func AddressDetail(ctx context.Context, writer http.ResponseWriter, request *htt
 	}
 
 	writer.WriteHeader(200)
-	profileresp := helper.ToDetailAddress(200, "Successfully get customer profile", response.DetailAddress{
+	profileresp := response.ToDetailAddress(200, "Successfully get customer profile", response.DetailAddress{
 		Status:  200,
 		Message: "Successfully get detail address",
 		Data:    resultuser,

@@ -1,17 +1,17 @@
 version: "3.9"
 
 services:
-  userauth:
+  blanja:
     restart: on-failure
-    container_name: userauth
-    image: userauth-api:1.0
+    container_name: blanja
+    image: blanja-api:1.0
     build: 
       context: .
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
     networks:
-      - userauth-network
+      - blanja-network
     env_file:
       - .env
     environment:
@@ -26,31 +26,31 @@ services:
       - CLOUDINARY_FOLDER=${CLOUDINARY_FOLDER}
       - JWT_KEY=${JWT_KEY}
     depends_on:
-      - userauthserver
-  userauthserver:
+      - blanjaserver
+  blanjaserver:
     deploy:
       resources:
         reservations:
           memory: 750m
           cpus: "1.5"
-    container_name: userauthserver
+    container_name: blanjaserver
     image: postgres:16-alpine
     ports:
       - "5432:5432"
     networks:
-      - userauth-network
+      - blanja-network
     volumes:
-      - userauth-volumes:/var/lib/postgresql
+      - blanja-volumes:/var/lib/postgresql
     environment:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_DB=${DB_NAME}
 
 networks:
-  userauth-network:
+  blanja-network:
     driver: bridge
-    name: userauth-network
+    name: blanja-network
 
 volumes:
-  userauth-volumes:
-    name: userauth-volumes
+  blanja-volumes:
+    name: blanja-volumes

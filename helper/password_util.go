@@ -5,7 +5,17 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt"
+	"golang.org/x/crypto/bcrypt"
 )
+
+func ComparePasswords(hashedPwd, plainPwd []byte) error {
+	err := bcrypt.CompareHashAndPassword(hashedPwd, plainPwd)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
 
 func GenerateToken(users entity.Users, data interface{}) string {
 	generateToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{

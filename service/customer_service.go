@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"helper"
 	"net/http"
+	"os"
 	"regexp"
 	"repository"
 	"request"
@@ -27,7 +28,6 @@ func CreateCustomer(ctx context.Context, req request.RegisterRequest, writer htt
 	helper.PanicIfError(err)
 
 	users := entity.Users{
-		Id:       helper.GenUUID(),
 		Username: req.Username,
 		Email:    req.Email,
 		Password: string(hashedPassword),
@@ -36,20 +36,20 @@ func CreateCustomer(ctx context.Context, req request.RegisterRequest, writer htt
 
 	if err := repository.CreateCustomer(ctx, &users); err != nil {
 		writer.WriteHeader(403)
-		failedResponse := helper.ToWebResponse(403, "Duplicate or something, please repeat process")
+		failedResponse := response.ToWebResponse(403, "Duplicate or something, please repeat process", writer)
 		fmt.Fprint(writer, failedResponse)
 
 		return
 	}
 
-	response := response.Data{
+	res := response.Data{
 		Username: users.Username,
 		Email:    users.Email,
 		Roles:    users.Roles,
 	}
 
 	writer.WriteHeader(201)
-	registerResponse := helper.ToResponseData(201, "Successfully Registered", response)
+	registerResponse := response.ToResponseData(201, "Successfully Registered", res)
 	fmt.Fprint(writer, registerResponse)
 }
 
@@ -80,10 +80,10 @@ func VerifyCustomer(ctx context.Context, req request.LoginRequest, writer http.R
 		return
 	}
 
-	var key []byte = []byte(result.Email + result.Roles + helper.ReadEnv("../../.env"))
+	var key []byte = []byte(result.Email + result.Roles + os.Getenv("JWT_KEY"))
 	token := helper.GenerateToken(users, key)
 
-	response := response.Token{
+	res := response.Token{
 		Token: token,
 	}
 
@@ -97,9 +97,9 @@ func VerifyCustomer(ctx context.Context, req request.LoginRequest, writer http.R
 
 	http.SetCookie(writer, &username)
 
-	writer.Header().Set("Authorization", "Bearer "+response.Token)
+	writer.Header().Set("Authorization", "Bearer "+res.Token)
 
-	loginResponse := helper.ToWebResponse(200, "Successfully Login")
+	loginResponse := response.ToWebResponse(200, "Successfully Login", writer)
 	fmt.Fprint(writer, loginResponse)
 }
 
@@ -134,13 +134,13 @@ func EditCustomer(ctx context.Context, writer http.ResponseWriter, request *http
 
 	if err := repository.UpdateCustomer(ctx, *users, id.Value); err != nil {
 		writer.WriteHeader(403)
-		failedResponse := helper.ToWebResponse(403, "Duplicate or something, please repeat process")
+		failedResponse := response.ToWebResponse(403, "Duplicate or something, please repeat process", writer)
 		fmt.Fprint(writer, failedResponse)
 
 		return
 	}
 
-	customerupdate := helper.ToWebResponse(200, "Successfully updated profile")
+	customerupdate := response.ToWebResponse(200, "Successfully updated profile", writer)
 	fmt.Fprint(writer, customerupdate)
 }
 
@@ -159,7 +159,7 @@ func ProfileCustomer(ctx context.Context, writer http.ResponseWriter, request *h
 	}
 
 	writer.WriteHeader(200)
-	profileresp := helper.ToProfileCustomer(200, "Successfully get "+roles+" profile", response.ProfileCustomer{
+	profileresp := response.ToProfileCustomer(200, "Successfully get "+roles+" profile", response.ProfileCustomer{
 		Data: response.ProfileCustomerData{
 			Userimage:   result.Userimage,
 			Username:    result.Username,
