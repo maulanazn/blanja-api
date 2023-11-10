@@ -1,7 +1,7 @@
 <div align="center">
-    <h1>User Auth API</h1>
+    <h1>Blanja API</h1>
     <image src="public/userauth.png" width="230">
-    <p>User Auth API, is an API that used to make authentication more easier. You can connect this API with other API or you application</p>
+    <p>Blanja API, is an API that used to make e-commerce application more easier. You can connect this API with other API or you application</p>
 </div>
 
 ---
