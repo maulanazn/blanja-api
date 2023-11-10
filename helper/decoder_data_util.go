@@ -11,7 +11,7 @@ const (
 	Passphrase = "abc&1*~#^2^#s0^=)^^7%b34"
 )
 
-func DecodeData(req *http.Request, data interface{}) error {
+func DecodeRequest(req *http.Request, data interface{}) error {
 	if err := json.NewDecoder(req.Body).Decode(data); err != nil {
 		return errors.New("failed to decode")
 	}
