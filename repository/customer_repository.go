@@ -26,11 +26,11 @@ func UpdateCustomer(ctx context.Context, data entity.Users, id string) error {
 	return nil
 }
 
-func SelectEmailCustomers(ctx context.Context, data interface{}) (entity.Users, error) {
+func SelectEmailCustomers(ctx context.Context, email string) (entity.Users, error) {
 	var result entity.Users
 
 	config.GetConnection().WithContext(ctx).Begin()
-	if err := config.GetConnection().WithContext(ctx).First(&result, "email = @email", sql.Named("email", data.(string))).Error; err != nil {
+	if err := config.GetConnection().WithContext(ctx).First(&result, "email = @email", sql.Named("email", email)).Error; err != nil {
 		config.GetConnection().WithContext(ctx).Rollback()
 	}
 	config.GetConnection().WithContext(ctx).Commit()

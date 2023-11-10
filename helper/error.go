@@ -33,3 +33,13 @@ func InternalServerErrorIfError(err error, writer http.ResponseWriter) {
 		return
 	}
 }
+
+func RecoverError(err error, writer http.ResponseWriter) {
+	if err != nil {
+		defer func() {
+			err := recover()
+			log.Fatal(err)
+		}()
+		writer.WriteHeader(http.StatusBadGateway)
+	}
+}
