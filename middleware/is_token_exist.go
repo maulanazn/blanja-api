@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"fmt"
+	"helper"
 	"log"
 	"net/http"
 )
@@ -15,14 +16,17 @@ type MakesureToken struct {
 func (authenticate *MakesureToken) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	_, err := r.Cookie("USR_ID")
 	authorization := r.Header.Get("Authorization")
+	emailfromtoken := helper.DecodeToken(authorization[7:])
+
 	if err != nil {
 		log.Println(err)
 		fmt.Fprint(w, "Please login correctly")
 		return
 	}
-	if authorization == "" {
+
+	if authorization == "" || r.FormValue("email") != emailfromtoken {
 		log.Println(err)
-		fmt.Fprint(w, "Need Authorization")
+		fmt.Fprint(w, "Failed to Authorize")
 		return
 	}
 

@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	Passphrase = "abc&1*~#^2^#s0^=)^^7%b34"
+	Passphrase = "abcdefghijklmnopqrstuvwx"
 )
 
 func DecodeRequest(req *http.Request, data interface{}) error {

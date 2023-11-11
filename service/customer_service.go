@@ -80,23 +80,19 @@ func VerifyCustomer(ctx context.Context, req request.LoginRequest, writer http.R
 		return
 	}
 
-	var key []byte = []byte(result.Email + result.Roles + os.Getenv("JWT_KEY"))
-	token := helper.GenerateToken(users, key)
-
+	token := helper.GenerateToken(users, os.Getenv("JWT_KEY"))
 	res := response.Token{
 		Token: token,
 	}
 
-	username := http.Cookie{
+	userid := http.Cookie{
 		Name:     "USR_ID",
 		Value:    result.Id,
 		Path:     "/",
 		Secure:   true,
 		SameSite: http.SameSiteStrictMode,
 	}
-
-	http.SetCookie(writer, &username)
-
+	http.SetCookie(writer, &userid)
 	writer.Header().Set("Authorization", "Bearer "+res.Token)
 
 	loginResponse := response.ToWebResponse(200, "Successfully Login", writer)

@@ -26,14 +26,15 @@ services:
       - CLOUDINARY_FOLDER=${CLOUDINARY_FOLDER}
       - JWT_KEY=${JWT_KEY}
     depends_on:
-      - blanjaserver
-  blanjaserver:
+      - blanjaserver-pg
+      - blanjaserver-mongo
+  blanjaserver-pg:
     deploy:
       resources:
         reservations:
           memory: 750m
           cpus: "1.5"
-    container_name: blanjaserver
+    container_name: blanjaserver-pg
     image: postgres:16-alpine
     ports:
       - "5432:5432"
@@ -45,6 +46,19 @@ services:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_DB=${DB_NAME}
+  blanjaserver-mongo:
+    container_name: blanjaserver-mongo
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    networks:
+      - blanja-network
+    volumes:
+      - blanja-volumes:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
+      - MONGO_INITDB_DATABASE=${MONGO_DB_NAME}
 
 networks:
   blanja-network:

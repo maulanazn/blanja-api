@@ -12,6 +12,7 @@ func main() {
 	router := http.NewServeMux()
 
 	config.GetConnection().AutoMigrate(&entity.Users{}, &entity.Address{})
+	config.MongoConnection().Database("maulanazn").Collection("products")
 
 	router.HandleFunc("/", controller.RootHandler)
 	router.HandleFunc("/register", controller.RegisterCustomer)
