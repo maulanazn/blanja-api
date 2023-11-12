@@ -2,6 +2,7 @@ package config
 
 import (
 	"context"
+	"fmt"
 	"log"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -18,11 +19,12 @@ func MongoConnection() *mongo.Client {
 	if err != nil {
 		panic(err)
 	}
-	defer func() {
-		if err := client.Disconnect(context.TODO()); err != nil {
-			panic(err)
-		}
-	}()
 
+	pingerr := client.Ping(context.TODO(), nil)
+	if pingerr != nil {
+		log.Fatal(pingerr)
+	}
+
+	fmt.Println("Connected")
 	return client
 }
