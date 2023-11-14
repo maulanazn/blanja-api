@@ -1,4 +1,4 @@
-module helper
+module util
 
 go 1.21.3
 

@@ -4,34 +4,40 @@ import (
 	"context"
 	"entity"
 	"fmt"
-	"helper"
 	"net/http"
 	"os"
 	"regexp"
 	"repository"
 	"request"
 	"response"
+	"util"
 
 	"github.com/albrow/forms"
+	"github.com/go-playground/validator"
 	"golang.org/x/crypto/bcrypt"
 )
 
-func CreateCustomer(ctx context.Context, req request.RegisterRequest, writer http.ResponseWriter) {
-	if err := req.Validate(); err != nil {
-		writer.WriteHeader(400)
-		fmt.Fprint(writer, err)
+func CreateCustomer(ctx context.Context, writer http.ResponseWriter, req *http.Request) {
+	validate := validator.New()
 
+	registerreq := request.RegisterRequest{}
+	err := util.DecodeRequest(req, &registerreq)
+	util.PanicIfError(err)
+
+	if validateerr := validate.Struct(registerreq); validateerr != nil {
+		writer.WriteHeader(400)
+		writer.Write([]byte(validateerr.Error()))
 		return
 	}
 
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), 10)
-	helper.PanicIfError(err)
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(registerreq.Password), 10)
+	util.PanicIfError(err)
 
 	users := entity.Users{
-		Username: req.Username,
-		Email:    req.Email,
+		Username: registerreq.Username,
+		Email:    registerreq.Email,
 		Password: string(hashedPassword),
-		Roles:    req.Roles,
+		Roles:    registerreq.Roles,
 	}
 
 	if err := repository.CreateCustomer(ctx, &users); err != nil {
@@ -53,34 +59,39 @@ func CreateCustomer(ctx context.Context, req request.RegisterRequest, writer htt
 	fmt.Fprint(writer, registerResponse)
 }
 
-func VerifyCustomer(ctx context.Context, req request.LoginRequest, writer http.ResponseWriter, request *http.Request) {
-	if err := req.Validate(); err != nil {
-		writer.WriteHeader(400)
-		fmt.Fprint(writer, err)
+func VerifyCustomer(ctx context.Context, writer http.ResponseWriter, req *http.Request) {
+	validate := validator.New()
 
+	loginreq := request.LoginRequest{}
+	err := util.DecodeRequest(req, &loginreq)
+	util.PanicIfError(err)
+
+	if validateerr := validate.Struct(loginreq); validateerr != nil {
+		writer.WriteHeader(400)
+		writer.Write([]byte(validateerr.Error()))
 		return
 	}
 
 	users := entity.Users{
-		Email:    req.Email,
-		Password: req.Password,
+		Email:    loginreq.Email,
+		Password: loginreq.Password,
 	}
 
-	result, resultErr := repository.SelectEmailCustomers(ctx, req.Email)
-	helper.PanicIfError(resultErr)
-	if req.Email != result.Email {
+	result, resultErr := repository.SelectEmailCustomers(ctx, loginreq.Email)
+	util.PanicIfError(resultErr)
+	if loginreq.Email != result.Email {
 		writer.WriteHeader(http.StatusBadRequest)
 		fmt.Fprint(writer, "Wrong Email")
 		return
 	}
 
-	if err := helper.ComparePasswords([]byte(result.Password), []byte(req.Password)); err != nil {
+	if err := util.ComparePasswords([]byte(result.Password), []byte(loginreq.Password)); err != nil {
 		writer.WriteHeader(http.StatusUnauthorized)
 		fmt.Fprint(writer, "Wrong Password")
 		return
 	}
 
-	token := helper.GenerateToken(users, os.Getenv("JWT_KEY"))
+	token := util.GenerateToken(users, os.Getenv("JWT_KEY"))
 	res := response.Token{
 		Token: token,
 	}
@@ -101,9 +112,9 @@ func VerifyCustomer(ctx context.Context, req request.LoginRequest, writer http.R
 
 func EditCustomer(ctx context.Context, writer http.ResponseWriter, request *http.Request) {
 	userdata, formerr := forms.Parse(request)
-	helper.PanicIfError(formerr)
+	util.PanicIfError(formerr)
 	id, cookieerr := request.Cookie("USR_ID")
-	helper.PanicIfError(cookieerr)
+	util.PanicIfError(cookieerr)
 
 	userdata.Validator().Require("username")
 	userdata.Validator().Require("roles")
@@ -112,12 +123,12 @@ func EditCustomer(ctx context.Context, writer http.ResponseWriter, request *http
 	userdata.Validator().Match("phone", regexp.MustCompile("^[0-9]{3,40}$"))
 	userdata.Validator().AcceptFileExts("userimage", "jpg", "jpeg", "png", "gif")
 	userimage, _, err := request.FormFile("userimage")
-	helper.PanicIfError(err)
-	formatphone, formatphoneerr := helper.ConvertStrInt64(userdata.Get("phone"), 10, 64)
-	helper.PanicIfError(formatphoneerr)
+	util.PanicIfError(err)
+	formatphone, formatphoneerr := util.ConvertStrInt64(userdata.Get("phone"), 10, 64)
+	util.PanicIfError(formatphoneerr)
 
-	responseimage, err := helper.UploadCloudinary(userimage)
-	helper.PanicIfError(err)
+	responseimage, err := util.UploadCloudinary(userimage)
+	util.PanicIfError(err)
 
 	users := &entity.Users{
 		Userimage:   responseimage.SecureURL,
@@ -143,10 +154,10 @@ func EditCustomer(ctx context.Context, writer http.ResponseWriter, request *http
 func ProfileCustomer(ctx context.Context, writer http.ResponseWriter, request *http.Request) {
 	var roles string
 	id, cookieerr := request.Cookie("USR_ID")
-	helper.PanicIfError(cookieerr)
+	util.PanicIfError(cookieerr)
 
 	result, resulterr := repository.SelectCustomerById(ctx, id.Value)
-	helper.PanicIfError(resulterr)
+	util.PanicIfError(resulterr)
 
 	if result.Roles == "superuser" {
 		roles = "superuser"

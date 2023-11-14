@@ -5,31 +5,37 @@ import (
 	"encoding/json"
 	"entity"
 	"fmt"
-	"helper"
 	"net/http"
 	"repository"
 	"request"
 	"response"
+	"util"
+
+	"github.com/go-playground/validator"
 )
 
-func AddAddress(ctx context.Context, req request.AddressCustomerRequest, writer http.ResponseWriter, request *http.Request) {
-	if err := req.Validate(); err != nil {
+func AddAddress(ctx context.Context, writer http.ResponseWriter, req *http.Request) {
+	addressRequest := request.AddressCustomerRequest{}
+	err := util.DecodeRequest(req, &addressRequest)
+	util.PanicIfError(err)
+	validate := validator.New()
+	if validateerr := validate.Struct(&addressRequest); validateerr != nil {
 		writer.WriteHeader(400)
-		fmt.Fprint(writer, err)
-
+		writer.Write([]byte(validateerr.Error()))
 		return
 	}
-	resultUserCookie, err := request.Cookie("USR_ID")
-	helper.PanicIfError(err)
+
+	resultUserCookie, err := req.Cookie("USR_ID")
+	util.PanicIfError(err)
 
 	address := entity.Address{
 		UserId:         resultUserCookie.Value,
-		AddressType:    req.AddressType,
-		RecipientName:  req.RecipientName,
-		RecipientPhone: req.RecipientPhone,
-		AddressName:    req.AddressName,
-		PostalCode:     req.PostalCode,
-		City:           req.City,
+		AddressType:    addressRequest.AddressType,
+		RecipientName:  addressRequest.RecipientName,
+		RecipientPhone: addressRequest.RecipientPhone,
+		AddressName:    addressRequest.AddressName,
+		PostalCode:     addressRequest.PostalCode,
+		City:           addressRequest.City,
 	}
 
 	if err := repository.CreateAddress(ctx, &address); err != nil {
@@ -45,26 +51,29 @@ func AddAddress(ctx context.Context, req request.AddressCustomerRequest, writer 
 	fmt.Fprint(writer, registerResponse)
 }
 
-func EditAddress(ctx context.Context, req request.AddressCustomerRequest, writer http.ResponseWriter, request *http.Request) {
-	if err := req.Validate(); err != nil {
+func EditAddress(ctx context.Context, writer http.ResponseWriter, req *http.Request) {
+	addressRequest := request.AddressCustomerRequest{}
+	err := util.DecodeRequest(req, &addressRequest)
+	util.PanicIfError(err)
+	validate := validator.New()
+	if validateerr := validate.Struct(&addressRequest); validateerr != nil {
 		writer.WriteHeader(400)
-		fmt.Fprint(writer, err)
-
+		writer.Write([]byte(validateerr.Error()))
 		return
 	}
 
-	id := request.URL.Query()
-	resultUserCookie, err := request.Cookie("USR_ID")
-	helper.PanicIfError(err)
+	id := req.URL.Query()
+	resultUserCookie, err := req.Cookie("USR_ID")
+	util.PanicIfError(err)
 
 	address := &entity.Address{
 		UserId:         resultUserCookie.Value,
-		AddressType:    req.AddressType,
-		RecipientName:  req.RecipientName,
-		RecipientPhone: req.RecipientPhone,
-		AddressName:    req.AddressName,
-		PostalCode:     req.PostalCode,
-		City:           req.City,
+		AddressType:    addressRequest.AddressType,
+		RecipientName:  addressRequest.RecipientName,
+		RecipientPhone: addressRequest.RecipientPhone,
+		AddressName:    addressRequest.AddressName,
+		PostalCode:     addressRequest.PostalCode,
+		City:           addressRequest.City,
 	}
 
 	if err := repository.UpdateAddress(ctx, *address, id.Get("id")); err != nil {
@@ -85,12 +94,12 @@ func AddressDetail(ctx context.Context, writer http.ResponseWriter, request *htt
 	var resultusererr error
 	id := request.URL.Query()
 	result, resulterr := repository.AddressById(ctx, id.Get("id"))
-	helper.PanicIfError(resulterr)
+	util.PanicIfError(resulterr)
 
 	usrid, iderror := request.Cookie("USR_ID")
-	helper.PanicIfError(iderror)
+	util.PanicIfError(iderror)
 	resultuser, resultusererr = repository.AddressByUser(ctx, usrid.Value)
-	helper.PanicIfError(resultusererr)
+	util.PanicIfError(resultusererr)
 
 	if id.Has("id") {
 		writer.WriteHeader(200)
@@ -114,7 +123,7 @@ func AddressDetail(ctx context.Context, writer http.ResponseWriter, request *htt
 
 	for _, data := range resultuser {
 		_, err := json.MarshalIndent(&data, "", "")
-		helper.PanicIfError(err)
+		util.PanicIfError(err)
 	}
 
 	writer.WriteHeader(200)

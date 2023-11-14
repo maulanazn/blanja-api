@@ -1,4 +1,4 @@
-package test
+package repository_test
 
 import (
 	"config"
@@ -8,21 +8,21 @@ import (
 	"entity"
 	"errors"
 	"fmt"
-	"helper"
 	"log"
 	"repository"
 	"request"
 	"testing"
+	"util"
 )
 
 func TestCreateTableCustomer(t *testing.T) {
 	err := config.GetConnection().AutoMigrate(entity.Users{})
-	helper.PanicIfError(err)
+	util.PanicIfError(err)
 }
 
 func TestCreateTableAddress(t *testing.T) {
 	err := config.GetConnection().AutoMigrate(entity.Address{})
-	helper.PanicIfError(err)
+	util.PanicIfError(err)
 }
 
 func TestGetPassword(t *testing.T) {
@@ -31,7 +31,7 @@ func TestGetPassword(t *testing.T) {
 		Password: "tes123",
 	}
 	result, resultErr := repository.SelectEmailCustomers(context.Background(), string(customerRequest.Email))
-	helper.PanicIfError(resultErr)
+	util.PanicIfError(resultErr)
 
 	fmt.Println(result.Password)
 }
@@ -53,9 +53,9 @@ func TestGetAndVerifyPassword(t *testing.T) {
 		Password: "tes123",
 	}
 	result, resultErr := repository.SelectEmailCustomers(context.Background(), string(customerRequest.Email))
-	helper.PanicIfError(resultErr)
+	util.PanicIfError(resultErr)
 
-	if err := helper.ComparePasswords([]byte(result.Password), []byte(customerRequest.Password)); err != nil {
+	if err := util.ComparePasswords([]byte(result.Password), []byte(customerRequest.Password)); err != nil {
 		log.Fatal(err)
 		return
 	}
@@ -100,11 +100,11 @@ func TestGetAddressByUser(t *testing.T) {
 	var result []entity.Address
 
 	result, err := repository.AddressByUser(context.Background(), "0151cf30fbd5456aa30a3e5af3ccba18")
-	helper.PanicIfError(err)
+	util.PanicIfError(err)
 
 	for _, data := range result {
 		jsonresult, err := json.MarshalIndent(&data, "", "")
-		helper.PanicIfError(err)
+		util.PanicIfError(err)
 		fmt.Println(string(jsonresult))
 	}
 }
@@ -113,10 +113,10 @@ func TestGetAddressById(t *testing.T) {
 	var result entity.Address
 
 	result, resulterr := repository.AddressById(context.Background(), "51ac602e02534e6a813b96c509b9b429")
-	helper.PanicIfError(resulterr)
+	util.PanicIfError(resulterr)
 
 	jsonresult, err := json.MarshalIndent(&result, "", "")
-	helper.PanicIfError(err)
+	util.PanicIfError(err)
 	fmt.Println(string(jsonresult))
 }
 

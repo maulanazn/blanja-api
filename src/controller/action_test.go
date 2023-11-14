@@ -1,15 +1,15 @@
-package test
+package controller_test
 
 import (
 	"controller"
 	"fmt"
-	"helper"
 	"io"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"strings"
 	"testing"
+	"util"
 )
 
 func TestRegister(t *testing.T) {
@@ -161,7 +161,7 @@ func TestEditAddress(t *testing.T) {
 
 func TestUploadCloudinary(t *testing.T) {
 	file, err := os.Open("/home/maulanazn/Pictures/Notification.png")
-	resultimage, err := helper.UploadCloudinary(file)
+	resultimage, err := util.UploadCloudinary(file)
 	if err != nil {
 		panic(err)
 	}

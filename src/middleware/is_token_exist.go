@@ -2,9 +2,9 @@ package middleware
 
 import (
 	"fmt"
-	"helper"
 	"log"
 	"net/http"
+	"util"
 )
 
 type AuthenticateTokenHandler func(http.ResponseWriter, *http.Request)
@@ -16,7 +16,7 @@ type MakesureToken struct {
 func (authenticate *MakesureToken) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	_, err := r.Cookie("USR_ID")
 	authorization := r.Header.Get("Authorization")
-	emailfromtoken := helper.DecodeToken(authorization[7:])
+	emailfromtoken := util.DecodeToken(authorization[7:])
 
 	if err != nil {
 		log.Println(err)

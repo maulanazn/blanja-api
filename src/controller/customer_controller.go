@@ -2,20 +2,13 @@ package controller
 
 import (
 	"fmt"
-	"helper"
 	"net/http"
-	"request"
 	"service"
 )
 
 func RegisterCustomer(writer http.ResponseWriter, req *http.Request) {
 	if req.Method == http.MethodPost {
-		req.Header.Add("Content-Type", "application/json")
-		registerRequest := request.RegisterRequest{}
-		err := helper.DecodeRequest(req, &registerRequest)
-		helper.PanicIfError(err)
-
-		service.CreateCustomer(req.Context(), registerRequest, writer)
+		service.CreateCustomer(req.Context(), writer, req)
 		return
 	}
 
@@ -24,12 +17,7 @@ func RegisterCustomer(writer http.ResponseWriter, req *http.Request) {
 
 func LoginCustomer(writer http.ResponseWriter, req *http.Request) {
 	if req.Method == http.MethodPost {
-		req.Header.Add("Content-Type", "application/json")
-		loginRequest := request.LoginRequest{}
-		err := helper.DecodeRequest(req, &loginRequest)
-		helper.PanicIfError(err)
-
-		service.VerifyCustomer(req.Context(), loginRequest, writer, req)
+		service.VerifyCustomer(req.Context(), writer, req)
 		return
 	}
 
