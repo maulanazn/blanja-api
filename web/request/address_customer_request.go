@@ -1,11 +1,11 @@
 package request
 
 type AddressCustomerRequest struct {
-	CustomerId     string `validate:"uuid4"`
-	AddressType    string `json:"address_type" validate:"alpha"`
-	RecipientName  string `json:"recipient_name" validate:"alpha,alphanum"`
-	RecipientPhone string `json:"recipient_phone" validate:"numeric"`
-	AddressName    string `json:"address_name" validate:"alpha,alphanum"`
-	PostalCode     string `json:"postal_code" validate:"numeric"`
-	City           string `json:"city" validate:"alpha,alphanum"`
+	CustomerId     string `validate:"required,uuid4"`
+	AddressType    string `json:"address_type" validate:"required,alpha"`
+	RecipientName  string `json:"recipient_name" validate:"required,alpha|alphanum"`
+	RecipientPhone string `json:"recipient_phone" validate:"required,numeric"`
+	AddressName    string `json:"address_name" validate:"required,alpha|alphanum,ascii"`
+	PostalCode     string `json:"postal_code" validate:"required,numeric"`
+	City           string `json:"city" validate:"required,alpha|alphanum"`
 }

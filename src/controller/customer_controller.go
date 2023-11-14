@@ -27,7 +27,6 @@ func LoginCustomer(writer http.ResponseWriter, req *http.Request) {
 func EditCustomer(writer http.ResponseWriter, req *http.Request) {
 	switch req.Method {
 	case http.MethodPut:
-		req.Header.Add("Content-Type", "multipart/form-data")
 		service.EditCustomer(req.Context(), writer, req)
 		return
 	case http.MethodGet:

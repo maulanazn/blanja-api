@@ -4,6 +4,8 @@ go 1.21.3
 
 require github.com/cloudinary/cloudinary-go/v2 v2.5.1
 
+require github.com/go-playground/form v3.1.4+incompatible // indirect
+
 require (
 	github.com/creasty/defaults v1.5.1 // indirect
 	github.com/golang-jwt/jwt v3.2.2+incompatible

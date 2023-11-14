@@ -9,17 +9,15 @@ import (
 )
 
 type EditCustomerRequest struct {
-	Userimage   interface{}
-	Username    string
-	Phone       int
-	Gender      string
-	Dateofbirth string
-	Roles       string
+	Username    interface{}
+	Phone       interface{}
+	Gender      interface{}
+	Dateofbirth interface{}
+	Roles       interface{}
 }
 
 func (ecq EditCustomerRequest) Validate() error {
 	return validation.ValidateStruct(&ecq,
-		validation.Field(&ecq.Userimage, is.Alphanumeric),
 		validation.Field(&ecq.Username, validation.Match(regexp.MustCompile("^[a-zA-Z0-9@,.!]{5,50}$"))),
 		validation.Field(&ecq.Phone, is.Digit),
 		validation.Field(&ecq.Gender, validation.In("male", "female")),

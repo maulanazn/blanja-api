@@ -6,27 +6,18 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"regexp"
 	"repository"
 	"request"
 	"response"
 	"util"
 
-	"github.com/albrow/forms"
-	"github.com/go-playground/validator"
 	"golang.org/x/crypto/bcrypt"
 )
 
 func CreateCustomer(ctx context.Context, writer http.ResponseWriter, req *http.Request) {
-	validate := validator.New()
-
 	registerreq := request.RegisterRequest{}
-	err := util.DecodeRequest(req, &registerreq)
-	util.PanicIfError(err)
-
-	if validateerr := validate.Struct(registerreq); validateerr != nil {
-		writer.WriteHeader(400)
-		writer.Write([]byte(validateerr.Error()))
+	if err := util.DecodeRequestAndValidate(writer, req, &registerreq); err != nil {
+		util.PanicIfError(err)
 		return
 	}
 
@@ -60,15 +51,9 @@ func CreateCustomer(ctx context.Context, writer http.ResponseWriter, req *http.R
 }
 
 func VerifyCustomer(ctx context.Context, writer http.ResponseWriter, req *http.Request) {
-	validate := validator.New()
-
 	loginreq := request.LoginRequest{}
-	err := util.DecodeRequest(req, &loginreq)
-	util.PanicIfError(err)
-
-	if validateerr := validate.Struct(loginreq); validateerr != nil {
-		writer.WriteHeader(400)
-		writer.Write([]byte(validateerr.Error()))
+	if err := util.DecodeRequestAndValidate(writer, req, &loginreq); err != nil {
+		util.PanicIfError(err)
 		return
 	}
 
@@ -110,33 +95,30 @@ func VerifyCustomer(ctx context.Context, writer http.ResponseWriter, req *http.R
 	fmt.Fprint(writer, loginResponse)
 }
 
-func EditCustomer(ctx context.Context, writer http.ResponseWriter, request *http.Request) {
-	userdata, formerr := forms.Parse(request)
-	util.PanicIfError(formerr)
-	id, cookieerr := request.Cookie("USR_ID")
-	util.PanicIfError(cookieerr)
+func EditCustomer(ctx context.Context, writer http.ResponseWriter, req *http.Request) {
+	editCustomerRequest := request.EditCustomerRequest{}
+	if err := util.DecodeFormRequestAndValidate(writer, req, editCustomerRequest); err != nil {
+		writer.WriteHeader(500)
+		writer.Write([]byte("Failed to decode"))
+		return
+	}
 
-	userdata.Validator().Require("username")
-	userdata.Validator().Require("roles")
-	userdata.Validator().Require("gender")
-	userdata.Validator().Require("dateofbirth")
-	userdata.Validator().Match("phone", regexp.MustCompile("^[0-9]{3,40}$"))
-	userdata.Validator().AcceptFileExts("userimage", "jpg", "jpeg", "png", "gif")
-	userimage, _, err := request.FormFile("userimage")
+	userimage, _, err := req.FormFile("userimage")
 	util.PanicIfError(err)
-	formatphone, formatphoneerr := util.ConvertStrInt64(userdata.Get("phone"), 10, 64)
+	formatphone, formatphoneerr := util.ConvertStrInt64(editCustomerRequest.Phone, 10, 64)
 	util.PanicIfError(formatphoneerr)
-
 	responseimage, err := util.UploadCloudinary(userimage)
 	util.PanicIfError(err)
+	id, cookieerr := req.Cookie("USR_ID")
+	util.PanicIfError(cookieerr)
 
 	users := &entity.Users{
 		Userimage:   responseimage.SecureURL,
-		Username:    userdata.Get("username"),
-		Roles:       userdata.Get("roles"),
+		Username:    string(editCustomerRequest.Username.(string)),
+		Roles:       string(editCustomerRequest.Roles.(string)),
 		Phone:       formatphone,
-		Gender:      userdata.Get("gender"),
-		Dateofbirth: userdata.Get("dateofbirth"),
+		Gender:      string(editCustomerRequest.Gender.(string)),
+		Dateofbirth: string(editCustomerRequest.Dateofbirth.(string)),
 	}
 
 	if err := repository.UpdateCustomer(ctx, *users, id.Value); err != nil {

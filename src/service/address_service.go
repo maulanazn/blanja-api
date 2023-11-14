@@ -10,18 +10,12 @@ import (
 	"request"
 	"response"
 	"util"
-
-	"github.com/go-playground/validator"
 )
 
 func AddAddress(ctx context.Context, writer http.ResponseWriter, req *http.Request) {
 	addressRequest := request.AddressCustomerRequest{}
-	err := util.DecodeRequest(req, &addressRequest)
-	util.PanicIfError(err)
-	validate := validator.New()
-	if validateerr := validate.Struct(&addressRequest); validateerr != nil {
-		writer.WriteHeader(400)
-		writer.Write([]byte(validateerr.Error()))
+	if err := util.DecodeRequestAndValidate(writer, req, &addressRequest); err != nil {
+		util.PanicIfError(err)
 		return
 	}
 
@@ -53,12 +47,8 @@ func AddAddress(ctx context.Context, writer http.ResponseWriter, req *http.Reque
 
 func EditAddress(ctx context.Context, writer http.ResponseWriter, req *http.Request) {
 	addressRequest := request.AddressCustomerRequest{}
-	err := util.DecodeRequest(req, &addressRequest)
-	util.PanicIfError(err)
-	validate := validator.New()
-	if validateerr := validate.Struct(&addressRequest); validateerr != nil {
-		writer.WriteHeader(400)
-		writer.Write([]byte(validateerr.Error()))
+	if err := util.DecodeRequestAndValidate(writer, req, &addressRequest); err != nil {
+		util.PanicIfError(err)
 		return
 	}
 

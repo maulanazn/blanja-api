@@ -10,23 +10,18 @@ import (
 	"response"
 	"util"
 
-	"github.com/go-playground/validator"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func AddProduct(ctx context.Context, writer http.ResponseWriter, req *http.Request) {
-	validate := validator.New()
 	productreq := request.AddProductRequest{}
-	err := util.DecodeRequest(req, &productreq)
-	util.PanicIfError(err)
+	if err := util.DecodeRequestAndValidate(writer, req, &productreq); err != nil {
+		util.PanicIfError(err)
+		return
+	}
 
 	userid, err := req.Cookie("USR_ID")
 	util.PanicIfError(err)
-	if validateerr := validate.Struct(productreq); validateerr != nil {
-		writer.WriteHeader(400)
-		writer.Write([]byte(validateerr.Error()))
-		return
-	}
 
 	products := &entity.Products{
 		ProductId:   primitive.NewObjectID(),

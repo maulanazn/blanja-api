@@ -1,8 +1,8 @@
 package request
 
 type RegisterRequest struct {
-	Username string `json:"username" validate:"alpha,alphanum"`
-	Email    string `json:"email" validate:"email"`
-	Password string `json:"password" validate:"alpha,alphanum,contains=$%^&*@"`
-	Roles    string `json:"roles" validate:"alpha,alphanum"`
+	Username string `json:"username" validate:"required,alphanum|alpha"`
+	Email    string `json:"email" validate:"required,email"`
+	Password string `json:"password" validate:"required,ascii"`
+	Roles    string `json:"roles" validate:"required,alpha"`
 }
