@@ -50,7 +50,7 @@ func ValidateImage(file multipart.File, header *multipart.FileHeader, writer htt
 	}
 
 	filetype := http.DetectContentType(buff)
-	if filetype != "image/jpeg" && filetype != "image/png" {
+	if filetype != "image/jpeg" && filetype != "image/jpg" && filetype != "image/webp" && filetype != "image/avif" && filetype != "image/png" {
 		log.WithFields(log.Fields{
 			"error": "invalid format",
 		}).Error("Fatal")
@@ -75,4 +75,13 @@ func ConvertStrInt64(data interface{}, base int, bitSize int) (int64, error) {
 	}
 
 	return format, nil
+}
+
+func ConvertStrInt(data interface{}, base int, bitSize int) (int, error) {
+	format, formatErr := strconv.ParseInt(data.(string), base, bitSize)
+	if formatErr != nil {
+		return 0, formatErr
+	}
+
+	return int(format), nil
 }

@@ -2,7 +2,6 @@ package config
 
 import (
 	"context"
-	"fmt"
 	"log"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -25,6 +24,5 @@ func MongoConnection() *mongo.Client {
 		log.Fatal(pingerr)
 	}
 
-	fmt.Println("Connected")
 	return client
 }

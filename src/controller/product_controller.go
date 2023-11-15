@@ -11,5 +11,11 @@ func AddorEditProduct(writer http.ResponseWriter, req *http.Request) {
 	case http.MethodPost:
 		service.AddProduct(context.Background(), writer, req)
 		return
+	case http.MethodGet:
+		service.GetProduct(context.Background(), writer, req)
+		return
+	case http.MethodPut:
+		service.EditProduct(context.Background(), writer, req)
+		return
 	}
 }
