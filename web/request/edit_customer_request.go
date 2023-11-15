@@ -9,11 +9,11 @@ import (
 )
 
 type EditCustomerRequest struct {
-	Username    interface{}
-	Phone       interface{}
-	Gender      interface{}
-	Dateofbirth interface{}
-	Roles       interface{}
+	Username    string
+	Phone       int
+	Gender      string
+	Dateofbirth string
+	Roles       string
 }
 
 func (ecq EditCustomerRequest) Validate() error {

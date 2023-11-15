@@ -96,16 +96,9 @@ func VerifyCustomer(ctx context.Context, writer http.ResponseWriter, req *http.R
 }
 
 func EditCustomer(ctx context.Context, writer http.ResponseWriter, req *http.Request) {
-	editCustomerRequest := request.EditCustomerRequest{}
-	if err := util.DecodeFormRequestAndValidate(writer, req, editCustomerRequest); err != nil {
-		writer.WriteHeader(500)
-		writer.Write([]byte("Failed to decode"))
-		return
-	}
-
 	userimage, _, err := req.FormFile("userimage")
 	util.PanicIfError(err)
-	formatphone, formatphoneerr := util.ConvertStrInt64(editCustomerRequest.Phone, 10, 64)
+	formatphone, formatphoneerr := util.ConvertStrInt64(req.FormValue("phone"), 10, 64)
 	util.PanicIfError(formatphoneerr)
 	responseimage, err := util.UploadCloudinary(userimage)
 	util.PanicIfError(err)
@@ -114,11 +107,11 @@ func EditCustomer(ctx context.Context, writer http.ResponseWriter, req *http.Req
 
 	users := &entity.Users{
 		Userimage:   responseimage.SecureURL,
-		Username:    string(editCustomerRequest.Username.(string)),
-		Roles:       string(editCustomerRequest.Roles.(string)),
+		Username:    req.FormValue("username"),
+		Roles:       req.FormValue("roles"),
 		Phone:       formatphone,
-		Gender:      string(editCustomerRequest.Gender.(string)),
-		Dateofbirth: string(editCustomerRequest.Dateofbirth.(string)),
+		Gender:      req.FormValue("gender"),
+		Dateofbirth: req.FormValue("dateofbirth"),
 	}
 
 	if err := repository.UpdateCustomer(ctx, *users, id.Value); err != nil {
