@@ -21,7 +21,7 @@ func FatalIfError(err error) {
 
 func BadStatusIfError(err error, writer http.ResponseWriter) {
 	if err != nil {
-		failedResponse := response.ToWebResponse(400, "Wrong Password", writer)
+		failedResponse := response.ToWebResponse(400, "Wrong Password")
 		fmt.Fprint(writer, failedResponse)
 		return
 	}

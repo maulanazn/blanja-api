@@ -3,10 +3,13 @@ package util
 import (
 	"encoding/json"
 	"errors"
+	"io"
+	"mime/multipart"
 	"net/http"
 	"strconv"
 
 	"github.com/go-playground/validator"
+	log "github.com/sirupsen/logrus"
 )
 
 const (
@@ -24,6 +27,42 @@ func DecodeRequestAndValidate(writer http.ResponseWriter, req *http.Request, dat
 		writer.WriteHeader(400)
 		writer.Write([]byte(err.Error()))
 		return errors.New(err.Error())
+	}
+
+	return nil
+}
+
+func ValidateImage(file multipart.File, header *multipart.FileHeader, writer http.ResponseWriter) error {
+	if header.Size >= 1024*1024 {
+		http.Error(writer, "Too big!!!", http.StatusBadRequest)
+		return nil
+	}
+
+	defer file.Close()
+
+	buff := make([]byte, 512)
+	_, err := file.Read(buff)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"error": "server failed to process",
+		}).Error("Fatal")
+		return errors.New(err.Error())
+	}
+
+	filetype := http.DetectContentType(buff)
+	if filetype != "image/jpeg" && filetype != "image/png" {
+		log.WithFields(log.Fields{
+			"error": "invalid format",
+		}).Error("Fatal")
+		return errors.New("invalid format")
+	}
+
+	_, seekerr := file.Seek(0, io.SeekStart)
+	if seekerr != nil {
+		log.WithFields(log.Fields{
+			"error": "server failed to process",
+		}).Error("Fatal")
+		return errors.New(seekerr.Error())
 	}
 
 	return nil

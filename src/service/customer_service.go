@@ -33,7 +33,7 @@ func CreateCustomer(ctx context.Context, writer http.ResponseWriter, req *http.R
 
 	if err := repository.CreateCustomer(ctx, &users); err != nil {
 		writer.WriteHeader(403)
-		failedResponse := response.ToWebResponse(403, "Duplicate or something, please repeat process", writer)
+		failedResponse := response.ToWebResponse(403, "Duplicate or something, please repeat process")
 		fmt.Fprint(writer, failedResponse)
 
 		return
@@ -91,17 +91,27 @@ func VerifyCustomer(ctx context.Context, writer http.ResponseWriter, req *http.R
 	http.SetCookie(writer, &userid)
 	writer.Header().Set("Authorization", "Bearer "+res.Token)
 
-	loginResponse := response.ToWebResponse(200, "Successfully Login", writer)
+	loginResponse := response.ToWebResponse(200, "Successfully Login")
 	fmt.Fprint(writer, loginResponse)
 }
 
 func EditCustomer(ctx context.Context, writer http.ResponseWriter, req *http.Request) {
-	userimage, _, err := req.FormFile("userimage")
-	util.PanicIfError(err)
+	userimage, userimageheader, err := req.FormFile("userimage")
+	if err != nil {
+		http.Error(writer, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	if err := util.ValidateImage(userimage, userimageheader, writer); err != nil {
+		failedResponse := response.ToWebResponse(400, err.Error())
+		fmt.Fprint(writer, failedResponse)
+		return
+	}
+
 	formatphone, formatphoneerr := util.ConvertStrInt64(req.FormValue("phone"), 10, 64)
 	util.PanicIfError(formatphoneerr)
 	responseimage, err := util.UploadCloudinary(userimage)
-	util.PanicIfError(err)
+	util.BadStatusIfError(err, writer)
 	id, cookieerr := req.Cookie("USR_ID")
 	util.PanicIfError(cookieerr)
 
@@ -116,13 +126,13 @@ func EditCustomer(ctx context.Context, writer http.ResponseWriter, req *http.Req
 
 	if err := repository.UpdateCustomer(ctx, *users, id.Value); err != nil {
 		writer.WriteHeader(403)
-		failedResponse := response.ToWebResponse(403, "Duplicate or something, please repeat process", writer)
+		failedResponse := response.ToWebResponse(403, "Duplicate or something, please repeat process")
 		fmt.Fprint(writer, failedResponse)
 
 		return
 	}
 
-	customerupdate := response.ToWebResponse(200, "Successfully updated profile", writer)
+	customerupdate := response.ToWebResponse(200, "Successfully updated profile")
 	fmt.Fprint(writer, customerupdate)
 }
 

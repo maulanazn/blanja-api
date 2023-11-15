@@ -34,14 +34,14 @@ func AddAddress(ctx context.Context, writer http.ResponseWriter, req *http.Reque
 
 	if err := repository.CreateAddress(ctx, &address); err != nil {
 		writer.WriteHeader(403)
-		failedResponse := response.ToWebResponse(403, "Duplicate or something, please repeat process", writer)
+		failedResponse := response.ToWebResponse(403, "Duplicate or something, please repeat process")
 		fmt.Fprint(writer, failedResponse)
 
 		return
 	}
 
 	writer.WriteHeader(201)
-	registerResponse := response.ToWebResponse(201, "Successfully create addresss", writer)
+	registerResponse := response.ToWebResponse(201, "Successfully create addresss")
 	fmt.Fprint(writer, registerResponse)
 }
 
@@ -68,14 +68,14 @@ func EditAddress(ctx context.Context, writer http.ResponseWriter, req *http.Requ
 
 	if err := repository.UpdateAddress(ctx, *address, id.Get("id")); err != nil {
 		writer.WriteHeader(403)
-		failedResponse := response.ToWebResponse(403, "Duplicate or something, please repeat process", writer)
+		failedResponse := response.ToWebResponse(403, "Duplicate or something, please repeat process")
 		fmt.Fprint(writer, failedResponse)
 
 		return
 	}
 
 	writer.WriteHeader(200)
-	registerResponse := response.ToWebResponse(200, "Successfully updating addresss", writer)
+	registerResponse := response.ToWebResponse(200, "Successfully updating addresss")
 	fmt.Fprint(writer, registerResponse)
 }
 

@@ -3,7 +3,6 @@ package response
 import (
 	"encoding/json"
 	"log"
-	"net/http"
 )
 
 type WebResponse struct {
@@ -11,8 +10,7 @@ type WebResponse struct {
 	Message string
 }
 
-func ToWebResponse(status int, message interface{}, writer http.ResponseWriter) interface{} {
-	writer.WriteHeader(status)
+func ToWebResponse(status int, message interface{}) interface{} {
 	value, err := json.MarshalIndent(&WebResponse{
 		Status:  status,
 		Message: message.(string),
