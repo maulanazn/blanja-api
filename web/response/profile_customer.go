@@ -11,8 +11,8 @@ type ProfileCustomerData struct {
 }
 
 type ProfileCustomer struct {
-	Status  int
-	Message string
+	Status  int `json:"status"`
+	Message string `json:"message"`
 	Data    ProfileCustomerData
 }
 

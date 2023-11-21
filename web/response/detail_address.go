@@ -6,24 +6,24 @@ import (
 )
 
 type DetailAddressData struct {
-	CustomerId     string
-	AddressType    string
-	RecipientName  string
-	RecipientPhone string
-	AddressName    string
-	PostalCode     string
-	City           string
+	CustomerId     string `json:"customer_id"`
+	AddressType    string `json:"address_type"`
+	RecipientName  string `json:"recipient_name"`
+	RecipientPhone string `json:"recipient_phone"`
+	AddressName    string `json:"address_name"`
+	PostalCode     string `json:"postal_code"`
+	City           string `json:"city"`
 }
 
 type DetailAddressById struct {
-	Status  int
-	Message string
+	Status  int `json:"status"`
+	Message string `json:"message"`
 	Data    DetailAddressData
 }
 
 type DetailAddress struct {
-	Status  int
-	Message string
+	Status  int `json:"status"`
+	Message string `json:"message"`
 	Data    []entity.Address
 }
 

@@ -9,8 +9,8 @@ type Data struct {
 }
 
 type RegisterResponse struct {
-	Status  int
-	Message string
+	Status  int `json:"status"`
+	Message string `json:"message"`
 	Data    Data
 }
 

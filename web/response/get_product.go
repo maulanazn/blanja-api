@@ -6,16 +6,34 @@ import (
 )
 
 type GetProducts struct {
-	Status  int
-	Message string
-	Data    entity.Products
+	Status  int `json:"status"`
+	Message string `json:"message"` 
+	Data []entity.Products
 }
 
-func ToGetProducts(status int, message string, data entity.Products) string {
+type GetProduct struct {
+	Status  int `json:"status"`
+	Message string `json:"message"` 
+	Data entity.Products
+}
+
+func ToGetProducts(status int, message string, product GetProducts) string {
 	value, err := json.MarshalIndent(&GetProducts{
 		Status:  status,
 		Message: string(message),
-		Data:    data,
+		Data: product.Data,
+	}, "", "\t")
+	if err != nil {
+		panic(err)
+	}
+	return string(value)
+}
+
+func ToGetProduct(status int, message string, product GetProduct) string {
+	value, err := json.MarshalIndent(&GetProduct{
+		Status:  status,
+		Message: string(message),
+		Data: product.Data,
 	}, "", "\t")
 	if err != nil {
 		panic(err)

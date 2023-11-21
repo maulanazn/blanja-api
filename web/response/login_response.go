@@ -3,12 +3,12 @@ package response
 import "encoding/json"
 
 type Token struct {
-	Token string
+	Token string `json:"token"`
 }
 
 type LoginResponse struct {
-	Status  int
-	Message string
+	Status  int `json:"status"`
+	Message string `json:"message"`
 	Data    Token
 }
 
