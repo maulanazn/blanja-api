@@ -1,13 +1,17 @@
 package config
 
 import (
+	"fmt"
+	"util"
+
+	"github.com/spf13/viper"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
 func GetConnection() *gorm.DB {
-	// dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s TimeZone=%s", os.Getenv("DB_HOST"), os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_NAME"), os.Getenv("DB_PORT"), os.Getenv("DB_SSLMODE"), os.Getenv("DB_TIMEZONE"))
-	dsn := "host=localhost user=maulanazn password=maulanazn123 dbname=maulanazn port=5432 sslmode=disable TimeZone=Asia/Jakarta"
+  var viper *viper.Viper = util.LoadConfig(".", "blanja.yaml", "yaml")
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=%s TimeZone=%s", viper.GetString("database.dbhost"), viper.GetString("database.dbuser"), viper.GetString("database.dbpassword"), viper.GetString("database.dbname"), viper.GetInt("database.dbport"), viper.GetString("database.dbsslmode"), viper.GetString("database.dbtimezone"))
 
 	db, err := gorm.Open(postgres.New(postgres.Config{
 		DSN:                  dsn,

@@ -1,13 +1,13 @@
 use (
 	./config
-	./db/entity
-	./db/repository
-	./src/controller
-	./src/middleware
-	./src/service
+	./entity
+	./repository
+	./controller
+	./middleware
+	./service
 	./util
-	./web/request
-	./web/response
+	./request
+	./response
 )
 
 go 1.21.4

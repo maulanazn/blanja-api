@@ -14,21 +14,6 @@ services:
       - blanja-network
     env_file:
       - .env
-    environment:
-      - DB_HOST=${DB_HOST}
-      - DB_PORT=${DB_PORT}
-      - DB_USER=${DB_USER}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DB_NAME=${DB_NAME}
-      - DB_SSLMODE=${DB_SSLMODE}
-      - DB_TIMEZONE=${DB_TIMEZONE}
-      - CLOUDINARY_URL=${CLOUDINARY_URL}
-      - CLOUDINARY_FOLDER=${CLOUDINARY_FOLDER}
-      - JWT_KEY=${JWT_KEY}
-      - MONGO_DB_USER=${MONGO_DB_USER}
-      - MONGO_DB_PASS=${MONGO_DB_PASS}
-      - MONGO_DB_HOST=${MONGO_DB_HOST}
-      - MONGO_DB_PORT=${MONGO_DB_PORT}
     depends_on:
       - blanjaserver-pg
       - blanjaserver-mongo

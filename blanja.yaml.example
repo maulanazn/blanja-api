@@ -1,0 +1,17 @@
+database:
+  dbhost: "yourhost"
+  dbuser: "youruser"
+  dbpassword: "yourpassword"
+  dbname: "yourdbname"
+  dbport: integer
+  dbsslmode: "isyours?"
+  dbtimezone: "isityourtime?"
+  mongodbuser: "youruser"
+  mongodbpassword: "yourdb"
+  mongodbhost: "yourdbhost"
+  mongodbport: integer
+thirdparty:
+  cloudinaryurl: "yoururl"
+  cloudinaryfolder: "yourfolder"
+secret:
+  jwtkey: "yourkey"

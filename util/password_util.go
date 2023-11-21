@@ -2,11 +2,11 @@ package util
 
 import (
 	"entity"
-	"os"
 	"request"
 	"time"
 
 	"github.com/golang-jwt/jwt"
+	"github.com/spf13/viper"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -34,11 +34,11 @@ func ComparePasswords(hashedPwd, plainPwd []byte) error {
 	return nil
 }
 
-func GenerateToken(users entity.Users, data interface{}) string {
-	os.Setenv("JWT_KEY", "tes123kjsdf0223j")
+var viperconfig *viper.Viper = LoadConfig("./../", "blanja.yaml", "yaml")
 
+func GenerateToken(users entity.Users, data interface{}) string {
 	generateToken := jwt.NewWithClaims(jwt.SigningMethodHS512, claims)
-	token, err := generateToken.SignedString([]byte(os.Getenv("JWT_KEY")))
+	token, err := generateToken.SignedString([]byte(viperconfig.GetString("secret.jwtkey")))
 	PanicIfError(err)
 
 	return token
@@ -46,7 +46,7 @@ func GenerateToken(users entity.Users, data interface{}) string {
 
 func DecodeToken(token string) string {
 	jwt.ParseWithClaims(token, claims, func(tkn *jwt.Token) (interface{}, error) {
-		return []byte(os.Getenv("JWT_KEY")), nil
+		return []byte(viperconfig.GetString("secret.jwtkey")), nil
 	})
 
 	return claims.email
