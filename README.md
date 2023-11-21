@@ -8,36 +8,42 @@
 
 <div align="center">
     This part built with some common technology, such as:
-    <ul>
-        <li><a href="https://go.dev"><img src="https://github.com/devicons/devicon/blob/master/icons/go/go-original.svg" alt="Golang" width="230"></a></li>
-        <li><a href="https://www.postgresql.org/"><img src="https://github.com/devicons/devicon/blob/master/icons/postgresql/postgresql-original.svg" alt="postgresql" width="230"></a></li>
-        <li><a href="https://www.docker.com/"><img src="https://github.com/devicons/devicon/blob/master/icons/docker/docker-original.svg" alt="Docker" width="230"></a></li>
-    </ul>
+    <br/>
+    <a href="https://go.dev"><img src="https://github.com/devicons/devicon/blob/master/icons/go/go-original.svg" alt="Golang" width="120"></a>
+    ø
+    <a href="https://www.postgresql.org/"><img src="https://github.com/devicons/devicon/blob/master/icons/postgresql/postgresql-original.svg" alt="postgresql" width="120"></a>
+    ø
+    <a href="https://www.docker.com/"><img src="https://github.com/devicons/devicon/blob/master/icons/docker/docker-original.svg" alt="Docker" width="120"></a>
+    ø
+    <a href="https://www.mongodb.com/"><img src="https://github.com/devicons/devicon/blob/master/icons/mongodb/mongodb-original-wordmark.svg" alt="MongoDB" width="120"></a>
+    <br/>
     And other library, such as Cloudinary, and Gorm, also any other library check the go.sum file.
 </div>
 
 ## Prerequisite:
 - Computer
 - Internet
-- Go-Lang
-- PostgreSQL
-- Docker
+- Go-Lang (optional if docker installed)
+- PostgreSQL (optional if docker installed)
+- MongoDB (optional if docker installed)
+- Docker (optional if you hate docker)
 
 ## Installation:
 1. Clone the project 
 ```sh
-    git clone https://github.com/maulanazn/userboilerplate-api
+    git clone https://github.com/maulanazn/blanja-api
 ```
-3. Copy .env.example and paste it as config.env file, then Configurate it as Linux and MacOS like:
+2. Copy .env.example and paste it as config.env file, then Configurate it as Linux and MacOS like:
 ```sh
     cd <Project>/ && cp .env.example .env
 ```
+3. Copy blanja.yaml.example and paste it as blanja.yaml file, then Configurate it as Linux and MacOS like:
+```sh
+    cd <Project>/ && cp blanja.yaml.example blanja.yaml 
+```
 
 ## Running without docker:
-1. Execute this in wsl terminal or your terminal (linux or macos)
-```sh
-    export DB_HOST=<your_host> export DB_USER=<your_user> export DB_PASSWORD=<your_pass> export DB_NAME=<your_db> export DB_PORT=<your_port> export DB_SSLMODE=<ssl_or_not> export DB_TIMEZONE=<your_timezone> export CLOUDINARY_URL=<your_url> export CLOUDINARY_FOLDER=<your_folder> export JWT_KEY=<your_key>
-``` 
+1. Copy and paste the configuration like above, and then configurate it
 2. Run hot with:
 ```sh
     make dev
