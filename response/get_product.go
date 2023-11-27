@@ -20,7 +20,7 @@ type GetProduct struct {
 func ToGetProducts(status int, message string, product GetProducts) string {
 	value, err := json.MarshalIndent(&GetProducts{
 		Status:  status,
-		Message: string(message),
+		Message: message,
 		Data: product.Data,
 	}, "", "\t")
 	if err != nil {
@@ -32,7 +32,7 @@ func ToGetProducts(status int, message string, product GetProducts) string {
 func ToGetProduct(status int, message string, product GetProduct) string {
 	value, err := json.MarshalIndent(&GetProduct{
 		Status:  status,
-		Message: string(message),
+		Message: message,
 		Data: product.Data,
 	}, "", "\t")
 	if err != nil {

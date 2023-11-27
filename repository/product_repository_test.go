@@ -11,14 +11,11 @@ import (
 )
 
 func TestGetUserProduct(t *testing.T) {
-	cursor, err := repository.SelectUserProduct(context.Background(), "39a66aa8-9db3-4f3b-9e92-a714308b601a")
-	if err != nil {
-		log.Println(err)	
-	}
+	cursor := repository.SelectUserProduct(context.Background(), "39a66aa8-9db3-4f3b-9e92-a714308b601a")
 	
 	var result []bson.M
-	if err = cursor.All(context.Background(), &result); err != nil {
-		log.Println(err)
+	if err := cursor.All(context.Background(), &result); err != nil {
+		log.Println(err.Error())
 	} 
 
 	for _, data := range result {

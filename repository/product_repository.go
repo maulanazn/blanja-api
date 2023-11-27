@@ -20,6 +20,10 @@ func CreateProduct(ctx context.Context, product entity.Products) error {
 	_, err := queryCreateProduct.InsertOne(ctx, entity.Products{
 		ProductId:   primitive.NewObjectID(),
 		UserId:      product.UserId,
+		CategoryName: product.CategoryName,
+		BrandName: product.BrandName,
+		ColorName: product.ColorName,
+		SizeName: product.SizeName,
 		Image:       product.Image,
 		ProductName: product.ProductName,
 		Rating:      product.Rating,
@@ -44,13 +48,17 @@ func UpdateProduct(ctx context.Context, id string, product entity.Products) erro
   filterid := bson.M{"_id": productid}
   productdata := bson.D{
     {"$set", bson.D{
+	    {"category_name", product.CategoryName},
+	    {"brand_name", product.BrandName},
+	    {"color_name", product.ColorName},
+	    {"size_name", product.SizeName},
       {"image", product.Image}, 
       {"productname", product.ProductName},  
       {"rating", product.Rating}, 
       {"price", product.Price}, 
       {"quantity", product.Quantity},
   }}} 
-
+	
 	queryUpdateProduct := config.MongoConnection().Database("maulanazn").Collection("products")
   _, err := queryUpdateProduct.UpdateOne(ctx, filterid, productdata)
 	if err != nil {
@@ -59,11 +67,11 @@ func UpdateProduct(ctx context.Context, id string, product entity.Products) erro
 	return nil
 }
 
-func SelectUserProduct(ctx context.Context, user_id string) *mongo.Cursor {
+func SelectUserProduct(ctx context.Context, userId string) *mongo.Cursor {
 	ctx, timeout := context.WithTimeout(ctx, 8*time.Second)
 	defer timeout()
 
-	filter := bson.D{{"userid", user_id}}
+	filter := bson.D{{"userid", userId}}
 
 	queryUpdateProduct := config.MongoConnection().Database("maulanazn").Collection("products")
 	cursor, err := queryUpdateProduct.Find(ctx, filter)
@@ -74,8 +82,8 @@ func SelectUserProduct(ctx context.Context, user_id string) *mongo.Cursor {
 	return cursor
 }
 
-func SelectProduct(ctx context.Context, id string) entity.Products {
-  productid, err := primitive.ObjectIDFromHex(id)
+func SelectProduct(ctx context.Context, id string) *entity.Products {
+  productId, err := primitive.ObjectIDFromHex(id)
   if err != nil {
     log.Println(err)
   }
@@ -83,11 +91,14 @@ func SelectProduct(ctx context.Context, id string) entity.Products {
 	ctx, timeout := context.WithTimeout(ctx, 8*time.Second)
 	defer timeout()
 
-	filter := bson.D{{"_id", productid}}
-  var result entity.Products
+	filter := bson.D{{"_id", productId}}
+	// CAUSE PROBLEM
+  var result *entity.Products
 
 	queryGetSingle := config.MongoConnection().Database("maulanazn").Collection("products")
-	queryGetSingle.FindOne(ctx, filter).Decode(&result)
+	if err := queryGetSingle.FindOne(ctx, filter).Decode(&result); err != nil {
+		log.Println(err)
+	}
 
   return result
 }

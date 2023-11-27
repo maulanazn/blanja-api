@@ -2,6 +2,7 @@ package controller
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"service"
 )
@@ -18,6 +19,8 @@ func AddOrEditAddress(writer http.ResponseWriter, req *http.Request) {
 		service.AddressDetail(req.Context(), writer, req)
 		return
 	}
-
-	fmt.Fprint(writer, "Get is not available")
+	
+	if _, err := fmt.Fprint(writer, "Get is not available"); err != nil {
+		log.Println(err.Error())
+	}
 }

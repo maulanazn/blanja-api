@@ -17,7 +17,7 @@ type RegisterResponse struct {
 func ToResponseData(status int, message string, data Data) string {
 	value, err := json.MarshalIndent(&RegisterResponse{
 		Status:  status,
-		Message: string(message),
+		Message: message,
 		Data:    data,
 	}, "", "")
 	if err != nil {

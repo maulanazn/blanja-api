@@ -1,27 +1,18 @@
 package util
 
 import (
-	"entity"
-	"request"
+	"net/http"
 	"time"
 
 	"github.com/golang-jwt/jwt"
-	"github.com/spf13/viper"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type Claims struct {
 	jwt.StandardClaims
-	email string
+  Id string
 }
 
-var loginRequest request.LoginRequest
-var claims *Claims = &Claims{
-	StandardClaims: jwt.StandardClaims{
-		ExpiresAt: TOKEN_EXP,
-	},
-	email: loginRequest.Email,
-}
 
 const TOKEN_EXP = int64(30 * time.Minute)
 
@@ -34,20 +25,36 @@ func ComparePasswords(hashedPwd, plainPwd []byte) error {
 	return nil
 }
 
-var viperconfig *viper.Viper = LoadConfig("./../", "blanja.yaml", "yaml")
+// var viperconfig *viper.Viper = LoadConfig("./../", "blanja.yaml", "yaml")
 
-func GenerateToken(users entity.Users, data interface{}) string {
-	generateToken := jwt.NewWithClaims(jwt.SigningMethodHS512, claims)
-	token, err := generateToken.SignedString([]byte(viperconfig.GetString("secret.jwtkey")))
+func GenerateToken(userid string, data interface{}) string {
+	generateToken := jwt.NewWithClaims(jwt.SigningMethodHS512, &Claims{
+	  StandardClaims: jwt.StandardClaims{
+		  ExpiresAt: TOKEN_EXP,
+	  },
+    Id: userid,
+  })
+	// token, err := generateToken.SignedString([]byte(viperconfig.GetString("secret.jwtkey")))
+	// PanicIfError(err)
+	token, err := generateToken.SignedString([]byte("testing123"))
 	PanicIfError(err)
 
 	return token
 }
 
-func DecodeToken(token string) string {
+func DecodeToken(token string, req *http.Request) string {
+  userid, err := req.Cookie("USR_ID")
+  PanicIfError(err)
+  var claims *Claims = &Claims{
+	  StandardClaims: jwt.StandardClaims{
+		  ExpiresAt: TOKEN_EXP,
+	  },
+    Id: userid.Value,
+  }
+
 	jwt.ParseWithClaims(token, claims, func(tkn *jwt.Token) (interface{}, error) {
-		return []byte(viperconfig.GetString("secret.jwtkey")), nil
+		return []byte("testing123"), nil
 	})
 
-	return claims.email
+	return claims.Id
 }

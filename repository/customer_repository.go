@@ -4,7 +4,7 @@ import (
 	"config"
 	"context"
 	"database/sql"
-	entity "entity"
+	"entity"
 	"time"
 )
 
@@ -20,7 +20,7 @@ func CreateCustomer(ctx context.Context, data interface{}) error {
 
 func UpdateCustomer(ctx context.Context, data entity.Users, id string) error {
 	config.GetConnection().WithContext(ctx).Begin()
-	config.GetConnection().WithContext(context.Background()).Model(&data).Where("id = @id", sql.Named("id", id)).Updates(entity.Users{Id: id, Userimage: data.Userimage, Username: data.Username, Email: data.Email, Phone: data.Phone, Gender: data.Gender, Dateofbirth: data.Dateofbirth, Password: data.Password, Roles: data.Roles, UpdatedAt: time.Now()})
+	config.GetConnection().WithContext(context.Background()).Model(&data).Where("id = @id", sql.Named("id", id)).Updates(entity.Users{Id: id, UserImage: data.UserImage, Username: data.Username, Email: data.Email, Phone: data.Phone, Gender: data.Gender, DateOfBirth: data.DateOfBirth, Password: data.Password, Roles: data.Roles, UpdatedAt: time.Now()})
 	config.GetConnection().WithContext(ctx).Commit()
 
 	return nil

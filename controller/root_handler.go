@@ -2,9 +2,12 @@ package controller
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 )
 
 func RootHandler(writer http.ResponseWriter, req *http.Request) {
-	fmt.Fprint(writer, "User boiler plate backend")
+	if _, err := fmt.Fprint(writer, "User boiler plate backend"); err != nil {
+		log.Println(err.Error())
+	}
 }

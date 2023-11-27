@@ -15,7 +15,7 @@ type LoginResponse struct {
 func ToResponseToken(status int, message string, token Token) string {
 	value, err := json.MarshalIndent(&LoginResponse{
 		Status:  status,
-		Message: string(message),
+		Message: message,
 		Data:    token,
 	}, "", "")
 	if err != nil {

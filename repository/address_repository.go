@@ -20,11 +20,11 @@ func AddressById(ctx context.Context, id string) (entity.Address, error) {
 	return result, nil
 }
 
-func AddressByUser(ctx context.Context, user_id string) ([]entity.Address, error) {
+func AddressByUser(ctx context.Context, userId string) ([]entity.Address, error) {
 	var result []entity.Address
 
 	config.GetConnection().Begin()
-	if err := config.GetConnection().WithContext(ctx).Find(&result).Where("user_id = @user_id", sql.Named("user_id", user_id)).Error; err != nil {
+	if err := config.GetConnection().WithContext(ctx).Find(&result).Where("user_id = @user_id", sql.Named("user_id", userId)).Error; err != nil {
 		config.GetConnection().Rollback()
 	}
 	config.GetConnection().Commit()

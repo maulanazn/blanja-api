@@ -19,7 +19,7 @@ type ProfileCustomer struct {
 func ToProfileCustomer(status int, message string, data ProfileCustomer) string {
 	value, err := json.MarshalIndent(&ProfileCustomer{
 		Status:  status,
-		Message: string(message),
+		Message: message,
 		Data: ProfileCustomerData{
 			Userimage:   data.Data.Userimage,
 			Username:    data.Data.Username,

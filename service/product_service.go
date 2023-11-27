@@ -14,110 +14,112 @@ import (
 )
 
 func AddProduct(ctx context.Context, writer http.ResponseWriter, req *http.Request) {
-	productimage, productimageheader, err := req.FormFile("image")
+	productImage, productImageHeader, err := req.FormFile("image")
 	if err != nil {
 		http.Error(writer, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	if err := util.ValidateImage(productimage, productimageheader, writer); err != nil {
+	if err := util.ValidateImage(productImage, productImageHeader, writer); err != nil {
 		failedResponse := response.ToWebResponse(400, err.Error())
-		fmt.Fprint(writer, failedResponse)
+		_, err := fmt.Fprint(writer, failedResponse)
+		if err != nil {
+			log.Println(err)
+		}
 		return
 	}
 
-	responseimage, err := util.UploadCloudinary(productimage)
-	util.BadStatusIfError(err, writer)
+	responseImage, responseImageErr := util.UploadCloudinary(productImage)
+	util.BadStatusIfError(responseImageErr, writer)
 
-	userid, err := req.Cookie("USR_ID")
-	util.PanicIfError(err)
-
-	rating, ratingerr := util.ConvertStrInt(req.FormValue("rating"), 10, 64)
-	util.PanicIfError(ratingerr)
-	price, priceerr := util.ConvertStrInt(req.FormValue("price"), 10, 64)
-	util.PanicIfError(priceerr)
-	quantity, quantityerr := util.ConvertStrInt(req.FormValue("quantity"), 10, 64)
-	util.PanicIfError(quantityerr)
+	userid, userIdErr := req.Cookie("USR_ID")
+	util.PanicIfError(userIdErr)
 
 	products := &entity.Products{
 		ProductId:   primitive.NewObjectID(),
 		UserId:      userid.Value,
-		Image:       responseimage.SecureURL,
+		Image:       responseImage.SecureURL,
 		ProductName: req.FormValue("product_name"),
-		Rating:      rating,
-		Price:       price,
-		Quantity:    quantity,
+		Rating:      util.ConvertStrInt(req.FormValue("rating"), 10, 64),
+		Price:       util.ConvertStrInt(req.FormValue("price"), 10, 64),
+		Quantity:    util.ConvertStrInt(req.FormValue("quantity"), 10, 64),
 	}
 
-	if err := repository.CreateProduct(context.TODO(), *products); err != nil {
+	if err := repository.CreateProduct(ctx, *products); err != nil {
 		writer.WriteHeader(500)
-		writer.Write([]byte("Failed to insert, check again later"))
+		if _, err := writer.Write([]byte("Failed to insert, check again later")); err != nil {
+			log.Println(err)
+		}
 		return
 	}
 
 	writer.WriteHeader(201)
 	registerResponse := response.ToWebResponse(201, "Successfully create products")
-	fmt.Fprint(writer, registerResponse)
+	if _, err := fmt.Fprint(writer, registerResponse); err != nil {
+		log.Println(err)
+	}
 }
 
 func EditProduct(ctx context.Context, writer http.ResponseWriter, req *http.Request) {
 	queryParam := req.URL.Query()
-	productimage, productimageheader, err := req.FormFile("image")
+	productImage, productImageHeader, err := req.FormFile("image")
 	if err != nil {
 		http.Error(writer, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	if err := util.ValidateImage(productimage, productimageheader, writer); err != nil {
+	if err := util.ValidateImage(productImage, productImageHeader, writer); err != nil {
 		failedResponse := response.ToWebResponse(400, err.Error())
-		fmt.Fprint(writer, failedResponse)
+		if _, err := fmt.Fprint(writer, failedResponse); err != nil {
+			log.Println(err)
+		}
 		return
 	}
 
-	responseimage, err := util.UploadCloudinary(productimage)
-	util.BadStatusIfError(err, writer)
-
-	rating, ratingerr := util.ConvertStrInt(req.FormValue("rating"), 10, 64)
-	util.PanicIfError(ratingerr)
-	price, priceerr := util.ConvertStrInt(req.FormValue("price"), 10, 64)
-	util.PanicIfError(priceerr)
-	quantity, quantityerr := util.ConvertStrInt(req.FormValue("quantity"), 10, 64)
-	util.PanicIfError(quantityerr)
+	responseImage, responseImageErr := util.UploadCloudinary(productImage)
+	util.BadStatusIfError(responseImageErr, writer)
 
 	products := &entity.Products{
-		Image:       responseimage.SecureURL,
+		Image:       responseImage.SecureURL,
 		ProductName: req.FormValue("product_name"),
-		Rating:      rating,
-		Price:       price,
-		Quantity:    quantity,
+		Rating:      util.ConvertStrInt(req.FormValue("rating"), 10, 64),
+		Price:       util.ConvertStrInt(req.FormValue("price"), 10, 64),
+		Quantity:    util.ConvertStrInt(req.FormValue("quantity"), 10, 64),
 	}
 
-	if err := repository.UpdateProduct(context.TODO(), queryParam.Get("id"), *products); err != nil {
+	if queryErr := repository.UpdateProduct(ctx, queryParam.Get("id"), *products); queryErr != nil {
  		writer.WriteHeader(400)
-	 	writer.Write([]byte("Failed to update, check again later"))
+		if _, err := writer.Write([]byte("Failed to update, check again later")); err != nil {
+			log.Println(err)
+		}
 	 	return
 	}
 
 	writer.WriteHeader(201)
 	updateProductResponse := response.ToWebResponse(201, "Successfully update product")
-	fmt.Fprint(writer, updateProductResponse)
+	if _, err := fmt.Fprint(writer, updateProductResponse); err != nil {
+		log.Println(err)
+	}
 }
 
 func GetProduct(ctx context.Context, writer http.ResponseWriter, req *http.Request) {
 	queryParam := req.URL.Query()
-  userid, useriderr := req.Cookie("USR_ID")
-  if useriderr != nil {
-    log.Println(useriderr)
+  userid, userIdErr := req.Cookie("USR_ID")
+  if userIdErr != nil {
+    log.Println(userIdErr.Error())
   }
 
 	if queryParam.Has("id") {
     result := repository.SelectProduct(ctx, queryParam.Get("id"))
 
     productIdResponse := response.ToGetProduct(200, "Success get requested product", response.GetProduct{
-      Data: result,
+      Data: *result,
     })
-
-    fmt.Fprint(writer, productIdResponse)
+		
+		_, err := fmt.Fprint(writer, productIdResponse);
+		if err != nil {
+			log.Println(err.Error())
+		}
 		return
 	}	
 	  
@@ -126,12 +128,14 @@ func GetProduct(ctx context.Context, writer http.ResponseWriter, req *http.Reque
 	cursor := repository.SelectUserProduct(ctx, userid.Value)
 
   if err := cursor.All(ctx, &products); err != nil {
-    writer.Write([]byte("Failed to get product data"))
+    log.Println(writer.Write([]byte("Failed to get product data")))
     return
   }
 
   userProductResponse := response.ToGetProducts(200, "Success get all product", response.GetProducts{
     Data: products,
   })
-  fmt.Fprint(writer, userProductResponse)
+	if _, err := fmt.Fprint(writer, userProductResponse); err != nil {
+		log.Println(err.Error())
+	}
 }

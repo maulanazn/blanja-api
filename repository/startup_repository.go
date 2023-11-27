@@ -3,8 +3,11 @@ package repository
 import (
 	"config"
 	"entity"
+	"log"
 )
 
 func InitDBPostgreSQL() {
-	config.GetConnection().AutoMigrate(&entity.Users{}, &entity.Address{})
+	if err := config.GetConnection().AutoMigrate(&entity.Users{}, &entity.Address{}, &entity.Wishlist{}); err != nil {
+		log.Println(err.Error())
+	}
 }

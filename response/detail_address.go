@@ -30,7 +30,7 @@ type DetailAddress struct {
 func ToDetailAddress(status int, message string, data DetailAddress) string {
 	value, err := json.MarshalIndent(&DetailAddress{
 		Status:  status,
-		Message: string(message),
+		Message: message,
 		Data:    data.Data,
 	}, "", "\t")
 	if err != nil {
@@ -42,7 +42,7 @@ func ToDetailAddress(status int, message string, data DetailAddress) string {
 func ToDetailAddressById(status int, message string, data DetailAddressById) string {
 	value, err := json.MarshalIndent(&DetailAddressById{
 		Status:  status,
-		Message: string(message),
+		Message: message,
 		Data: DetailAddressData{
 			CustomerId:     data.Data.CustomerId,
 			AddressType:    data.Data.AddressType,

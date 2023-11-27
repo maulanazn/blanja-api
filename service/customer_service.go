@@ -4,6 +4,7 @@ import (
 	"context"
 	"entity"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"repository"
@@ -15,26 +16,28 @@ import (
 )
 
 func CreateCustomer(ctx context.Context, writer http.ResponseWriter, req *http.Request) {
-	registerreq := request.RegisterRequest{}
-	if err := util.DecodeRequestAndValidate(writer, req, &registerreq); err != nil {
+	registerReq := request.RegisterRequest{}
+	if err := util.DecodeRequestAndValidate(writer, req, &registerReq); err != nil {
 		util.PanicIfError(err)
 		return
 	}
 
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(registerreq.Password), 10)
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(registerReq.Password), 10)
 	util.PanicIfError(err)
 
 	users := entity.Users{
-		Username: registerreq.Username,
-		Email:    registerreq.Email,
+		Username: registerReq.Username,
+		Email:    registerReq.Email,
 		Password: string(hashedPassword),
-		Roles:    registerreq.Roles,
+		Roles:    registerReq.Roles,
 	}
 
 	if err := repository.CreateCustomer(ctx, &users); err != nil {
 		writer.WriteHeader(403)
 		failedResponse := response.ToWebResponse(403, "Duplicate or something, please repeat process")
-		fmt.Fprint(writer, failedResponse)
+		if _, err := fmt.Fprint(writer, failedResponse); err != nil {
+			log.Println(err.Error())
+		}
 
 		return
 	}
@@ -47,36 +50,43 @@ func CreateCustomer(ctx context.Context, writer http.ResponseWriter, req *http.R
 
 	writer.WriteHeader(201)
 	registerResponse := response.ToResponseData(201, "Successfully Registered", res)
-	fmt.Fprint(writer, registerResponse)
+	if _, err := fmt.Fprint(writer, registerResponse); err != nil {
+		log.Println(err.Error())
+	}
 }
 
 func VerifyCustomer(ctx context.Context, writer http.ResponseWriter, req *http.Request) {
-	loginreq := request.LoginRequest{}
-	if err := util.DecodeRequestAndValidate(writer, req, &loginreq); err != nil {
+	loginReq := request.LoginRequest{}
+	if err := util.DecodeRequestAndValidate(writer, req, &loginReq); err != nil {
 		util.PanicIfError(err)
 		return
 	}
 
-	users := entity.Users{
-		Email:    loginreq.Email,
-		Password: loginreq.Password,
-	}
-
-	result, resultErr := repository.SelectEmailCustomers(ctx, loginreq.Email)
+	result, resultErr := repository.SelectEmailCustomers(ctx, loginReq.Email)
 	util.PanicIfError(resultErr)
-	if loginreq.Email != result.Email {
+
+	users := entity.Users{
+    Id: result.Id,
+		Email:    loginReq.Email,
+	}
+
+	if loginReq.Email != result.Email {
 		writer.WriteHeader(http.StatusBadRequest)
-		fmt.Fprint(writer, "Wrong Email")
+		if _, err := fmt.Fprint(writer, "Wrong Email"); err != nil {
+			log.Println(err.Error())
+		}
 		return
 	}
 
-	if err := util.ComparePasswords([]byte(result.Password), []byte(loginreq.Password)); err != nil {
+	if err := util.ComparePasswords([]byte(result.Password), []byte(loginReq.Password)); err != nil {
 		writer.WriteHeader(http.StatusUnauthorized)
-		fmt.Fprint(writer, "Wrong Password")
+		if _, err := fmt.Fprint(writer, "Wrong Password"); err != nil {
+			log.Println(err.Error())
+		}
 		return
 	}
 
-	token := util.GenerateToken(users, os.Getenv("JWT_KEY"))
+	token := util.GenerateToken(users.Id, os.Getenv("JWT_KEY"))
 	res := response.Token{
 		Token: token,
 	}
@@ -92,57 +102,65 @@ func VerifyCustomer(ctx context.Context, writer http.ResponseWriter, req *http.R
 	writer.Header().Set("Authorization", "Bearer "+res.Token)
 
 	loginResponse := response.ToWebResponse(200, "Successfully Login")
-	fmt.Fprint(writer, loginResponse)
+	if _, err := fmt.Fprint(writer, loginResponse); err != nil {
+		log.Println(err.Error())
+	}
 }
 
 func EditCustomer(ctx context.Context, writer http.ResponseWriter, req *http.Request) {
-	userimage, userimageheader, err := req.FormFile("userimage")
+	userImage, userImageHeader, err := req.FormFile("userimage")
 	if err != nil {
 		http.Error(writer, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	if err := util.ValidateImage(userimage, userimageheader, writer); err != nil {
+	if err := util.ValidateImage(userImage, userImageHeader, writer); err != nil {
 		failedResponse := response.ToWebResponse(400, err.Error())
-		fmt.Fprint(writer, failedResponse)
+		if _, err := fmt.Fprint(writer, failedResponse); err != nil {
+			log.Println(err.Error())
+		}
 		return
 	}
 
-	formatphone, formatphoneerr := util.ConvertStrInt64(req.FormValue("phone"), 10, 64)
-	util.PanicIfError(formatphoneerr)
-	responseimage, err := util.UploadCloudinary(userimage)
+	formatPhone, formatPhoneErr := util.ConvertStrInt64(req.FormValue("phone"), 10, 64)
+	util.PanicIfError(formatPhoneErr)
+	responseImage, err := util.UploadCloudinary(userImage)
 	util.BadStatusIfError(err, writer)
-	id, cookieerr := req.Cookie("USR_ID")
-	util.PanicIfError(cookieerr)
+	id, cookieErr := req.Cookie("USR_ID")
+	util.PanicIfError(cookieErr)
 
 	users := &entity.Users{
-		Userimage:   responseimage.SecureURL,
+		UserImage:   responseImage.SecureURL,
 		Username:    req.FormValue("username"),
 		Roles:       req.FormValue("roles"),
-		Phone:       formatphone,
+		Phone:       formatPhone,
 		Gender:      req.FormValue("gender"),
-		Dateofbirth: req.FormValue("dateofbirth"),
+		DateOfBirth: req.FormValue("dateofbirth"),
 	}
 
 	if err := repository.UpdateCustomer(ctx, *users, id.Value); err != nil {
 		writer.WriteHeader(403)
 		failedResponse := response.ToWebResponse(403, "Duplicate or something, please repeat process")
-		fmt.Fprint(writer, failedResponse)
+		if _, err := fmt.Fprint(writer, failedResponse); err != nil {
+			log.Println(err.Error())
+		}
 
 		return
 	}
 
-	customerupdate := response.ToWebResponse(200, "Successfully updated profile")
-	fmt.Fprint(writer, customerupdate)
+	customerUpdate := response.ToWebResponse(200, "Successfully updated profile")
+	if _, err := fmt.Fprint(writer, customerUpdate); err != nil {
+		log.Println(err.Error())
+	}
 }
 
 func ProfileCustomer(ctx context.Context, writer http.ResponseWriter, request *http.Request) {
 	var roles string
-	id, cookieerr := request.Cookie("USR_ID")
-	util.PanicIfError(cookieerr)
+	id, cookieErr := request.Cookie("USR_ID")
+	util.PanicIfError(cookieErr)
 
-	result, resulterr := repository.SelectCustomerById(ctx, id.Value)
-	util.PanicIfError(resulterr)
+	result, resultErr := repository.SelectCustomerById(ctx, id.Value)
+	util.PanicIfError(resultErr)
 
 	if result.Roles == "superuser" {
 		roles = "superuser"
@@ -151,14 +169,17 @@ func ProfileCustomer(ctx context.Context, writer http.ResponseWriter, request *h
 	}
 
 	writer.WriteHeader(200)
-	profileresp := response.ToProfileCustomer(200, "Successfully get "+roles+" profile", response.ProfileCustomer{
+	profileResponse := response.ToProfileCustomer(200, "Successfully get "+roles+" profile", response.ProfileCustomer{
 		Data: response.ProfileCustomerData{
-			Userimage:   result.Userimage,
+			Userimage:   result.UserImage,
 			Username:    result.Username,
 			Phone:       result.Phone,
 			Gender:      result.Gender,
-			Dateofbirth: result.Dateofbirth,
+			Dateofbirth: result.DateOfBirth,
 		},
 	})
-	fmt.Fprint(writer, profileresp)
+	
+	if _, err := fmt.Fprint(writer, profileResponse); err != nil {
+		log.Println(err.Error())
+	}
 }

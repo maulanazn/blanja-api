@@ -30,7 +30,7 @@ func TestGetPassword(t *testing.T) {
 		Email:    "test11@mail.com",
 		Password: "tes123",
 	}
-	result, resultErr := repository.SelectEmailCustomers(context.Background(), string(customerRequest.Email))
+	result, resultErr := repository.SelectEmailCustomers(context.Background(), customerRequest.Email)
 	util.PanicIfError(resultErr)
 
 	fmt.Println(result.Password)
@@ -52,7 +52,7 @@ func TestGetAndVerifyPassword(t *testing.T) {
 		Email:    "test11@mail.com",
 		Password: "tes123",
 	}
-	result, resultErr := repository.SelectEmailCustomers(context.Background(), string(customerRequest.Email))
+	result, resultErr := repository.SelectEmailCustomers(context.Background(), customerRequest.Email)
 	util.PanicIfError(resultErr)
 
 	if err := util.ComparePasswords([]byte(result.Password), []byte(customerRequest.Password)); err != nil {
@@ -91,7 +91,7 @@ func TestGetPasswordPlain(t *testing.T) {
 
 func TestUpdateAndGetCustomer(t *testing.T) {
 	var users entity.Users
-	repository.UpdateCustomer(context.Background(), users, "12312")
+	repository.UpdateCustomer(context.Background(), users, "12312").Error()
 
 	fmt.Println("ok")
 }
@@ -123,7 +123,7 @@ func TestGetAddressById(t *testing.T) {
 func TestUpdateAddress(t *testing.T) {
 	var result entity.Address
 
-	repository.UpdateAddress(context.Background(), result, "51ac602e02534e6a813b96c509b9b429")
+	repository.UpdateAddress(context.Background(), result, "51ac602e02534e6a813b96c509b9b429").Error()
 
 	fmt.Println(result)
 }

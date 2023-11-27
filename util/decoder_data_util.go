@@ -77,11 +77,11 @@ func ConvertStrInt64(data interface{}, base int, bitSize int) (int64, error) {
 	return format, nil
 }
 
-func ConvertStrInt(data interface{}, base int, bitSize int) (int, error) {
+func ConvertStrInt(data interface{}, base int, bitSize int) int  {
 	format, formatErr := strconv.ParseInt(data.(string), base, bitSize)
 	if formatErr != nil {
-		return 0, formatErr
+		return 0
 	}
 
-	return int(format), nil
+	return int(format)
 }

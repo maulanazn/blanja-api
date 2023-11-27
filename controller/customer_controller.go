@@ -2,6 +2,7 @@ package controller
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"service"
 )
@@ -11,8 +12,10 @@ func RegisterCustomer(writer http.ResponseWriter, req *http.Request) {
 		service.CreateCustomer(req.Context(), writer, req)
 		return
 	}
-
-	fmt.Fprint(writer, "Get is not available")
+	
+	if _, err := fmt.Fprint(writer, "Get is not available"); err != nil {
+		log.Println(err.Error())
+	}
 }
 
 func LoginCustomer(writer http.ResponseWriter, req *http.Request) {
@@ -20,8 +23,10 @@ func LoginCustomer(writer http.ResponseWriter, req *http.Request) {
 		service.VerifyCustomer(req.Context(), writer, req)
 		return
 	}
-
-	fmt.Fprint(writer, "Get is not available")
+	
+	if _, err := fmt.Fprint(writer, "Get is not available"); err != nil {
+		log.Println(err.Error())
+	}
 }
 
 func EditCustomer(writer http.ResponseWriter, req *http.Request) {

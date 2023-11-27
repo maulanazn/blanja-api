@@ -4,35 +4,41 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 	"util"
 )
 
 type AuthenticateTokenHandler func(http.ResponseWriter, *http.Request)
 
-type MakesureToken struct {
+type MakeSureToken struct {
 	handler AuthenticateTokenHandler
 }
 
-func (authenticate *MakesureToken) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	_, err := r.Cookie("USR_ID")
+func (authenticate *MakeSureToken) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	userid, err := r.Cookie("USR_ID")
 	authorization := r.Header.Get("Authorization")
-	emailfromtoken := util.DecodeToken(authorization[7:])
+  strings.Split(authorization, " ")
+  userIdToken := util.DecodeToken(authorization[14:], r)
 
 	if err != nil {
 		log.Println(err)
-		fmt.Fprint(w, "Please login correctly")
+		if _, err := fmt.Fprint(w, "Please login correctly"); err != nil {
+			log.Println(err.Error())
+		}
 		return
 	}
 
-	if authorization == "" || r.FormValue("email") != emailfromtoken {
+	if userid.Value != userIdToken {
 		log.Println(err)
-		fmt.Fprint(w, "Failed to Authorize")
+		if _, err := fmt.Fprint(w, "Failed to Authorize"); err != nil {
+			log.Println(err.Error())
+		}
 		return
 	}
 
 	authenticate.handler(w, r)
 }
 
-func NewEntranceToken(wrapHandler AuthenticateTokenHandler) *MakesureToken {
-	return &MakesureToken{wrapHandler}
+func NewEntranceToken(wrapHandler AuthenticateTokenHandler) *MakeSureToken {
+	return &MakeSureToken{wrapHandler}
 }
