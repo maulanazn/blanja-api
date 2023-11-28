@@ -4,7 +4,7 @@ use (
 	./config
 	./middleware
 	./src/product
-	./users
+	./src/users
 	./util
 	./src/autoload
 	./src/wishlist

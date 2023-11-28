@@ -29,12 +29,11 @@ func AddProduct(ctx context.Context, writer http.ResponseWriter, req *http.Reque
 	responseImage, responseImageErr := util.UploadCloudinary(productImage)
 	util.BadStatusIfError(responseImageErr, writer)
 
-	userid, userIdErr := req.Cookie("USR_ID")
-	util.PanicIfError(userIdErr)
+	userid := util.DecodeToken(req.Header.Get("Authorization"))
 
 	products := &Products{
 		ProductId:    primitive.NewObjectID(),
-		UserId:       userid.Value,
+		UserId:       userid,
 		CategoryName: req.FormValue("category_name"),
 		BrandName:    req.FormValue("brand_name"),
 		ColorName:    req.FormValue("color_name"),
@@ -109,10 +108,7 @@ func EditProduct(ctx context.Context, writer http.ResponseWriter, req *http.Requ
 
 func GetProduct(ctx context.Context, writer http.ResponseWriter, req *http.Request) {
 	queryParam := req.URL.Query()
-	userid, userIdErr := req.Cookie("USR_ID")
-	if userIdErr != nil {
-		log.Println(userIdErr.Error())
-	}
+	userid := util.DecodeToken(req.Header.Get("Authorization"))
 
 	if queryParam.Has("id") {
 		result := SelectProduct(ctx, queryParam.Get("id"))
@@ -130,7 +126,7 @@ func GetProduct(ctx context.Context, writer http.ResponseWriter, req *http.Reque
 
 	var products []Products
 
-	cursor := SelectUserProduct(ctx, userid.Value)
+	cursor := SelectUserProduct(ctx, userid)
 
 	if err := cursor.All(ctx, &products); err != nil {
 		log.Println(writer.Write([]byte("Failed to get product data")))

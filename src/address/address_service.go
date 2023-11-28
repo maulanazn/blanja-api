@@ -16,11 +16,10 @@ func AddAddress(ctx context.Context, writer http.ResponseWriter, req *http.Reque
 		return
 	}
 
-	resultUserCookie, err := req.Cookie("USR_ID")
-	util.PanicIfError(err)
+	userid := util.DecodeToken(req.Header.Get("Authorization"))
 
 	address := Address{
-		UserId:         resultUserCookie.Value,
+		UserId:         userid,
 		AddressType:    addressRequest.AddressType,
 		RecipientName:  addressRequest.RecipientName,
 		RecipientPhone: addressRequest.RecipientPhone,
@@ -54,11 +53,10 @@ func EditAddress(ctx context.Context, writer http.ResponseWriter, req *http.Requ
 	}
 
 	id := req.URL.Query()
-	resultUserCookie, err := req.Cookie("USR_ID")
-	util.PanicIfError(err)
+	userid := util.DecodeToken(req.Header.Get("Authorization"))
 
 	address := &Address{
-		UserId:         resultUserCookie.Value,
+		UserId:         userid,
 		AddressType:    addressRequest.AddressType,
 		RecipientName:  addressRequest.RecipientName,
 		RecipientPhone: addressRequest.RecipientPhone,
@@ -91,9 +89,8 @@ func AddressDetail(ctx context.Context, writer http.ResponseWriter, request *htt
 	result, resultErr := AddressById(ctx, id.Get("id"))
 	util.PanicIfError(resultErr)
 
-	userId, idError := request.Cookie("USR_ID")
-	util.PanicIfError(idError)
-	resultUser, resultUserErr = AddressByUser(ctx, userId.Value)
+	userid := util.DecodeToken(request.Header.Get("Authorization"))
+	resultUser, resultUserErr = AddressByUser(ctx, userid)
 	util.PanicIfError(resultUserErr)
 
 	if id.Has("id") {

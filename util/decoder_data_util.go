@@ -68,16 +68,16 @@ func ValidateImage(file multipart.File, header *multipart.FileHeader, writer htt
 	return nil
 }
 
-func ConvertStrInt64(data interface{}, base int, bitSize int) (int64, error) {
+func ConvertStrInt64(data interface{}, base int, bitSize int) int64 {
 	format, formatErr := strconv.ParseInt(data.(string), base, bitSize)
 	if formatErr != nil {
-		return 0, formatErr
+		return 0
 	}
 
-	return format, nil
+	return format
 }
 
-func ConvertStrInt(data interface{}, base int, bitSize int) int  {
+func ConvertStrInt(data interface{}, base int, bitSize int) int {
 	format, formatErr := strconv.ParseInt(data.(string), base, bitSize)
 	if formatErr != nil {
 		return 0

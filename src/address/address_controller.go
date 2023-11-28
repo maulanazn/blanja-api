@@ -17,9 +17,11 @@ func AddOrEditAddress(writer http.ResponseWriter, req *http.Request) {
 	case http.MethodGet:
 		AddressDetail(req.Context(), writer, req)
 		return
+	default:
+		if _, err := fmt.Fprint(writer, "The thing that you request is not available"); err != nil {
+			log.Println(err.Error())
+		}
+		return
 	}
 
-	if _, err := fmt.Fprint(writer, "Get is not available"); err != nil {
-		log.Println(err.Error())
-	}
 }

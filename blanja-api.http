@@ -1,0 +1,12 @@
+POST http://localhost:3000/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "maulanazn@mail.com",
+  "password": "maulanazn123"
+}
+
+###
+
+GET http://localhost:3000/user HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE4MDAwMDAwMDAwMDAsIklkIjoiMzM5OWQ3NDktZTI2ZS00YjQzLTk3NGUtYTFmMWNlY2RjNGQ4In0.RzCiBJ_DMDBxmfu0YNRkR1PcKjwNvQU6fWPu_5vVIzEQR-4G81l8Olq2r-vac2ZHTIkRfI9OxC5_OmK9K3jWoA

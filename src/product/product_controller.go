@@ -2,6 +2,8 @@ package product
 
 import (
 	"context"
+	"fmt"
+	"log"
 	"net/http"
 )
 
@@ -16,5 +18,9 @@ func AddorEditProduct(writer http.ResponseWriter, req *http.Request) {
 	case http.MethodPut:
 		EditProduct(context.Background(), writer, req)
 		return
+	default:
+		if _, err := fmt.Fprintln(writer, "The thing that you request is not available"); err != nil {
+			log.Println(err.Error())
+		}
 	}
 }

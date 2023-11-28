@@ -83,11 +83,8 @@ func VerifyCustomer(ctx context.Context, writer http.ResponseWriter, req *http.R
 	}
 
 	token := util.GenerateToken(users.Id, os.Getenv("JWT_KEY"))
-	res := Token{
-		Token: token,
-	}
 
-	writer.Header().Set("Authorization", "Bearer "+res.Token)
+	writer.Header().Set("Authorization", "Bearer "+token)
 
 	loginResponse := util.ToWebResponse(200, "Successfully Login")
 	if _, err := fmt.Fprint(writer, loginResponse); err != nil {
@@ -110,23 +107,20 @@ func EditCustomer(ctx context.Context, writer http.ResponseWriter, req *http.Req
 		return
 	}
 
-	formatPhone, formatPhoneErr := util.ConvertStrInt64(req.FormValue("phone"), 10, 64)
-	util.PanicIfError(formatPhoneErr)
 	responseImage, err := util.UploadCloudinary(userImage)
 	util.BadStatusIfError(err, writer)
-	id, cookieErr := req.Cookie("USR_ID")
-	util.PanicIfError(cookieErr)
+	userid := util.DecodeToken(req.Header.Get("Authorization"))
 
 	users := &Users{
 		UserImage:   responseImage.SecureURL,
 		Username:    req.FormValue("username"),
 		Roles:       req.FormValue("roles"),
-		Phone:       formatPhone,
+		Phone:       util.ConvertStrInt64(req.FormValue("phone"), 10, 64),
 		Gender:      req.FormValue("gender"),
 		DateOfBirth: req.FormValue("dateofbirth"),
 	}
 
-	if err := UpdateCustomer(ctx, *users, id.Value); err != nil {
+	if err := UpdateCustomer(ctx, *users, userid); err != nil {
 		writer.WriteHeader(403)
 		failedResponse := util.ToWebResponse(403, "Duplicate or something, please repeat process")
 		if _, err := fmt.Fprint(writer, failedResponse); err != nil {
@@ -144,10 +138,9 @@ func EditCustomer(ctx context.Context, writer http.ResponseWriter, req *http.Req
 
 func ProfileCustomer(ctx context.Context, writer http.ResponseWriter, request *http.Request) {
 	var roles string
-	id, cookieErr := request.Cookie("USR_ID")
-	util.PanicIfError(cookieErr)
+	userid := util.DecodeToken(request.Header.Get("Authorization"))
 
-	result, resultErr := SelectCustomerById(ctx, id.Value)
+	result, resultErr := SelectCustomerById(ctx, userid)
 	util.PanicIfError(resultErr)
 
 	if result.Roles == "superuser" {

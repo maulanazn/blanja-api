@@ -12,7 +12,7 @@ func RegisterCustomer(writer http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	if _, err := fmt.Fprint(writer, "Get is not available"); err != nil {
+	if _, err := fmt.Fprint(writer, "Only post is allowed"); err != nil {
 		log.Println(err.Error())
 	}
 }
@@ -23,7 +23,7 @@ func LoginCustomer(writer http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	if _, err := fmt.Fprint(writer, "Get is not available"); err != nil {
+	if _, err := fmt.Fprint(writer, "Only post is allowed"); err != nil {
 		log.Println(err.Error())
 	}
 }
@@ -35,6 +35,11 @@ func PutCustomer(writer http.ResponseWriter, req *http.Request) {
 		return
 	case http.MethodGet:
 		ProfileCustomer(req.Context(), writer, req)
+		return
+	default:
+		if _, err := fmt.Fprint(writer, "The requests that you want is not available"); err != nil {
+			log.Println(err.Error())
+		}
 		return
 	}
 }
