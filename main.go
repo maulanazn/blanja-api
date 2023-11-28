@@ -1,23 +1,33 @@
 package main
 
 import (
-	"controller"
+	"address"
+	"autoload"
+	"fmt"
+	"log"
 	"middleware"
 	"net/http"
-	"repository"
+	"product"
+	"users"
 )
+
+func RootHandler(writer http.ResponseWriter, req *http.Request) {
+	if _, err := fmt.Fprint(writer, "User boiler plate backend"); err != nil {
+		log.Println(err.Error())
+	}
+}
 
 func main() {
 	router := http.NewServeMux()
 
-	repository.InitDBPostgreSQL()
+	autoload.InitDBPostgreSQL()
 
-	router.HandleFunc("/", controller.RootHandler)
-	router.HandleFunc("/register", controller.RegisterCustomer)
-	router.HandleFunc("/login", controller.LoginCustomer)
-	router.Handle("/user", middleware.NewEntranceToken(controller.EditCustomer))
-	router.Handle("/address", middleware.NewEntranceToken(controller.AddOrEditAddress))
-	router.Handle("/product", middleware.NewEntranceToken(controller.AddorEditProduct))
+	router.HandleFunc("/", RootHandler)
+	router.HandleFunc("/register", users.RegisterCustomer)
+	router.HandleFunc("/login", users.LoginCustomer)
+	router.Handle("/user", middleware.NewEntranceToken(users.PutCustomer))
+	router.Handle("/address", middleware.NewEntranceToken(address.AddOrEditAddress))
+	router.Handle("/product", middleware.NewEntranceToken(product.AddorEditProduct))
 
 	err := http.ListenAndServe(":3000", router)
 	if err != nil {

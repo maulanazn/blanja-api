@@ -10,6 +10,8 @@ database:
   mongodbpassword: "yourdb"
   mongodbhost: "yourdbhost"
   mongodbport: integer
+  paypal_clientid: clientId
+  paypal_secret: secret
 thirdparty:
   cloudinaryurl: "yoururl"
   cloudinaryfolder: "yourfolder"

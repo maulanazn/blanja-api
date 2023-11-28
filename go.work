@@ -1,13 +1,13 @@
 use (
+	.
+	./src/address
 	./config
-	./entity
-	./repository
-	./controller
 	./middleware
-	./service
+	./src/product
+	./users
 	./util
-	./request
-	./response
+	./src/autoload
+	./src/wishlist
 )
 
 go 1.21.4

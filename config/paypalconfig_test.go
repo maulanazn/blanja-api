@@ -3,16 +3,20 @@ package config_test
 import (
 	"context"
 	"fmt"
+	"github.com/spf13/viper"
+	"log"
 	"net/http/httptest"
 	"testing"
+	"util"
 
 	"github.com/plutov/paypal/v4"
 )
 
 func TestConfigPaypal(t *testing.T) {
-	conn, connerr := paypal.NewClient("AWXJVRsgEPwRAndR74q5ohEIlWw7duJHSHNPxT16PBp-ZAzgut6umNUtCC1DwmOF_EnTQmxiUUSSpJWx", "EEJ3POLxQQseX22-E1JyoHWw2Earw6QzNY-2yJcGJfkyuvm90ZOFSp3G9gnjHwSz9KKZz0G0YwL_17Is", paypal.APIBaseSandBox)
-	if connerr != nil {
-		t.Log(connerr)
+	var viper *viper.Viper = util.LoadConfig("../", "blanja.yaml", "yaml")
+	conn, connErr := paypal.NewClient(viper.GetString("paypal_clientid"), viper.GetString("paypal_secret"), paypal.APIBaseSandBox)
+	if connErr != nil {
+		log.Println(connErr)
 	}
 
 	_, err := conn.GetAccessToken(context.TODO())
