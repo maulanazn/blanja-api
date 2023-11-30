@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"product"
 	"users"
+	"wishlist"
 )
 
 func RootHandler(writer http.ResponseWriter, req *http.Request) {
@@ -28,6 +29,7 @@ func main() {
 	router.Handle("/user", middleware.NewEntranceToken(users.PutCustomer))
 	router.Handle("/address", middleware.NewEntranceToken(address.AddOrEditAddress))
 	router.Handle("/product", middleware.NewEntranceToken(product.AddorEditProduct))
+  router.Handle("/wishlist", middleware.NewEntranceToken(wishlist.WishlistController))
 
 	err := http.ListenAndServe(":3000", router)
 	if err != nil {

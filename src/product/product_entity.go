@@ -13,6 +13,7 @@ type Products struct {
 	SizeName     string
 	Image        string
 	ProductName  string
+	StoreName    string
 	Rating       int
 	Price        int
 	Quantity     int

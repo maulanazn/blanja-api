@@ -12,7 +12,7 @@ import (
 
 func GetPaypalConfig() *paypal.Client {
 	var viper *viper.Viper = util.LoadConfig(".", "blanja.yaml", "yaml")
-	conn, connErr := paypal.NewClient(viper.GetString("paypal_clientid"), viper.GetString("paypal_secret"), paypal.APIBaseSandBox)
+	conn, connErr := paypal.NewClient(viper.GetString("thirdparty.paypal_clientid"), viper.GetString("thirdparty.paypal_secret"), paypal.APIBaseSandBox)
 	if connErr != nil {
 		log.Println(connErr)
 	}

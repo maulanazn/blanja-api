@@ -9,7 +9,7 @@ import (
 type Users struct {
 	Id          string            `gorm:"type:varchar;unique;notNull;primaryKey;column:id;default:uuid_generate_v4()"`
 	Address     []address.Address `gorm:"foreignKey:user_id;references:id;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
-	Wishlist    wishlist.Wishlist `gorm:"foreignKey:wishlist_id;references:id;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	Wishlist    []wishlist.Wishlist `gorm:"foreignKey:user_id;references:id;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	UserImage   string            `gorm:"type:varchar;column:user_image"`
 	Username    string            `gorm:"type:varchar;column:user_name"`
 	Email       string            `gorm:"type:varchar;unique;column:email"`
