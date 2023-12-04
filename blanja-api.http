@@ -20,3 +20,47 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE4MDAwMDAwM
 
 GET http://localhost:3000/product?id=65668ad0b0e856f8de4e32b9 HTTP/1.1
 Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE4MDAwMDAwMDAwMDAsIklkIjoiMWFkMzE0MjktYWJiZi00NDFiLTk5MDUtNmMyYjViNzhmYzNiIn0.DGeTjLoXLznmlSoSlQO1Mqk6hGjJAB5D-6walgMJIxvVNJX5si3izhFhCaOkh3551i87B-x7GKPtsHxJqYffFg
+
+###
+
+GET http://localhost:3000/wishlist HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE4MDAwMDAwMDAwMDAsIklkIjoiMWFkMzE0MjktYWJiZi00NDFiLTk5MDUtNmMyYjViNzhmYzNiIn0.DGeTjLoXLznmlSoSlQO1Mqk6hGjJAB5D-6walgMJIxvVNJX5si3izhFhCaOkh3551i87B-x7GKPtsHxJqYffFg
+
+###
+
+GET http://localhost:3000/wishlist?id=05a66562-15c5-4608-a24f-337dbf8e145b HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE4MDAwMDAwMDAwMDAsIklkIjoiMWFkMzE0MjktYWJiZi00NDFiLTk5MDUtNmMyYjViNzhmYzNiIn0.DGeTjLoXLznmlSoSlQO1Mqk6hGjJAB5D-6walgMJIxvVNJX5si3izhFhCaOkh3551i87B-x7GKPtsHxJqYffFg
+
+### 
+
+GET http://localhost:3000/wishlist?store_name=weirdwire_collection&id=be707f6e-986f-4914-a6b7-51dd91a9d6cc HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE4MDAwMDAwMDAwMDAsIklkIjoiMWFkMzE0MjktYWJiZi00NDFiLTk5MDUtNmMyYjViNzhmYzNiIn0.DGeTjLoXLznmlSoSlQO1Mqk6hGjJAB5D-6walgMJIxvVNJX5si3izhFhCaOkh3551i87B-x7GKPtsHxJqYffFg
+
+###
+
+POST http://localhost:3000/wishlist HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE4MDAwMDAwMDAwMDAsIklkIjoiMWFkMzE0MjktYWJiZi00NDFiLTk5MDUtNmMyYjViNzhmYzNiIn0.DGeTjLoXLznmlSoSlQO1Mqk6hGjJAB5D-6walgMJIxvVNJX5si3izhFhCaOkh3551i87B-x7GKPtsHxJqYffFg
+Content-Type: application/json
+
+{
+  "product_id": "9998833mddm",
+  "store_name": "weirdwire_collection",
+  "quantity": 223
+}
+
+###
+
+PUT http://localhost:3000/wishlist?id=05a66562-15c5-4608-a24f-337dbf8e145b HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE4MDAwMDAwMDAwMDAsIklkIjoiMWFkMzE0MjktYWJiZi00NDFiLTk5MDUtNmMyYjViNzhmYzNiIn0.DGeTjLoXLznmlSoSlQO1Mqk6hGjJAB5D-6walgMJIxvVNJX5si3izhFhCaOkh3551i87B-x7GKPtsHxJqYffFg
+Content-Type: application/json
+
+{
+  "quantity": 23
+}
+
+###
+
+DELETE http://localhost:3000/wishlist HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE4MDAwMDAwMDAwMDAsIklkIjoiMWFkMzE0MjktYWJiZi00NDFiLTk5MDUtNmMyYjViNzhmYzNiIn0.DGeTjLoXLznmlSoSlQO1Mqk6hGjJAB5D-6walgMJIxvVNJX5si3izhFhCaOkh3551i87B-x7GKPtsHxJqYffFg
+
+###

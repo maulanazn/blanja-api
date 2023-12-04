@@ -11,10 +11,7 @@ import (
 
 func AddAddress(ctx context.Context, writer http.ResponseWriter, req *http.Request) {
 	addressRequest := AddressCustomerRequest{}
-	if err := util.DecodeRequestAndValidate(writer, req, &addressRequest); err != nil {
-		util.PanicIfError(err)
-		return
-	}
+	util.DecodeRequestAndValidate(writer, req, &addressRequest)
 
 	userid := util.DecodeToken(req.Header.Get("Authorization"))
 
@@ -47,10 +44,7 @@ func AddAddress(ctx context.Context, writer http.ResponseWriter, req *http.Reque
 
 func EditAddress(ctx context.Context, writer http.ResponseWriter, req *http.Request) {
 	addressRequest := AddressCustomerRequest{}
-	if err := util.DecodeRequestAndValidate(writer, req, &addressRequest); err != nil {
-		util.PanicIfError(err)
-		return
-	}
+	util.DecodeRequestAndValidate(writer, req, &addressRequest)
 
 	id := req.URL.Query()
 	userid := util.DecodeToken(req.Header.Get("Authorization"))

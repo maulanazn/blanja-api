@@ -13,10 +13,7 @@ import (
 
 func CreateCustomer(ctx context.Context, writer http.ResponseWriter, req *http.Request) {
 	registerReq := RegisterRequest{}
-	if err := util.DecodeRequestAndValidate(writer, req, &registerReq); err != nil {
-		util.PanicIfError(err)
-		return
-	}
+	util.DecodeRequestAndValidate(writer, req, &registerReq)
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(registerReq.Password), 10)
 	util.PanicIfError(err)
@@ -53,10 +50,7 @@ func CreateCustomer(ctx context.Context, writer http.ResponseWriter, req *http.R
 
 func VerifyCustomer(ctx context.Context, writer http.ResponseWriter, req *http.Request) {
 	loginReq := LoginRequest{}
-	if err := util.DecodeRequestAndValidate(writer, req, &loginReq); err != nil {
-		util.PanicIfError(err)
-		return
-	}
+	util.DecodeRequestAndValidate(writer, req, &loginReq)
 
 	result, resultErr := SelectEmailCustomers(ctx, loginReq.Email)
 	util.PanicIfError(resultErr)
@@ -99,13 +93,7 @@ func EditCustomer(ctx context.Context, writer http.ResponseWriter, req *http.Req
 		return
 	}
 
-	if err := util.ValidateImage(userImage, userImageHeader, writer); err != nil {
-		failedResponse := util.ToWebResponse(400, err.Error())
-		if _, err := fmt.Fprint(writer, failedResponse); err != nil {
-			log.Println(err.Error())
-		}
-		return
-	}
+	util.ValidateImage(userImage, userImageHeader, writer)
 
 	responseImage, err := util.UploadCloudinary(userImage)
 	util.BadStatusIfError(err, writer)

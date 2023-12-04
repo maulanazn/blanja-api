@@ -2,40 +2,36 @@ package util
 
 import (
 	"encoding/json"
-	"errors"
 	"io"
 	"mime/multipart"
 	"net/http"
 	"strconv"
 
 	"github.com/go-playground/validator"
-	log "github.com/sirupsen/logrus"
 )
 
 const (
 	Passphrase = "abcdefghijklmnopqrstuvwx"
 )
 
-func DecodeRequestAndValidate(writer http.ResponseWriter, req *http.Request, data interface{}) error {
+func DecodeRequestAndValidate(writer http.ResponseWriter, req *http.Request, data interface{}) {
 	validate := validator.New()
 
 	if err := json.NewDecoder(req.Body).Decode(data); err != nil {
-		return errors.New("failed to decode")
+		Log2File(err.Error())
 	}
 
 	if err := validate.Struct(data); err != nil {
+		Log2File(err.Error())
 		writer.WriteHeader(400)
 		writer.Write([]byte(err.Error()))
-		return errors.New(err.Error())
 	}
-
-	return nil
 }
 
-func ValidateImage(file multipart.File, header *multipart.FileHeader, writer http.ResponseWriter) error {
+func ValidateImage(file multipart.File, header *multipart.FileHeader, writer http.ResponseWriter) {
 	if header.Size >= 1024*1024 {
 		http.Error(writer, "Too big!!!", http.StatusBadRequest)
-		return nil
+		return
 	}
 
 	defer file.Close()
@@ -43,29 +39,21 @@ func ValidateImage(file multipart.File, header *multipart.FileHeader, writer htt
 	buff := make([]byte, 512)
 	_, err := file.Read(buff)
 	if err != nil {
-		log.WithFields(log.Fields{
-			"error": "server failed to process",
-		}).Error("Fatal")
-		return errors.New(err.Error())
+		Log2File(err.Error())
+		return
 	}
 
 	filetype := http.DetectContentType(buff)
 	if filetype != "image/jpeg" && filetype != "image/jpg" && filetype != "image/webp" && filetype != "image/avif" && filetype != "image/png" {
-		log.WithFields(log.Fields{
-			"error": "invalid format",
-		}).Error("Fatal")
-		return errors.New("invalid format")
+		Log2File(err.Error())
+		return
 	}
 
 	_, seekerr := file.Seek(0, io.SeekStart)
 	if seekerr != nil {
-		log.WithFields(log.Fields{
-			"error": "server failed to process",
-		}).Error("Fatal")
-		return errors.New(seekerr.Error())
+		Log2File(err.Error())
+		return
 	}
-
-	return nil
 }
 
 func ConvertStrInt64(data interface{}, base int, bitSize int) int64 {

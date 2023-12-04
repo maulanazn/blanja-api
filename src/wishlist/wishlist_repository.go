@@ -16,6 +16,18 @@ func InsertWishlist(ctx context.Context, wishlist interface{}) error {
 	return nil
 }
 
+func SelectWishlistByStore(ctx context.Context, store_name string) ([]Wishlist, error) {
+	var result []Wishlist
+
+	config.GetConnection().Begin()
+	if err := config.GetConnection().WithContext(ctx).Find(&result).Where("store_name = @store_name", sql.Named("store_name", store_name)).Error; err != nil {
+		config.GetConnection().Rollback()
+	}
+	config.GetConnection().Commit()
+
+	return result, nil
+}
+
 func SelectWishlistByUser(ctx context.Context, user_id string) ([]Wishlist, error) {
 	var result []Wishlist
 
@@ -37,7 +49,7 @@ func SelectWishlistById(ctx context.Context, wishlist_id string) (Wishlist, erro
 	}
 	config.GetConnection().WithContext(ctx).Commit()
 
-  return result, nil 
+	return result, nil
 }
 
 func UpdateWishlist(ctx context.Context, data Wishlist, wishlist_id string) error {
@@ -50,26 +62,38 @@ func UpdateWishlist(ctx context.Context, data Wishlist, wishlist_id string) erro
 	return nil
 }
 
-func DeleteWishlistById(ctx context.Context, wishlist_id string)  error {
+func DeleteWishlistById(ctx context.Context, wishlist_id string) error {
 	var result Wishlist
-	
+
 	config.GetConnection().WithContext(ctx).Begin()
 	if err := config.GetConnection().WithContext(ctx).Delete(&result, "wishlist_id = @wishlist_id", sql.Named("wishlist_id", wishlist_id)).Error; err != nil {
 		config.GetConnection().WithContext(ctx).Rollback()
 	}
 	config.GetConnection().WithContext(ctx).Commit()
-	
+
 	return nil
 }
 
-func DeleteWishlistByUser(ctx context.Context, user_id string)  error {
+func DeleteWishlistByStore(ctx context.Context, store_name string) error {
 	var result Wishlist
-	
+
+	config.GetConnection().WithContext(ctx).Begin()
+	if err := config.GetConnection().WithContext(ctx).Delete(&result, "store_name = @store_name", sql.Named("store_name", store_name)).Error; err != nil {
+		config.GetConnection().WithContext(ctx).Rollback()
+	}
+	config.GetConnection().WithContext(ctx).Commit()
+
+	return nil
+}
+
+func DeleteWishlistByUser(ctx context.Context, user_id string) error {
+	var result Wishlist
+
 	config.GetConnection().WithContext(ctx).Begin()
 	if err := config.GetConnection().WithContext(ctx).Delete(&result, "user_id = @user_id", sql.Named("user_id", user_id)).Error; err != nil {
 		config.GetConnection().WithContext(ctx).Rollback()
 	}
 	config.GetConnection().WithContext(ctx).Commit()
-	
+
 	return nil
 }

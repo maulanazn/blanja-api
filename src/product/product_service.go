@@ -17,14 +17,7 @@ func AddProduct(ctx context.Context, writer http.ResponseWriter, req *http.Reque
 		return
 	}
 
-	if err := util.ValidateImage(productImage, productImageHeader, writer); err != nil {
-		failedResponse := util.ToWebResponse(400, err.Error())
-		_, err := fmt.Fprint(writer, failedResponse)
-		if err != nil {
-			log.Println(err)
-		}
-		return
-	}
+	util.ValidateImage(productImage, productImageHeader, writer)
 
 	responseImage, responseImageErr := util.UploadCloudinary(productImage)
 	util.BadStatusIfError(responseImageErr, writer)
@@ -40,7 +33,7 @@ func AddProduct(ctx context.Context, writer http.ResponseWriter, req *http.Reque
 		SizeName:     req.FormValue("size_name"),
 		Image:        responseImage.SecureURL,
 		ProductName:  req.FormValue("product_name"),
-		StoreName:  req.FormValue("store_name"),
+		StoreName:    req.FormValue("store_name"),
 		Rating:       util.ConvertStrInt(req.FormValue("rating"), 10, 64),
 		Price:        util.ConvertStrInt(req.FormValue("price"), 10, 64),
 		Quantity:     util.ConvertStrInt(req.FormValue("quantity"), 10, 64),
@@ -69,13 +62,7 @@ func EditProduct(ctx context.Context, writer http.ResponseWriter, req *http.Requ
 		return
 	}
 
-	if err := util.ValidateImage(productImage, productImageHeader, writer); err != nil {
-		failedResponse := util.ToWebResponse(400, err.Error())
-		if _, err := fmt.Fprint(writer, failedResponse); err != nil {
-			log.Println(err)
-		}
-		return
-	}
+	util.ValidateImage(productImage, productImageHeader, writer)
 
 	responseImage, responseImageErr := util.UploadCloudinary(productImage)
 	util.BadStatusIfError(responseImageErr, writer)
@@ -87,7 +74,7 @@ func EditProduct(ctx context.Context, writer http.ResponseWriter, req *http.Requ
 		SizeName:     req.FormValue("size_name"),
 		Image:        responseImage.SecureURL,
 		ProductName:  req.FormValue("product_name"),
-		StoreName:  req.FormValue("store_name"),
+		StoreName:    req.FormValue("store_name"),
 		Rating:       util.ConvertStrInt(req.FormValue("rating"), 10, 64),
 		Price:        util.ConvertStrInt(req.FormValue("price"), 10, 64),
 		Quantity:     util.ConvertStrInt(req.FormValue("quantity"), 10, 64),
