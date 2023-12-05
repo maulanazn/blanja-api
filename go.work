@@ -8,6 +8,7 @@ use (
 	./util
 	./src/autoload
 	./src/wishlist
+	./src/order_details
 )
 
 go 1.21.4

@@ -3,6 +3,7 @@ package wishlist
 import (
 	"fmt"
 	"net/http"
+	"util"
 )
 
 func WishlistController(writer http.ResponseWriter, req *http.Request) {
@@ -21,7 +22,7 @@ func WishlistController(writer http.ResponseWriter, req *http.Request) {
 		return
 	default:
 		if _, err := fmt.Fprint(writer, "Not supported"); err != nil {
-			fmt.Errorf("%v", err.Error())
+			util.Log2File(err.Error())
 			return
 		}
 		return

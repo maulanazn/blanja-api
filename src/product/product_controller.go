@@ -3,8 +3,8 @@ package product
 import (
 	"context"
 	"fmt"
-	"log"
 	"net/http"
+	"util"
 )
 
 func AddorEditProduct(writer http.ResponseWriter, req *http.Request) {
@@ -20,7 +20,9 @@ func AddorEditProduct(writer http.ResponseWriter, req *http.Request) {
 		return
 	default:
 		if _, err := fmt.Fprintln(writer, "The thing that you request is not available"); err != nil {
-			log.Println(err.Error())
+			util.Log2File(err.Error())
+			return
 		}
+		return
 	}
 }

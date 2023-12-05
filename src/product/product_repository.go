@@ -25,7 +25,7 @@ func CreateProduct(ctx context.Context, product Products) error {
 		SizeName:     product.SizeName,
 		Image:        product.Image,
 		ProductName:  product.ProductName,
-		StoreName: product.StoreName,
+		StoreName:    product.StoreName,
 		Rating:       product.Rating,
 		Price:        product.Price,
 		Quantity:     product.Quantity,
@@ -83,10 +83,10 @@ func SelectUserProduct(ctx context.Context, userId string) *mongo.Cursor {
 	return cursor
 }
 
-func SelectProduct(ctx context.Context, id string) *Products {
+func SelectProduct(ctx context.Context, id string) (*Products, error) {
 	productId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
 
 	ctx, timeout := context.WithTimeout(ctx, 8*time.Second)
@@ -98,8 +98,8 @@ func SelectProduct(ctx context.Context, id string) *Products {
 
 	queryGetSingle := config.MongoConnection().Database("maulanazn").Collection("products")
 	if err := queryGetSingle.FindOne(ctx, filter).Decode(&result); err != nil {
-		log.Println(err)
+		return nil, err
 	}
 
-	return result
+	return result, nil
 }

@@ -16,7 +16,7 @@ func (s *SampleHook) Levels() []logrus.Level {
 }
 
 func (s *SampleHook) Fire(entry *logrus.Entry) error {
-	fmt.Println("Its error, sending email.......", entry.Level, entry.Message)
+	fmt.Println("Its error ", entry.Level, entry.Message)
 	return nil
 }
 

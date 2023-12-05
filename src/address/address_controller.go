@@ -2,8 +2,8 @@ package address
 
 import (
 	"fmt"
-	"log"
 	"net/http"
+	"util"
 )
 
 func AddOrEditAddress(writer http.ResponseWriter, req *http.Request) {
@@ -19,7 +19,8 @@ func AddOrEditAddress(writer http.ResponseWriter, req *http.Request) {
 		return
 	default:
 		if _, err := fmt.Fprint(writer, "The thing that you request is not available"); err != nil {
-			log.Println(err.Error())
+			util.Log2File(err.Error())
+			return
 		}
 		return
 	}

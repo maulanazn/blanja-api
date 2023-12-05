@@ -2,8 +2,8 @@ package users
 
 import (
 	"fmt"
-	"log"
 	"net/http"
+	"util"
 )
 
 func RegisterCustomer(writer http.ResponseWriter, req *http.Request) {
@@ -13,7 +13,8 @@ func RegisterCustomer(writer http.ResponseWriter, req *http.Request) {
 	}
 
 	if _, err := fmt.Fprint(writer, "Only post is allowed"); err != nil {
-		log.Println(err.Error())
+		util.Log2File(err.Error())
+		return
 	}
 }
 
@@ -24,7 +25,8 @@ func LoginCustomer(writer http.ResponseWriter, req *http.Request) {
 	}
 
 	if _, err := fmt.Fprint(writer, "Only post is allowed"); err != nil {
-		log.Println(err.Error())
+		util.Log2File(err.Error())
+		return
 	}
 }
 
@@ -38,7 +40,8 @@ func PutCustomer(writer http.ResponseWriter, req *http.Request) {
 		return
 	default:
 		if _, err := fmt.Fprint(writer, "The requests that you want is not available"); err != nil {
-			log.Println(err.Error())
+			util.Log2File(err.Error())
+			return
 		}
 		return
 	}

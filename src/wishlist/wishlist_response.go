@@ -3,6 +3,7 @@ package wishlist
 import (
 	"encoding/json"
 	"log"
+	"util"
 )
 
 type ResponseWishlistUser struct {
@@ -25,7 +26,7 @@ func ToWishlists(code int, message string, data ResponseWishlistUser) string {
 	}, "", "\t")
 
 	if err != nil {
-		log.Println(err.Error())
+		util.Log2File(err.Error())
 	}
 
 	return string(value)

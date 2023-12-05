@@ -42,10 +42,25 @@ entity Product {
 entity Wishlist {
   wishlist_id string
   user_id string
-  product_id string(convert)
+  product_id string
+  store_name string
+  quantity int
   created_at timestamp
   updated_at timestamp
   deleted_at timestamp
+}
+
+entity OrderDetail {
+    order_id string
+    user_id string
+    address_id string
+    product_id string
+    store_name string
+    price int
+    subtotal int
+    created_at timestamp
+    updated_at timestamp
+    deleted_at timestamp
 }
 
 @enduml

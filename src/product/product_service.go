@@ -100,7 +100,7 @@ func GetProduct(ctx context.Context, writer http.ResponseWriter, req *http.Reque
 	userid := util.DecodeToken(req.Header.Get("Authorization"))
 
 	if queryParam.Has("id") {
-		result := SelectProduct(ctx, queryParam.Get("id"))
+		result, _ := SelectProduct(ctx, queryParam.Get("id"))
 
 		productIdResponse := ToGetProduct(200, "Success get requested product", GetProductStruct{
 			Data: *result,

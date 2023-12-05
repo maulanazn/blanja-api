@@ -19,12 +19,14 @@ func DecodeRequestAndValidate(writer http.ResponseWriter, req *http.Request, dat
 
 	if err := json.NewDecoder(req.Body).Decode(data); err != nil {
 		Log2File(err.Error())
+		return
 	}
 
 	if err := validate.Struct(data); err != nil {
 		Log2File(err.Error())
 		writer.WriteHeader(400)
 		writer.Write([]byte(err.Error()))
+		return
 	}
 }
 
