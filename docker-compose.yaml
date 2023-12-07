@@ -36,19 +36,6 @@ services:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_DB=${DB_NAME}
-  blanjaserver-mongo:
-    container_name: blanjaserver-mongo
-    image: mongo:latest
-    ports:
-      - "27017:27017"
-    networks:
-      - blanja-network
-    volumes:
-      - blanja-volumes:/data/db
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=${MONGO_DB_USER}
-      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_DB_PASS}
-      - MONGO_INITDB_DATABASE=${MONGO_DB_USER}
   blanjaserver-redis:
     container_name: blanjaserver-redis
     image: redis/redis-stack:latest

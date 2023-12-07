@@ -5,16 +5,12 @@ import (
 )
 
 type Products struct {
-	ProductId    primitive.ObjectID `bson:"_id"`
-	UserId       string
-	CategoryName string
-	BrandName    string
-	ColorName    string
-	SizeName     string
-	Image        string
-	ProductName  string
-	StoreName    string
-	Rating       int
-	Price        int
-	Quantity     int
+	ProductId   primitive.ObjectID `bson:"_id"`
+	UserId      string
+	Image       string
+	ProductName string
+	StoreName   string
+	Rating      int
+	Price       int
+	Quantity    int
 }

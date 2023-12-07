@@ -3,56 +3,54 @@ package config_test
 import (
 	"context"
 	"fmt"
-	"github.com/spf13/viper"
 	"log"
 	"net/http/httptest"
 	"testing"
 	"util"
+
+	"github.com/spf13/viper"
 
 	"github.com/plutov/paypal/v4"
 )
 
 func TestConfigPaypal(t *testing.T) {
 	var viper *viper.Viper = util.LoadConfig("../", "blanja.yaml", "yaml")
-	conn, connErr := paypal.NewClient(viper.GetString("paypal_clientid"), viper.GetString("paypal_secret"), paypal.APIBaseSandBox)
+	conn, connErr := paypal.NewClient(viper.GetString("thirdparty.paypal_clientid"), viper.GetString("thirdparty.paypal_secret"), paypal.APIBaseSandBox)
 	if connErr != nil {
 		log.Println(connErr)
 	}
 
-	_, err := conn.GetAccessToken(context.TODO())
+	resultAuthorize, err := conn.GetAccessToken(context.TODO())
+
 	if err != nil {
 		t.Log(err)
 	}
 
-	fmt.Println(conn.Token)
+	fmt.Println(resultAuthorize.Token)
 }
 
 func TestCreateOrder(t *testing.T) {
+	var viper *viper.Viper = util.LoadConfig("../", "blanja.yaml", "yaml")
+	conn, connerr := paypal.NewClient(viper.GetString("thirdparty.paypal_clientid"), viper.GetString("thirdparty.paypal_secret"), paypal.APIBaseSandBox)
+
 	request := httptest.NewRequest("POST", "/order", nil)
 	recorder := httptest.NewRecorder()
-	request.Header.Set("Authorization", "")
 
-	conn, connerr := paypal.NewClient("AWXJVRsgEPwRAndR74q5ohEIlWw7duJHSHNPxT16PBp-ZAzgut6umNUtCC1DwmOF_EnTQmxiUUSSpJWx", "EEJ3POLxQQseX22-E1JyoHWw2Earw6QzNY-2yJcGJfkyuvm90ZOFSp3G9gnjHwSz9KKZz0G0YwL_17Is", paypal.APIBaseSandBox)
+	resultAuthorize, _ := conn.GetAccessToken(context.TODO())
+
+	request.Header.Set("Content-Type", "application/json")
+	request.Header.Set("Authorization", "Bearer "+resultAuthorize.Token)
+
 	if connerr != nil {
-		t.Log(connerr)
-	}
-	authorizeid, authorizeerr := conn.GetAuthorization(context.TODO(), "laksjdfklasldfjaksdfj")
-	if authorizeerr != nil {
-		t.Log(authorizeerr)
-	}
-	t.Log(authorizeid)
-	_, err := conn.GetAccessToken(context.TODO())
-	if err != nil {
-		t.Log(err)
+		t.Error(connerr)
 	}
 
-	order, err := conn.CreateOrder(context.Background(), paypal.OrderIntentCapture, []paypal.PurchaseUnitRequest{paypal.PurchaseUnitRequest{
-		ReferenceID: "ref-id",
-		Items: []paypal.Item{
-			{Name: "product1"},
-			{Name: "product2"},
-		},
-	}},
+	order, err := conn.CreateOrder(context.Background(), paypal.OrderIntentCapture, []paypal.PurchaseUnitRequest{
+		{
+			Amount: &paypal.PurchaseUnitAmount{
+				Currency: "100",
+			},
+		}},
 		&paypal.CreateOrderPayer{
 			Name: &paypal.CreateOrderPayerName{
 				GivenName: "maulanazn",

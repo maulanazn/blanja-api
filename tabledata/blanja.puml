@@ -1,0 +1,82 @@
+@startuml WhiteSmoke
+
+' Done
+entity Users {
+    id          string
+    --
+	user_image   string              
+	username    string              
+	email       string              
+	phone       int64               
+	gender      string              
+	dateofbirth string              
+	password    string              
+	roles       string              
+	created_at   time.Time           
+	updated_at   time.Time           
+	deleted_at   time.Time           
+}
+
+' Done
+entity Address {
+    id             string    
+	user_id         string    
+	address_type    string    
+	recipient_name  string    
+	recipient_phone string    
+	address_name    string    
+	postal_code     string    
+	city           string    
+	created_at      time.Time 
+	updated_at      time.Time 
+	deleted_at      time.Time 
+}
+
+entity Product {
+    product_id    string 
+	user_id       string
+    image        string
+	product_name  string
+	store_name    string
+	rating       int
+	price        int
+	quantity     int
+}
+
+entity Attribute {
+    attr_id int
+    product_id  string 
+	user_id       string
+    category_name string
+    brand_name string
+    size_name string
+    color_name string
+}
+
+' Done
+entity Wishlist {
+  wishlist_id string
+  user_id string
+  product_id string
+  store_name string
+  quantity int
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+}
+
+' Done
+entity OrderDetail {
+    order_id string
+    user_id string
+    address_id string
+    product_id string
+    store_name string
+    price int
+    subtotal int
+    created_at timestamp
+    updated_at timestamp
+    deleted_at timestamp
+}
+
+@enduml

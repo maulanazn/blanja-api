@@ -19,7 +19,7 @@ func PostOrderDetail(ctx context.Context, writer http.ResponseWriter, req *http.
 
 	userIdData, _ := users.SelectCustomerById(ctx, userid)
 	isAddressId, _ := address.AddressById(ctx, insertOrderRequest.AddressId)
-	productAndStoreData, errProductAndStore := product.SelectProduct(ctx, insertOrderRequest.ProductId)
+	productAndStoreData, _ := product.SelectProductById(ctx, insertOrderRequest.ProductId)
 
 	if userIdData.Id != userid {
 		writer.WriteHeader(400)
@@ -33,7 +33,7 @@ func PostOrderDetail(ctx context.Context, writer http.ResponseWriter, req *http.
 		return
 	}
 
-	if productAndStoreData.ProductId.Hex() != insertOrderRequest.ProductId || errProductAndStore.Error() == "no documents in result" {
+	if productAndStoreData.ProductId.String() != insertOrderRequest.ProductId {
 		writer.WriteHeader(400)
 		writer.Write([]byte("Invalid product"))
 		return

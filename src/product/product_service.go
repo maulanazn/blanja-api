@@ -25,21 +25,17 @@ func AddProduct(ctx context.Context, writer http.ResponseWriter, req *http.Reque
 	userid := util.DecodeToken(req.Header.Get("Authorization"))
 
 	products := &Products{
-		ProductId:    primitive.NewObjectID(),
-		UserId:       userid,
-		CategoryName: req.FormValue("category_name"),
-		BrandName:    req.FormValue("brand_name"),
-		ColorName:    req.FormValue("color_name"),
-		SizeName:     req.FormValue("size_name"),
-		Image:        responseImage.SecureURL,
-		ProductName:  req.FormValue("product_name"),
-		StoreName:    req.FormValue("store_name"),
-		Rating:       util.ConvertStrInt(req.FormValue("rating"), 10, 64),
-		Price:        util.ConvertStrInt(req.FormValue("price"), 10, 64),
-		Quantity:     util.ConvertStrInt(req.FormValue("quantity"), 10, 64),
+		ProductId:   primitive.NewObjectID(),
+		UserId:      userid,
+		Image:       responseImage.SecureURL,
+		ProductName: req.FormValue("product_name"),
+		StoreName:   req.FormValue("store_name"),
+		Rating:      util.ConvertStrInt(req.FormValue("rating"), 10, 64),
+		Price:       util.ConvertStrInt(req.FormValue("price"), 10, 64),
+		Quantity:    util.ConvertStrInt(req.FormValue("quantity"), 10, 64),
 	}
 
-	if err := CreateProduct(ctx, *products); err != nil {
+	if err := InsertProduct(ctx, *products); err != nil {
 		writer.WriteHeader(500)
 		if _, err := writer.Write([]byte("Failed to insert, check again later")); err != nil {
 			log.Println(err)
@@ -68,16 +64,12 @@ func EditProduct(ctx context.Context, writer http.ResponseWriter, req *http.Requ
 	util.BadStatusIfError(responseImageErr, writer)
 
 	products := &Products{
-		CategoryName: req.FormValue("category_name"),
-		BrandName:    req.FormValue("brand_name"),
-		ColorName:    req.FormValue("color_name"),
-		SizeName:     req.FormValue("size_name"),
-		Image:        responseImage.SecureURL,
-		ProductName:  req.FormValue("product_name"),
-		StoreName:    req.FormValue("store_name"),
-		Rating:       util.ConvertStrInt(req.FormValue("rating"), 10, 64),
-		Price:        util.ConvertStrInt(req.FormValue("price"), 10, 64),
-		Quantity:     util.ConvertStrInt(req.FormValue("quantity"), 10, 64),
+		Image:       responseImage.SecureURL,
+		ProductName: req.FormValue("product_name"),
+		StoreName:   req.FormValue("store_name"),
+		Rating:      util.ConvertStrInt(req.FormValue("rating"), 10, 64),
+		Price:       util.ConvertStrInt(req.FormValue("price"), 10, 64),
+		Quantity:    util.ConvertStrInt(req.FormValue("quantity"), 10, 64),
 	}
 
 	if queryErr := UpdateProduct(ctx, queryParam.Get("id"), *products); queryErr != nil {
@@ -100,7 +92,7 @@ func GetProduct(ctx context.Context, writer http.ResponseWriter, req *http.Reque
 	userid := util.DecodeToken(req.Header.Get("Authorization"))
 
 	if queryParam.Has("id") {
-		result, _ := SelectProduct(ctx, queryParam.Get("id"))
+		result, _ := SelectProductById(ctx, queryParam.Get("id"))
 
 		productIdResponse := ToGetProduct(200, "Success get requested product", GetProductStruct{
 			Data: *result,
@@ -115,11 +107,9 @@ func GetProduct(ctx context.Context, writer http.ResponseWriter, req *http.Reque
 
 	var products []Products
 
-	cursor := SelectUserProduct(ctx, userid)
-
-	if err := cursor.All(ctx, &products); err != nil {
-		log.Println(writer.Write([]byte("Failed to get product data")))
-		return
+	_, err := SelectProductByUser(ctx, userid)
+	if err != nil {
+		log.Println(err.Error())
 	}
 
 	userProductResponse := ToGetProducts(200, "Success get all product", GetProducts{
