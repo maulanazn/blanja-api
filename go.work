@@ -9,6 +9,7 @@ use (
 	./src/autoload
 	./src/wishlist
 	./src/order_details
+	./src/attribute
 )
 
 go 1.21.4
