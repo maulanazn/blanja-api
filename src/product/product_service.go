@@ -6,8 +6,6 @@ import (
 	"log"
 	"net/http"
 	"util"
-
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func AddProduct(ctx context.Context, writer http.ResponseWriter, req *http.Request) {
@@ -25,7 +23,6 @@ func AddProduct(ctx context.Context, writer http.ResponseWriter, req *http.Reque
 	userid := util.DecodeToken(req.Header.Get("Authorization"))
 
 	products := &Products{
-		ProductId:   primitive.NewObjectID(),
 		UserId:      userid,
 		Image:       responseImage.SecureURL,
 		ProductName: req.FormValue("product_name"),
@@ -35,15 +32,8 @@ func AddProduct(ctx context.Context, writer http.ResponseWriter, req *http.Reque
 		Quantity:    util.ConvertStrInt(req.FormValue("quantity"), 10, 64),
 	}
 
-	if err := InsertProduct(ctx, *products); err != nil {
-		writer.WriteHeader(500)
-		if _, err := writer.Write([]byte("Failed to insert, check again later")); err != nil {
-			log.Println(err)
-		}
-		return
-	}
+	InsertProduct(ctx, products, writer)
 
-	writer.WriteHeader(201)
 	registerResponse := util.ToWebResponse(201, "Successfully create products")
 	if _, err := fmt.Fprint(writer, registerResponse); err != nil {
 		log.Println(err)
@@ -72,17 +62,10 @@ func EditProduct(ctx context.Context, writer http.ResponseWriter, req *http.Requ
 		Quantity:    util.ConvertStrInt(req.FormValue("quantity"), 10, 64),
 	}
 
-	if queryErr := UpdateProduct(ctx, queryParam.Get("id"), *products); queryErr != nil {
-		writer.WriteHeader(400)
-		if _, err := writer.Write([]byte("Failed to update, check again later")); err != nil {
-			log.Println(err)
-		}
-		return
-	}
+	UpdateProduct(ctx, *products, queryParam.Get("id"), writer)
 
 	writer.WriteHeader(201)
-	updateProductResponse := util.ToWebResponse(201, "Successfully update product")
-	if _, err := fmt.Fprint(writer, updateProductResponse); err != nil {
+	if _, err := fmt.Fprint(writer, util.ToWebResponse(201, "Successfully update product")); err != nil {
 		log.Println(err)
 	}
 }
@@ -91,32 +74,69 @@ func GetProduct(ctx context.Context, writer http.ResponseWriter, req *http.Reque
 	queryParam := req.URL.Query()
 	userid := util.DecodeToken(req.Header.Get("Authorization"))
 
-	if queryParam.Has("id") {
-		result, _ := SelectProductById(ctx, queryParam.Get("id"))
+	if queryParam.Has("product_id") {
+		result, _ := SelectProductById(ctx, queryParam.Get("product_id"))
 
-		productIdResponse := ToGetProduct(200, "Success get requested product", GetProductStruct{
+		_, err := fmt.Fprint(writer, ToGetProduct(200, "Success get requested product", GetProductStruct{
 			Data: *result,
-		})
-
-		_, err := fmt.Fprint(writer, productIdResponse)
+		}))
 		if err != nil {
 			log.Println(err.Error())
 		}
 		return
 	}
 
-	var products []Products
+	if queryParam.Has("store_name") {
+		result, _ := SelectProductByStore(ctx, queryParam.Get("store_name"))
 
-	_, err := SelectProductByUser(ctx, userid)
+		_, err := fmt.Fprint(writer, ToGetProducts(200, "Success get requested product", GetProducts{
+			Data: *result,
+		}))
+		if err != nil {
+			log.Println(err.Error())
+		}
+		return
+	}
+
+	results, err := SelectProductByUser(ctx, userid)
 	if err != nil {
 		log.Println(err.Error())
 	}
 
-	userProductResponse := ToGetProducts(200, "Success get all product", GetProducts{
-		Data: products,
-	})
+	if _, err := fmt.Fprint(writer, ToGetProducts(200, "Success get all product", GetProducts{
+		Data: *results,
+	})); err != nil {
+		log.Println(err.Error())
+	}
+}
 
-	if _, err := fmt.Fprint(writer, userProductResponse); err != nil {
+func DeleteProduct(ctx context.Context, writer http.ResponseWriter, req *http.Request) {
+	queryParam := req.URL.Query()
+	userid := util.DecodeToken(req.Header.Get("Authorization"))
+
+	if queryParam.Has("product_id") {
+		DeleteProductById(ctx, queryParam.Get("product_id"), writer)
+
+		_, err := fmt.Fprint(writer, util.ToWebResponse(202, "Success deleted the requested product"))
+		if err != nil {
+			log.Println(err.Error())
+		}
+		return
+	}
+
+	if queryParam.Has("store_name") {
+		DeleteProductByStore(ctx, queryParam.Get("store_name"), writer)
+
+		_, err := fmt.Fprint(writer, util.ToWebResponse(202, "Success deleted the requested product"))
+		if err != nil {
+			log.Println(err.Error())
+		}
+		return
+	}
+
+	DeleteProductByUser(ctx, userid, writer)
+
+	if _, err := fmt.Fprint(writer, util.ToWebResponse(202, "Success deleted the requested product")); err != nil {
 		log.Println(err.Error())
 	}
 }

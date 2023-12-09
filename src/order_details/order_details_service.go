@@ -33,7 +33,7 @@ func PostOrderDetail(ctx context.Context, writer http.ResponseWriter, req *http.
 		return
 	}
 
-	if productAndStoreData.ProductId.String() != insertOrderRequest.ProductId {
+	if productAndStoreData.ProductId != insertOrderRequest.ProductId {
 		writer.WriteHeader(400)
 		writer.Write([]byte("Invalid product"))
 		return
@@ -48,7 +48,7 @@ func PostOrderDetail(ctx context.Context, writer http.ResponseWriter, req *http.
 	orderDetail := OrderDetail{
 		UserId:    userIdData.Id,
 		AddressId: isAddressId.Id,
-		ProductId: productAndStoreData.ProductId.Hex(),
+		ProductId: productAndStoreData.ProductId,
 		StoreName: productAndStoreData.StoreName,
 		Quantity:  insertOrderRequest.Quantity,
 		Price:     insertOrderRequest.Price,

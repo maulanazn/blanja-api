@@ -87,7 +87,7 @@ func VerifyCustomer(ctx context.Context, writer http.ResponseWriter, req *http.R
 }
 
 func EditCustomer(ctx context.Context, writer http.ResponseWriter, req *http.Request) {
-	userImage, userImageHeader, err := req.FormFile("userimage")
+	userImage, userImageHeader, err := req.FormFile("user_image")
 	if err != nil {
 		http.Error(writer, err.Error(), http.StatusBadRequest)
 		return
@@ -101,7 +101,7 @@ func EditCustomer(ctx context.Context, writer http.ResponseWriter, req *http.Req
 
 	users := &Users{
 		UserImage:   responseImage.SecureURL,
-		Username:    req.FormValue("username"),
+		Username:    req.FormValue("user_name"),
 		Roles:       req.FormValue("roles"),
 		Phone:       util.ConvertStrInt64(req.FormValue("phone"), 10, 64),
 		Gender:      req.FormValue("gender"),

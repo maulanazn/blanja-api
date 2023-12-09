@@ -93,7 +93,8 @@ func AddressDetail(ctx context.Context, writer http.ResponseWriter, request *htt
 			Status:  200,
 			Message: "Successfully get detail address",
 			Data: DetailAddressData{
-				CustomerId:     result.UserId,
+				Id:             result.Id,
+				UserId:         result.UserId,
 				AddressType:    result.AddressType,
 				RecipientName:  result.RecipientName,
 				RecipientPhone: result.RecipientPhone,

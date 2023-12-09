@@ -13,7 +13,7 @@ type Users struct {
 	UserImage   string              `gorm:"type:varchar;column:user_image"`
 	Username    string              `gorm:"type:varchar;column:user_name"`
 	Email       string              `gorm:"type:varchar;unique;column:email"`
-	Phone       int64               `gorm:"type:varchar;column:phone"`
+	Phone       int64               `gorm:"type:int;column:phone"`
 	Gender      string              `gorm:"type:varchar;column:gender"`
 	DateOfBirth string              `gorm:"type:varchar;column:dateofbirth"`
 	Password    string              `gorm:"type:varchar;column:password"`

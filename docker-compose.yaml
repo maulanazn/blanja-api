@@ -16,8 +16,9 @@ services:
       - .env
     depends_on:
       - blanjaserver-pg
-      - blanjaserver-mongo
       - blanjaserver-redis
+      - blanjaserver-elasticsearch
+
   blanjaserver-pg:
     deploy:
       resources:
@@ -36,6 +37,7 @@ services:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_DB=${DB_NAME}
+
   blanjaserver-redis:
     container_name: blanjaserver-redis
     image: redis/redis-stack:latest
@@ -46,6 +48,23 @@ services:
     volumes:
       - ./redis.conf:/usr/local/etc/redis/redis.conf
     command: redis-server /usr/local/etc/redis/redis.conf
+
+  blanjaserver-elasticsearch:
+    image: elasticsearch:8.11.1
+    container_name: blanjaserver-elasticsearch
+    environment:
+      - node.name=blanjaserver-elasticsearch
+      - cluster.name=blanja-cluster-01
+      - cluster.initial_master_nodes=blanjaserver-elasticsearch
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    volumes:
+      - blanja-volumes:/home/maulanazn/elasticsearch/data
+    ports:
+      - 9200:9200
+      - 9300:9300
+    networks:
+      - blanja-network
 
 networks:
   blanja-network:

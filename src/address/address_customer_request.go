@@ -1,7 +1,6 @@
 package address
 
 type AddressCustomerRequest struct {
-	CustomerId     string `validate:"required,uuid4"`
 	AddressType    string `json:"address_type" validate:"required,alpha"`
 	RecipientName  string `json:"recipient_name" validate:"required,alpha|alphanum"`
 	RecipientPhone string `json:"recipient_phone" validate:"required,numeric"`

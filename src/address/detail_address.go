@@ -5,7 +5,8 @@ import (
 )
 
 type DetailAddressData struct {
-	CustomerId     string `json:"customer_id"`
+	Id             string `json:"id"`
+	UserId         string `json:"customer_id"`
 	AddressType    string `json:"address_type"`
 	RecipientName  string `json:"recipient_name"`
 	RecipientPhone string `json:"recipient_phone"`
@@ -43,7 +44,8 @@ func ToDetailAddressById(status int, message string, data DetailAddressById) str
 		Status:  status,
 		Message: message,
 		Data: DetailAddressData{
-			CustomerId:     data.Data.CustomerId,
+			Id:             data.Data.Id,
+			UserId:         data.Data.UserId,
 			AddressType:    data.Data.AddressType,
 			RecipientName:  data.Data.RecipientName,
 			RecipientPhone: data.Data.RecipientPhone,
