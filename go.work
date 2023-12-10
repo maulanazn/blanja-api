@@ -1,15 +1,14 @@
 use (
-	.
-	./src/address
 	./config
 	./middleware
+	./src/address
+	./src/attribute
+	./src/autoload
+	./src/order_details
 	./src/product
 	./src/users
-	./util
-	./src/autoload
 	./src/wishlist
-	./src/order_details
-	./src/attribute
+	./util
 )
 
-go 1.21.4
+go 1.21.3
